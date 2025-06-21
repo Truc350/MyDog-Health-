@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class MainScreen extends JFrame {
     private LoginPanel loginPanel;
-
+    private RegisterPanel registerPanel;
     public MainScreen() throws HeadlessException {
         setTitle("MyDog Health+");
         setSize(400, 700);
