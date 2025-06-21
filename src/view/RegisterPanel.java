@@ -2,36 +2,52 @@ package view;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
 import java.awt.*;
 
-import static javax.swing.text.StyleConstants.setBackground;
-
 public class RegisterPanel extends JPanel {
-    // ===== Biến thành phần =====
+    private JButton btnBack, btnRegister;
     private JLabel lblTitle, lblName, lblEmail, lblPassword;
-    private JTextField txtName, txtEmail, txtPassword;
-    private JButton btnRegister;
+    private JTextField txtName, txtEmail;
+    private JPasswordField txtPassword;
 
     public RegisterPanel() {
         setBackground(Color.WHITE);
-        setBorder(new LineBorder(new Color(100, 160, 255), 3));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBorder(new EmptyBorder(20, 20, 20, 20));
 
         initComponents();
         layoutComponents();
     }
 
     private void initComponents() {
+        // Nút quay lại (icon ←)
+//            ImageIcon iconBack = new ImageIcon("src/image/arrow_left.png");
+        btnBack = new JButton();
+        btnBack.setText("");
+        btnBack.setIcon(new ImageIcon("src/image/back.png"));
+
+        btnBack.setFocusPainted(false);
+            btnBack.setContentAreaFilled(false);
+            btnBack.setBorder(BorderFactory.createLineBorder(new Color(90, 150, 255), 2));
+            btnBack.setForeground(new Color(90, 150, 255));
+            btnBack.setMaximumSize(new Dimension(40, 40));
+            btnBack.setAlignmentX(Component.LEFT_ALIGNMENT);
+            btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnBack.setPreferredSize(new Dimension(34, 34));
+        btnBack.setFont(new Font("Arial", Font.BOLD, 16));
+        btnBack.setMaximumSize(new Dimension(36, 36));
+        btnBack.setBorder(new RoundedBorder(36)); // hình tròn
+
+
+
         // Tiêu đề
         lblTitle = new JLabel("Đăng ký");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        lblTitle.setForeground(new Color(50, 130, 255));
+        lblTitle.setForeground(new Color(90, 150, 255));
         lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblTitle.setBorder(new EmptyBorder(30, 0, 20, 0));
+        lblTitle.setBorder(new EmptyBorder(20, 0, 30, 0));
 
-        // Trường nhập
+        // Các trường nhập
         lblName = createLabel("Họ và tên");
         txtName = createTextField();
 
@@ -39,44 +55,57 @@ public class RegisterPanel extends JPanel {
         txtEmail = createTextField();
 
         lblPassword = createLabel("Mật khẩu");
-        txtPassword = createTextField();
+        txtPassword = new JPasswordField();
+        styleTextField(txtPassword);
 
         // Nút đăng ký
-//        btnRegister = new JButton("Đăng ký");
-//        btnRegister.setFont(new Font("Arial", Font.BOLD, 14));
-//        btnRegister.setForeground(Color.WHITE);
-//        btnRegister.setBackground(new Color(90, 150, 255));
-//        btnRegister.setBorder(new RoundedBorder(15));
-//        btnRegister.setFocusPainted(false);
-//        btnRegister.setMaximumSize(new Dimension(150, 40));
-//        btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         btnRegister = new JButton("Đăng ký");
         btnRegister.setFont(new Font("Arial", Font.BOLD, 14));
         btnRegister.setForeground(Color.WHITE);
         btnRegister.setBackground(new Color(90, 150, 255));
-        btnRegister.setBorder(new RoundedBorder(15));
+        btnRegister.setBorder(new RoundedBorder(20));
         btnRegister.setFocusPainted(false);
-
-        btnRegister.setMaximumSize(new Dimension(150, 40));
-        btnRegister.setPreferredSize(new Dimension(150, 40));
+        btnRegister.setMaximumSize(new Dimension(200, 40));
         btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnRegister.setHorizontalAlignment(SwingConstants.CENTER);
-        btnRegister.setVerticalAlignment(SwingConstants.CENTER);
     }
 
     private void layoutComponents() {
-        add(lblTitle);
-        add(createInputGroup(lblName, txtName));
-        add(createInputGroup(lblEmail, txtEmail));
-        add(createInputGroup(lblPassword, txtPassword));
-        add(Box.createVerticalStrut(20));
-        add(btnRegister);
+        // Giao diện dùng BorderLayout cho bố cục rõ ràng
+        setLayout(new BorderLayout());
+
+        // ===== TOP: Nút quay lại =====
+        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        topBar.setOpaque(false);
+        topBar.add(btnBack);
+        add(topBar, BorderLayout.NORTH);
+
+        // ===== CENTER: Tiêu đề và biểu mẫu =====
+        JPanel centerPanel = new JPanel();
+        centerPanel.setOpaque(false);
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setBorder(new EmptyBorder(0, 30, 0, 30)); // Padding 2 bên
+
+        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.add(lblTitle);
+        centerPanel.add(Box.createVerticalStrut(25));
+        centerPanel.add(createInputGroup(lblName, txtName));
+        centerPanel.add(Box.createVerticalStrut(15));
+        centerPanel.add(createInputGroup(lblEmail, txtEmail));
+        centerPanel.add(Box.createVerticalStrut(15));
+        centerPanel.add(createInputGroup(lblPassword, txtPassword));
+        centerPanel.add(Box.createVerticalStrut(35));
+        centerPanel.add(btnRegister);
+        centerPanel.add(Box.createVerticalGlue()); // đẩy form lên trên một chút
+
+        add(centerPanel, BorderLayout.CENTER);
     }
+
+
+
 
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Arial", Font.PLAIN, 14));
+        label.setFont(new Font("Arial", Font.PLAIN, 13));
         label.setForeground(new Color(90, 150, 255));
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
@@ -84,51 +113,28 @@ public class RegisterPanel extends JPanel {
 
     private JTextField createTextField() {
         JTextField tf = new JTextField();
-        tf.setPreferredSize(new Dimension(200, 35));
-        tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-        tf.setBorder(new RoundedBorder(10));
-        tf.setFont(new Font("Arial", Font.PLAIN, 14));
+        styleTextField(tf);
         return tf;
     }
+
+    private void styleTextField(JTextField tf) {
+        tf.setPreferredSize(new Dimension(200, 35));
+        tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        tf.setBorder(new RoundedBorder(15));
+        tf.setFont(new Font("Arial", Font.PLAIN, 14));
+        tf.setMargin(new Insets(8, 12, 8, 12));
+    }
+
 
     private JPanel createInputGroup(JLabel label, JTextField field) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.WHITE);
-        panel.setBorder(new EmptyBorder(10, 40, 0, 40));
+        panel.setBorder(new EmptyBorder(10, 0, 0, 0));
         panel.add(label);
         panel.add(Box.createVerticalStrut(5));
         panel.add(field);
         return panel;
     }
 
-    // ==== Border bo góc ====
-    class RoundedBorder extends LineBorder {
-        private final int radius;
-
-        public RoundedBorder(int radius) {
-            super(new Color(100, 160, 255));
-            this.radius = radius;
-        }
-
-        @Override
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setColor(lineColor);
-            g2.setStroke(new BasicStroke(1.5f));
-            g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
-        }
-    }
-
-    // ==== Demo sử dụng JPanel này ====
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Demo Register Panel");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 700);
-            frame.setLocationRelativeTo(null);
-            frame.add(new RegisterPanel()); // thêm panel vào frame
-            frame.setVisible(true);
-        });
-    }
 }
