@@ -19,7 +19,7 @@ public class SplashScreen extends JFrame {
 
         // Panel nền xanh dương
         JPanel backgroundPanel = new JPanel();
-        backgroundPanel.setBackground(new Color(100, 149, 237)); // xanh dương
+        backgroundPanel.setBackground(new Color(70, 150, 236)); // xanh dương
         backgroundPanel.setBounds(0, 0, 400, 700);
         backgroundPanel.setOpaque(true);
 

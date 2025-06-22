@@ -27,12 +27,12 @@ public class RegisterPanel extends JPanel {
         btnBack.setIcon(new ImageIcon("src/image/back.png"));
 
         btnBack.setFocusPainted(false);
-            btnBack.setContentAreaFilled(false);
-            btnBack.setBorder(BorderFactory.createLineBorder(new Color(90, 150, 255), 2));
-            btnBack.setForeground(new Color(90, 150, 255));
-            btnBack.setMaximumSize(new Dimension(40, 40));
-            btnBack.setAlignmentX(Component.LEFT_ALIGNMENT);
-            btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnBack.setContentAreaFilled(false);
+        btnBack.setBorder(BorderFactory.createLineBorder(new Color(90, 150, 255), 2));
+        btnBack.setForeground(new Color(90, 150, 255));
+        btnBack.setMaximumSize(new Dimension(40, 40));
+        btnBack.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnBack.setPreferredSize(new Dimension(34, 34));
         btnBack.setFont(new Font("Arial", Font.BOLD, 16));
         btnBack.setMaximumSize(new Dimension(36, 36));
@@ -43,7 +43,7 @@ public class RegisterPanel extends JPanel {
         // Tiêu đề
         lblTitle = new JLabel("Đăng ký");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        lblTitle.setForeground(new Color(90, 150, 255));
+        lblTitle.setForeground(new Color(70, 150, 236));
         lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblTitle.setBorder(new EmptyBorder(20, 0, 30, 0));
 
@@ -62,7 +62,7 @@ public class RegisterPanel extends JPanel {
         btnRegister = new JButton("Đăng ký");
         btnRegister.setFont(new Font("Arial", Font.BOLD, 14));
         btnRegister.setForeground(Color.WHITE);
-        btnRegister.setBackground(new Color(90, 150, 255));
+        btnRegister.setBackground(new Color(70, 150, 236));
         btnRegister.setBorder(new RoundedBorder(20));
         btnRegister.setFocusPainted(false);
         btnRegister.setMaximumSize(new Dimension(200, 40));
@@ -106,7 +106,7 @@ public class RegisterPanel extends JPanel {
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.PLAIN, 13));
-        label.setForeground(new Color(90, 150, 255));
+        label.setForeground(new Color(70, 150, 236));
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
     }
@@ -136,5 +136,16 @@ public class RegisterPanel extends JPanel {
         panel.add(field);
         return panel;
     }
+
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> {
+//            JFrame frame = new JFrame("Tài khoản người dùng");
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            frame.setSize(400, 750);
+//            frame.setLocationRelativeTo(null);
+//            frame.setContentPane(new RegisterPanel());
+//            frame.setVisible(true);
+//        });
+//    }
 
 }
