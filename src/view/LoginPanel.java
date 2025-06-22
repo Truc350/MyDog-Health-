@@ -14,7 +14,7 @@ public class LoginPanel extends JPanel {
         setLayout(null);
         setBackground(Color.WHITE);
 
-        Color primaryColor = new Color(100, 149, 237);
+        Color primaryColor = new Color(70, 150, 236);
         Font fontLabel = new Font("Arial", Font.PLAIN, 16);
         Font fontTitle = new Font("Arial", Font.BOLD, 26);
 
