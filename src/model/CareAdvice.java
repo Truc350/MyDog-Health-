@@ -5,12 +5,16 @@ package model;
  */
 
 public class CareAdvice {
-    private String diseaseName;
-    private  String adviceText;
+    private String diseaseName;//tenh benh
+    private String advice;// goi y cham soc
+    private String dangerSigns; // Dấu hiệu nguy hiểm
+    private String extraNotes;  // Ghi chú
 
-    public CareAdvice(String diseaseName, String adviceText) {
+    public CareAdvice(String diseaseName, String advice, String dangerSigns, String extraNotes) {
         this.diseaseName = diseaseName;
-        this.adviceText = adviceText;
+        this.advice = advice;
+        this.dangerSigns = dangerSigns;
+        this.extraNotes = extraNotes;
     }
 
     public String getDiseaseName() {
@@ -21,12 +25,28 @@ public class CareAdvice {
         this.diseaseName = diseaseName;
     }
 
-    public String getAdviceText() {
-        return adviceText;
+    public String getAdvice() {
+        return advice;
     }
 
-    public void setAdviceText(String adviceText) {
-        this.adviceText = adviceText;
+    public void setAdvice(String advice) {
+        this.advice = advice;
+    }
+
+    public String getDangerSigns() {
+        return dangerSigns;
+    }
+
+    public void setDangerSigns(String dangerSigns) {
+        this.dangerSigns = dangerSigns;
+    }
+
+    public String getExtraNotes() {
+        return extraNotes;
+    }
+
+    public void setExtraNotes(String extraNotes) {
+        this.extraNotes = extraNotes;
     }
 }
 
