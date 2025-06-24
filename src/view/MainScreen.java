@@ -6,6 +6,10 @@ import java.awt.*;
 public class MainScreen extends JFrame {
     private LoginPanel loginPanel;
     private RegisterPanel registerPanel;
+    private CheckSymptomsPanel checkSymptomsPanel;
+    private SettingPanel settingPanel;
+    private DashboardPanel dashboardPanel;
+    private AddPetPanel addPetPanel;
     public MainScreen() throws HeadlessException {
         setTitle("MyDog Health+");
         setSize(400, 700);
@@ -13,8 +17,9 @@ public class MainScreen extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        loginPanel = new LoginPanel();
-        add(loginPanel);
+//        loginPanel = new LoginPanel();
+        addPetPanel = new AddPetPanel();
+        add(addPetPanel);
         this.setVisible(true);
     }
 }
