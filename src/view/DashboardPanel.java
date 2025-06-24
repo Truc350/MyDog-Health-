@@ -5,30 +5,29 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.time.Year;
 import javax.imageio.ImageIO;
 
 public class DashboardPanel extends JPanel {
 
+    // ==== Khai báo các biến thành viên ====
+    private JLabel avatarLabel, nameLabel, petTitle;
+    private JPanel topPanel, centerWrapper, cardPanel, pet1, pet2;
     private JButton btnCheckSymptoms, btnCallDoctor, btnAddPet;
+    private BottomMenuPanel bottomMenuPanel;
 
     public DashboardPanel() {
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245)); // Light blue
 
         // ===== TOP - Avatar + Name =====
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.setOpaque(false);
-
         topPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
 
-        JLabel avatarLabel = new JLabel(getRoundedAvatar("src/image/avatar.jpg", 60));
+        avatarLabel = new JLabel(getRoundedAvatar("src/image/avatar.jpg", 60));
         avatarLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-//        ImageIcon avatar = getRoundedAvatar("src/image/avatar.jpg", 60);
-//        System.out.println(avatar.getIconWidth());
 
-
-        JLabel nameLabel = new JLabel("Nguyễn Anh Tú");
+        nameLabel = new JLabel("Nguyễn Anh Tú");
         nameLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
         nameLabel.setForeground(Color.BLACK);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -38,33 +37,30 @@ public class DashboardPanel extends JPanel {
         topPanel.add(nameLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // ===== CENTER - Card =====
-        JPanel centerWrapper = new JPanel();
+        // ===== CENTER - Card Panel =====
+        centerWrapper = new JPanel();
         centerWrapper.setOpaque(false);
         centerWrapper.setLayout(new BoxLayout(centerWrapper, BoxLayout.Y_AXIS));
 
-        JPanel cardPanel = new JPanel();
+        cardPanel = new JPanel();
         cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
         cardPanel.setBackground(Color.WHITE);
-        cardPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        cardPanel.setMaximumSize(new Dimension(300, 400));
-        cardPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cardPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-        cardPanel.setOpaque(true);
         cardPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY, 0, true),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
+        cardPanel.setMaximumSize(new Dimension(300, 400));
+        cardPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cardPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-        JLabel petTitle = new JLabel("Thú cưng đã thêm");
+        petTitle = new JLabel("Thú cưng đã thêm");
         petTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
         petTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel pet1 = createPetItem("src/image/dog1.jpg", "Miu");
-        JPanel pet2 = createPetItem("src/image/dog2.jpg", "Đốm");
+        pet1 = createPetItem("src/image/dog1.jpg", "Miu");
+        pet2 = createPetItem("src/image/dog2.jpg", "Đốm");
 
         btnCheckSymptoms = createButton("⚕", "Kiểm tra triệu chứng");
-
         btnCallDoctor = createButton("📞", "Gọi bác sĩ");
         btnAddPet = createButton("➕", "Thêm thú cưng");
 
@@ -80,33 +76,22 @@ public class DashboardPanel extends JPanel {
         cardPanel.add(Box.createVerticalStrut(10));
         cardPanel.add(btnAddPet);
 
-        centerWrapper.add(Box.createVerticalStrut(10)); // khoảng cách nhỏ phía trên
+        centerWrapper.add(Box.createVerticalStrut(10));
         centerWrapper.add(cardPanel);
-        centerWrapper.add(Box.createVerticalGlue());    // vẫn giữ ở dưới để đẩy lên
-
+        centerWrapper.add(Box.createVerticalGlue());
 
         add(centerWrapper, BorderLayout.CENTER);
 
-        // ===== BOTTOM NAVIGATION =====
-        JPanel navBar = new JPanel(new GridLayout(1, 5, 10, 0));
-        navBar.setBackground(new Color(200, 220, 245));
-        navBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-
-        navBar.add(createNavIcon("🏠"));
-        navBar.add(createNavIcon("➕"));
-        navBar.add(createNavIcon("📞"));
-        navBar.add(createNavIcon("⚙"));
-        navBar.add(createNavIcon("👤"));
-
-        add(navBar, BorderLayout.SOUTH);
+        // ===== BOTTOM MENU PANEL =====
+        bottomMenuPanel = new BottomMenuPanel();
+        add(bottomMenuPanel, BorderLayout.SOUTH);
     }
 
     private JPanel createPetItem(String imagePath, String name) {
-        JPanel panel = new JPanel(new GridLayout(1,3,10,0));
+        JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
         panel.setOpaque(false);
         panel.setMaximumSize(new Dimension(260, 60));
 
-        // LEFT: Ảnh + Tên thú cưng
         JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         infoPanel.setOpaque(false);
 
@@ -121,7 +106,6 @@ public class DashboardPanel extends JPanel {
         infoPanel.add(Box.createHorizontalStrut(10));
         infoPanel.add(nameLabel);
 
-        // RIGHT: Nút x để xoá
         JButton deleteButton = new JButton("x");
         deleteButton.setPreferredSize(new Dimension(30, 30));
         deleteButton.setFocusPainted(false);
@@ -131,7 +115,6 @@ public class DashboardPanel extends JPanel {
         deleteButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Hành động xoá thú cưng
         deleteButton.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                     panel,
@@ -149,16 +132,11 @@ public class DashboardPanel extends JPanel {
             }
         });
 
-
         panel.add(infoPanel);
-
         panel.add(deleteButton);
 
         return panel;
     }
-
-
-
 
     private JButton createButton(String icon, String label) {
         JButton button = new JButton(icon + " " + label);
@@ -171,13 +149,6 @@ public class DashboardPanel extends JPanel {
         button.setMaximumSize(new Dimension(240, 40));
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         return button;
-    }
-
-    private JLabel createNavIcon(String emoji) {
-        JLabel label = new JLabel(emoji, SwingConstants.CENTER);
-        label.setFont(new Font("SansSerif", Font.PLAIN, 20));
-        label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return label;
     }
 
     private ImageIcon getRoundedAvatar(String path, int size) {
@@ -194,6 +165,4 @@ public class DashboardPanel extends JPanel {
             return new ImageIcon(); // fallback nếu lỗi
         }
     }
-
-
 }
