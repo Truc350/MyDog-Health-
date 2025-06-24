@@ -7,7 +7,9 @@ import java.awt.*;
 public class AddPetPanel extends JPanel {
 
     private JButton btnBack, btnUploadAvatar, btnAdd;
-    private JTextField txtName, txtBreed, txtAge, txtWeightGender, txtMedicalHistory;
+    private JTextField txtName, txtBreed, txtAge, txtWeight, txtMedicalHistory;
+    private JRadioButton rdoMale, rdoFemale;
+    private ButtonGroup genderGroup;
     private JPanel petListPanel;
     private BottomMenuPanel bottomMenuPanel;
 
@@ -22,14 +24,24 @@ public class AddPetPanel extends JPanel {
 
     private void initComponents() {
         btnBack = new JButton(new ImageIcon("src/image/back.png"));
-        btnBack.setBounds(10, 10, 32, 32);
         styleIconButton(btnBack);
 
         txtName = createRoundedTextField("Tên thú cưng");
         txtBreed = createRoundedTextField("Giống loài");
         txtAge = createRoundedTextField("Tuổi");
-        txtWeightGender = createRoundedTextField("Cân nặng, giới tính");
-        txtMedicalHistory = createRoundedTextField("Nhập tiền sử bệnh");
+        txtWeight = createRoundedTextField("Cân nặng(kg)");
+        txtMedicalHistory = createRoundedTextField("Tiền sử bệnh");
+
+        // Giới tính
+        rdoMale = new JRadioButton("Đực");
+        rdoFemale = new JRadioButton("Cái");
+        rdoMale.setOpaque(false);
+        rdoFemale.setOpaque(false);
+        rdoMale.setFont(new Font("Arial", Font.BOLD, 13));
+        rdoFemale.setFont(new Font("Arial", Font.BOLD, 13));
+        genderGroup = new ButtonGroup();
+        genderGroup.add(rdoMale);
+        genderGroup.add(rdoFemale);
 
         btnUploadAvatar = new JButton(new ImageIcon("src/image/uploadImg.png"));
         btnUploadAvatar.setFont(new Font("Arial", Font.BOLD, 12));
@@ -49,6 +61,7 @@ public class AddPetPanel extends JPanel {
     }
 
     private void layoutComponents() {
+        btnBack.setBounds(10, 10, 32, 32);
         add(btnBack);
 
         JLabel lblTitle = new JLabel("Thêm thú cưng");
@@ -68,8 +81,13 @@ public class AddPetPanel extends JPanel {
         txtAge.setBounds(20, 180, 350, 35);
         add(txtAge);
 
-        txtWeightGender.setBounds(20, 225, 350, 35);
-        add(txtWeightGender);
+        txtWeight.setBounds(20, 225, 160, 35);
+        add(txtWeight);
+
+        rdoMale.setBounds(200, 225, 60, 35);
+        rdoFemale.setBounds(270, 225, 60, 35);
+        add(rdoMale);
+        add(rdoFemale);
 
         txtMedicalHistory.setBounds(20, 270, 350, 35);
         add(txtMedicalHistory);
