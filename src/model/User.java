@@ -14,6 +14,11 @@ public class User {
         this.avatar = avatar;
     }
 
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
