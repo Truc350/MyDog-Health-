@@ -18,8 +18,25 @@ public class MainScreen extends JFrame {
         setResizable(false);
 
 //        loginPanel = new LoginPanel();
-        addPetPanel = new AddPetPanel();
-        add(addPetPanel);
+//        registerPanel = new RegisterPanel();
+//        add(registerPanel);
+
+        CardLayout cardLayout = new CardLayout();
+        JPanel mainPanel = new JPanel(cardLayout);
+
+
+        loginPanel = new LoginPanel(cardLayout, mainPanel);
+        registerPanel = new RegisterPanel(cardLayout,mainPanel);
+
+
+
+
+
+        mainPanel.add(loginPanel,"login");
+        mainPanel.add(registerPanel, "register");
+        add(mainPanel);
+        cardLayout.show(mainPanel, "login");
+
         this.setVisible(true);
     }
 }

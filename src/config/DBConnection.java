@@ -9,8 +9,8 @@ public class DBConnection {
      * CẤU HÌNH KẾT NỐI SQL SERVER
      */
     private static final String URL = "jdbc:sqlserver://DESKTOP-CPC2IRT\\SQLEXPRESS:1433;databaseName=MyDogHealth;encrypt=true;trustServerCertificate=true";
-    private static final String USER = "sa"; // thay bằng tên đăng nhập của bạn
-    private static final String PASSWORD = "123456789"; // thay bằng mật khẩu thật
+    private static final String USER = "sa"; //  tên đăng nhập sql server
+    private static final String PASSWORD = "123456789"; // mật khẩu thật sql server
 
     public static Connection getConnection() {
         try {

@@ -3,6 +3,8 @@ package view;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class LoginPanel extends JPanel {
     public JLabel lblTitle, lblEmail, lblPassword, lblForgot, lblNoAccount, lblRegister;
@@ -10,7 +12,11 @@ public class LoginPanel extends JPanel {
     public JPasswordField txtPassword;
     public JButton btnLogin;
     public JPanel panelBottom;
-    public LoginPanel() {
+    private  CardLayout cardLayout;
+    private  JPanel mainPanel;
+    public LoginPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         setLayout(null);
         setBackground(Color.WHITE);
 
@@ -78,8 +84,23 @@ public class LoginPanel extends JPanel {
         lblRegister = new JLabel("Đăng ký");
         lblRegister.setFont(new Font("Arial", Font.BOLD, 14));
         lblRegister.setForeground(primaryColor);
+        lblRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lblRegister.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "register");// Chuyển sang RegisterPanel
+            }
+        });
+
+
+
+
         panelBottom.add(lblNoAccount);
         panelBottom.add(lblRegister);
+
+
+
+
 
         // Add components
         add(lblTitle);
