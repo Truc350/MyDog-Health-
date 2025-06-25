@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CustomButton extends JButton {
-    private Color borderColor = Color.BLUE;
+    private Color borderColor = new Color(70, 150, 236);
     private Color startGradientColor = Color.CYAN;
     private Color endGradientColor = Color.BLUE;
     private Color backgroundColor = Color.BLACK;
@@ -12,7 +12,7 @@ public class CustomButton extends JButton {
     private Color textColor = Color.BLACK;
     private int thickness = 3;
     private int borderRadius = 15;
-    private boolean drawBorder = false;  // Mặc định không vẽ viền
+    private boolean drawBorder = true;  // Mặc định không vẽ viền
     private boolean isSelected = false;
 
     public CustomButton(String text) {
@@ -20,7 +20,7 @@ public class CustomButton extends JButton {
         setContentAreaFilled(false);
         setFocusPainted(false);
         setForeground(textColor);
-        setFont(new Font("Arial", Font.BOLD, 16));
+        setFont(new Font("Roboto", Font.BOLD, 16));
     }
 
     @Override
@@ -41,18 +41,29 @@ public class CustomButton extends JButton {
 
     @Override
     protected void paintBorder(Graphics g) {
-        if (drawBorder && (getModel().isPressed() || getModel().isRollover())) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setStroke(new BasicStroke(thickness));
+        if (!drawBorder) return;
 
-            Color gradientStart = getModel().isPressed() ? startGradientColor : new Color(180, 180, 180);
-            Color gradientEnd = getModel().isPressed() ? endGradientColor : new Color(220, 220, 220);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setStroke(new BasicStroke(thickness));
 
-            GradientPaint gradient = new GradientPaint(0, 0, gradientStart, getWidth(), getHeight(), gradientEnd, true);
-            g2d.setPaint(gradient);
-            g2d.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, borderRadius, borderRadius);
+        Color gradientStart, gradientEnd;
+
+        if (getModel().isPressed()) {
+            gradientStart = startGradientColor;
+            gradientEnd = endGradientColor;
+        } else if (getModel().isRollover()) {
+            gradientStart = new Color(180, 180, 180);
+            gradientEnd = new Color(220, 220, 220);
+        } else {
+            // Mặc định viền tĩnh khi không hover hoặc click
+            gradientStart = borderColor;
+            gradientEnd = borderColor;
         }
+
+        GradientPaint gradient = new GradientPaint(0, 0, gradientStart, getWidth(), getHeight(), gradientEnd, true);
+        g2d.setPaint(gradient);
+        g2d.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, borderRadius, borderRadius);
     }
 
     // Set màu chữ
