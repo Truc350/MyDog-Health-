@@ -1,5 +1,8 @@
 package view;
 
+import dao.UserDAO;
+import model.User;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -9,8 +12,12 @@ public class RegisterPanel extends JPanel {
     private JLabel lblTitle, lblName, lblEmail, lblPassword;
     private JTextField txtName, txtEmail;
     private JPasswordField txtPassword;
+    private  CardLayout cardLayout;
+    private JPanel loginPanel;
 
-    public RegisterPanel() {
+    public RegisterPanel(CardLayout cardLayout,JPanel mainPanel ) {
+        this.cardLayout = cardLayout;
+        loginPanel = new JPanel();
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -67,6 +74,27 @@ public class RegisterPanel extends JPanel {
         btnRegister.setFocusPainted(false);
         btnRegister.setMaximumSize(new Dimension(200, 40));
         btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnRegister.addActionListener(e-> handleRegister());
+    }
+
+    private void handleRegister() {
+        String name = txtName.getText().trim();
+        String email = txtEmail.getText().trim();
+        String password = new String(txtPassword.getPassword());
+
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty()){
+            JOptionPane.showMessageDialog(this,"Vui lòng nhập đầy đủ thông tin!!!");
+            return;
+        }
+        User user = new User(name, email, password);
+        UserDAO dao = new UserDAO();
+        if (dao.register(user)){
+            JOptionPane.showMessageDialog(this,"Đăng ký tài khoản thành công!");
+
+           cardLayout.show(loginPanel,"login");
+        }
+
+
     }
 
     private void layoutComponents() {
@@ -137,15 +165,5 @@ public class RegisterPanel extends JPanel {
         return panel;
     }
 
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> {
-//            JFrame frame = new JFrame("Tài khoản người dùng");
-//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//            frame.setSize(400, 750);
-//            frame.setLocationRelativeTo(null);
-//            frame.setContentPane(new RegisterPanel());
-//            frame.setVisible(true);
-//        });
-//    }
 
 }
