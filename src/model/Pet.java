@@ -27,6 +27,9 @@ public class Pet {
         this.symptoms = new ArrayList<>();
     }
 
+    public Pet() {
+    }
+
     public String getPetId() {
         return petId;
     }
