@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,7 @@ public class Pet {
     private String medicalHistory;
     private byte[] avatar;
     private List<Symptom> symptoms;
+
 
     public Pet(String name, String breed, int age, float weight, String gender, String medicalHistory) {
         this.petId = UUID.randomUUID().toString();
@@ -98,6 +100,7 @@ public class Pet {
         return avatar;
     }
 
+
     public void setAvatar(byte[] avatar) {
         this.avatar = avatar;
     }
@@ -112,4 +115,28 @@ public class Pet {
     public void addSymptom(Symptom symptom) {
         this.symptoms.add(symptom);
     }
+    public  void removeSymptom(Symptom symptom) {
+        this.symptoms.remove(symptom);
+    }
+    public String getBasicInfo(){
+        return toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "petId='" + petId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", name='" + name + '\'' +
+                ", breed='" + breed + '\'' +
+                ", age=" + age +
+                ", weight=" + weight +
+                ", gender='" + gender + '\'' +
+                ", medicalHistory='" + medicalHistory + '\'' +
+                ", symptoms=" + symptoms +
+                '}';
+    }
+
+
+
 }
