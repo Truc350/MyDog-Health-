@@ -2,77 +2,111 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Pet {
-    private String name, typeOfPet,age,weight, gender, historySick;
-    private List<Symptom> symptoms; // danh sach trieu chung cua thu cung
+    private String petId;
+    private String userId;
+    private String name;
+    private String breed;
+    private int age;
+    private float weight;
+    private String gender;
+    private String medicalHistory;
+    private byte[] avatar;
+    private List<Symptom> symptoms;
 
-    public Pet(String name, String typeOfPet, String age, String weight, String gender, String historySick, List<Symptom> symptoms) {
+    public Pet(String name, String breed, int age, float weight, String gender, String medicalHistory) {
+        this.petId = UUID.randomUUID().toString();
         this.name = name;
-        this.typeOfPet = typeOfPet;
+        this.breed = breed;
         this.age = age;
         this.weight = weight;
         this.gender = gender;
-        this.historySick = historySick;
+        this.medicalHistory = medicalHistory;
         this.symptoms = new ArrayList<>();
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPetId() {
+        return petId;
     }
 
-    public void setTypeOfPet(String typeOfPet) {
-        this.typeOfPet = typeOfPet;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public void setHistorySick(String historySick) {
-        this.historySick = historySick;
-    }
-
-    public void setSymptoms(List<Symptom> symptoms) {
-        this.symptoms = symptoms;
+    public void setPetId(String petId) {
+        this.petId = petId;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getTypeOfPet() {
-        return typeOfPet;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getAge() {
+    public String getBreed() {
+        return breed;
+    }
+
+    public void setBreed(String breed) {
+        this.breed = breed;
+    }
+
+    public int getAge() {
         return age;
     }
 
-    public String getWeight() {
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public float getWeight() {
         return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 
     public String getGender() {
         return gender;
     }
 
-    public String getHistorySick() {
-        return historySick;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public List<Symptom> getSymptoms() {
         return symptoms;
     }
-    public void addSymptom(Symptom symptom){
+
+    public void setSymptoms(List<Symptom> symptoms) {
+        this.symptoms = symptoms;
+    }
+
+    public String getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(String medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public void addSymptom(Symptom symptom) {
         this.symptoms.add(symptom);
     }
 }

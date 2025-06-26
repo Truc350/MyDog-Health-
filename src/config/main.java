@@ -16,7 +16,7 @@ public class main {
                 Connection conn = DriverManager.getConnection(url, user, password)) {
             System.out.println("✅ Kết nối thành công SQL Server!");
 
-            String sql = "SELECT * FROM Pet";
+            String sql = "SELECT * FROM Pets";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
