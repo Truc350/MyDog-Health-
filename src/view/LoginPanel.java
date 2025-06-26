@@ -62,14 +62,18 @@ public class LoginPanel extends JPanel {
 
         // Forgot Password
         lblForgot = new JLabel("Quên mật khẩu?");
-        lblForgot.setFont(new Font("Roboto", Font.ITALIC, 16));
+        lblForgot.setFont(new Font("Arial", Font.ITALIC, 14));
         lblForgot.setForeground(primaryColor);
         lblForgot.setBounds(210, 310, 150, 30);
 
         // Login button
-        btnLogin = customButton("Đăng nhập");
+        btnLogin = new JButton("Đăng nhập");
         btnLogin.setFont(new Font("Roboto", Font.BOLD, 16));
-        btnLogin.setBounds(60, 360, 280, 45);
+        btnLogin.setBackground(primaryColor);
+        btnLogin.setForeground(Color.WHITE);
+        btnLogin.setFocusPainted(false);
+        btnLogin.setBounds(120, 360, 160, 45);
+        btnLogin.setBorder((Border) new RoundBorder(20)); // custom border
         btnLogin.addActionListener(e -> handleLogin());
 
         // Bottom panel for register text
@@ -79,14 +83,16 @@ public class LoginPanel extends JPanel {
         panelBottom.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
 
         JLabel lblNoAccount = new JLabel("Nếu bạn chưa có tài khoản ?");
-        lblNoAccount.setFont(new Font("Roboto", Font.ITALIC, 16));
+        lblNoAccount.setFont(new Font("Roboto" +
+                "", Font.ITALIC, 14));
         lblNoAccount.setForeground(new Color(80, 80, 80));
 
-        lblRegister = new JLabel("<html><u>Đăng ký</u></html>");
-        lblRegister.setFont(new Font("Roboto", Font.BOLD, 16));
+        lblRegister = new JLabel("Đăng ký");
+        lblRegister.setFont(new Font("Roboto", Font.BOLD, 14));
         lblRegister.setForeground(primaryColor);
         lblRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblRegister.addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 cardLayout.show(mainPanel, "register");// Chuyển sang RegisterPanel
@@ -115,33 +121,50 @@ public class LoginPanel extends JPanel {
     }
 
     public void handleLogin() {
-        String email = txtEmail.getText().trim();
-        String password =  new String(txtPassword.getPassword()).trim();
+       String email = txtEmail.getText().trim();
+       String password =  new String(txtPassword.getPassword()).trim();
 
-        if (email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!!!");
-            return;
-        }
-        UserDAO dao = new UserDAO();
-        User user = dao.login(email, password);
-        if (user != null) {
-            JOptionPane.showMessageDialog(this, "Đăng nhập thành công! \nXin chào, "+user.getName());
-            AppSession.currentUser = user;
-            cardLayout.show(mainPanel, "dashboard");
-        }else {
-            JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
+       if (email.isEmpty() || password.isEmpty()) {
+           JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!!!");
+           return;
+       }
+       UserDAO dao = new UserDAO();
+       User user = dao.login(email, password);
+       if (user != null) {
+           JOptionPane.showMessageDialog(this, "Đăng nhập thành công! \nXin chào, "+user.getName());
+           AppSession.currentUser = user;
+           cardLayout.show(mainPanel, "dashboard");
+       }else {
+           JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+       }
 
     }
 
-    private CustomButton customButton(String text) {
-        CustomButton button = new CustomButton(text);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setMaximumSize(new Dimension(1000, 250));
-        button.setBackgroundColor(new Color(70, 150, 236));
-        button.setTextColor(Color.WHITE);
-        button.setBorderRadius(10);
-        return button;
-    }
+    // Custom bo tròn border cho nút
+    class RoundBorder extends AbstractBorder {
+        private int radius;
 
+        public RoundBorder(int radius) {
+            this.radius = radius;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(c.getForeground());
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(10, 20, 10, 20);
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c, Insets insets) {
+            insets.set(10, 20, 10, 20);
+            return insets;
+        }
+    }
 }
