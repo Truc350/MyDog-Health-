@@ -1,8 +1,13 @@
 package view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class AddPetPanel extends JPanel {
 
@@ -49,6 +54,10 @@ public class AddPetPanel extends JPanel {
         btnUploadAvatar.setBackground(Color.WHITE);
         btnUploadAvatar.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         btnUploadAvatar.setFocusPainted(false);
+        btnUploadAvatar.addActionListener(e -> chooseAvatarImage());
+
+
+
 
         btnAdd = new JButton("Thêm");
         btnAdd.setFont(new Font("Arial", Font.BOLD, 14));
@@ -59,6 +68,38 @@ public class AddPetPanel extends JPanel {
 
         bottomMenuPanel = new BottomMenuPanel();
     }
+
+    private void chooseAvatarImage() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn ảnh đại diện");
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                BufferedImage original = ImageIO.read(selectedFile);
+                Image scaledImage = original.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+                BufferedImage rounded = makeRoundedImage(scaledImage, 80);
+                btnUploadAvatar.setIcon(new ImageIcon(rounded));
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Không thể đọc ảnh: " + ex.getMessage());
+            }
+        }
+    }
+
+    private BufferedImage makeRoundedImage(Image scaledImage, int size) {
+        BufferedImage rounded = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = rounded.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        Ellipse2D.Double circle = new Ellipse2D.Double(0, 0, size, size);
+        g2.setClip(circle);
+        g2.drawImage(scaledImage, 0, 0, size, size, null);
+        g2.dispose();
+
+        return rounded;
+    }
+
 
     private void layoutComponents() {
         btnBack.setBounds(10, 10, 32, 32);

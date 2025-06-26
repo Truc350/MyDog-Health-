@@ -66,6 +66,9 @@ public class DashboardPanel extends JPanel {
         btnCheckSymptoms = createButton("⚕", "Kiểm tra triệu chứng");
         btnCallDoctor = createButton("📞", "Gọi bác sĩ");
         btnAddPet = createButton("➕", "Thêm thú cưng");
+        btnAddPet.addActionListener(e ->{
+            cardLayout.show(mainPanel, "addPet");
+        });
 
         cardPanel.add(petTitle);
         cardPanel.add(Box.createVerticalStrut(10));
