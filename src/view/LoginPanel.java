@@ -25,8 +25,8 @@ public class LoginPanel extends JPanel {
         setBackground(Color.WHITE);
 
         Color primaryColor = new Color(70, 150, 236);
-        Font fontLabel = new Font("Arial", Font.PLAIN, 16);
-        Font fontTitle = new Font("Arial", Font.BOLD, 26);
+        Font fontLabel = new Font("Roboto", Font.PLAIN, 16);
+        Font fontTitle = new Font("Roboto", Font.BOLD, 26);
 
         // Title
         lblTitle = new JLabel("Đăng nhập", SwingConstants.CENTER);
@@ -68,7 +68,7 @@ public class LoginPanel extends JPanel {
 
         // Login button
         btnLogin = new JButton("Đăng nhập");
-        btnLogin.setFont(new Font("Arial", Font.BOLD, 16));
+        btnLogin.setFont(new Font("Roboto", Font.BOLD, 16));
         btnLogin.setBackground(primaryColor);
         btnLogin.setForeground(Color.WHITE);
         btnLogin.setFocusPainted(false);
@@ -83,11 +83,12 @@ public class LoginPanel extends JPanel {
         panelBottom.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
 
         JLabel lblNoAccount = new JLabel("Nếu bạn chưa có tài khoản ?");
-        lblNoAccount.setFont(new Font("Arial", Font.ITALIC, 14));
+        lblNoAccount.setFont(new Font("Roboto" +
+                "", Font.ITALIC, 14));
         lblNoAccount.setForeground(new Color(80, 80, 80));
 
         lblRegister = new JLabel("Đăng ký");
-        lblRegister.setFont(new Font("Arial", Font.BOLD, 14));
+        lblRegister.setFont(new Font("Roboto", Font.BOLD, 14));
         lblRegister.setForeground(primaryColor);
         lblRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblRegister.addMouseListener(new MouseAdapter() {
