@@ -10,13 +10,13 @@ import java.io.File;
 import java.io.IOException;
 
 public class AddPetPanel extends JPanel {
-
     private JButton btnBack, btnUploadAvatar, btnAdd;
     private JTextField txtName, txtBreed, txtAge, txtWeight, txtMedicalHistory;
     private JRadioButton rdoMale, rdoFemale;
     private ButtonGroup genderGroup;
     private JPanel petListPanel;
     private BottomMenuPanel bottomMenuPanel;
+    private File selectedAvatarFile;
 
     public AddPetPanel() {
         setPreferredSize(new Dimension(400, 700));
@@ -68,24 +68,42 @@ public class AddPetPanel extends JPanel {
 
         bottomMenuPanel = new BottomMenuPanel();
     }
-
+    public File getAvatarFile() {
+        return selectedAvatarFile;
+    }
     private void chooseAvatarImage() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn ảnh đại diện");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
         int result = fileChooser.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
+
             try {
-                BufferedImage original = ImageIO.read(selectedFile);
-                Image scaledImage = original.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-                BufferedImage rounded = makeRoundedImage(scaledImage, 80);
-                btnUploadAvatar.setIcon(new ImageIcon(rounded));
+                BufferedImage originalImage = ImageIO.read(selectedFile);
+
+                // Scale ảnh về đúng kích thước hiển thị
+                Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+
+                // Làm ảnh tròn
+                BufferedImage roundedImage = makeRoundedImage(scaledImage, 80);
+
+                // Hiển thị ảnh lên nút
+                btnUploadAvatar.setIcon(new ImageIcon(roundedImage));
+                btnUploadAvatar.setText(""); // Xóa text nếu có
+
+                // Lưu file ảnh đã chọn để dùng khi lưu vào DB
+                selectedAvatarFile = selectedFile;
+
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Không thể đọc ảnh: " + ex.getMessage());
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Không thể tải ảnh: " + ex.getMessage());
             }
         }
     }
+
 
     private BufferedImage makeRoundedImage(Image scaledImage, int size) {
         BufferedImage rounded = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
@@ -249,6 +267,7 @@ public class AddPetPanel extends JPanel {
         return Integer.parseInt(txtAge.getText().trim());
     }
 
+
     public float getWeight() {
         return Float.parseFloat(txtWeight.getText().trim());
     }
@@ -273,6 +292,9 @@ public class AddPetPanel extends JPanel {
     public JButton getBtnAdd() {
         return btnAdd;
     }
+
+
+
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Thêm thú cưng");

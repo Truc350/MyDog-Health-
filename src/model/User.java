@@ -28,6 +28,15 @@ public class User {
         this.historyRecords = historyRecords;
     }
 
+    public User(String userId, String name, String email, String password, Image avatar, List<Pet> pets) {
+        this.userId = userId;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.avatar = avatar;
+        this.pets = pets;
+    }
+
     public User(String name, String email, String password, Image avatar) {
         this.name = name;
         this.email = email;
@@ -123,4 +132,18 @@ public class User {
         }
         return false;
     }
+    public void  addPet(Pet pet) {
+        pets.add(pet);
+    }
+    public  void removePet(Pet pet) {
+        pets.remove(pet);
+    }
+    public  void printAllPets(){
+        System.out.println("🐾 Danh sách thú cưng của bạn:");
+        for (int i = 0; i < pets.size(); i++) {
+            Pet pet = pets.get(i);
+            System.out.println((i + 1) + ". " + pet.getBasicInfo());
+        }
+    }
+
 }
