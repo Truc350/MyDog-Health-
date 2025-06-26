@@ -10,6 +10,7 @@ public class MainScreen extends JFrame {
     private SettingPanel settingPanel;
     private DashboardPanel dashboardPanel;
     private AddPetPanel addPetPanel;
+
     public MainScreen() throws HeadlessException {
         setTitle("MyDog Health+");
         setSize(400, 700);

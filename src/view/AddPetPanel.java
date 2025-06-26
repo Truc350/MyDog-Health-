@@ -184,6 +184,8 @@ public class AddPetPanel extends JPanel {
         btn.setBorder(new RoundedBorder(10));
     }
 
+
+
     static class RoundedBorder extends AbstractBorder {
         private final int radius;
         public RoundedBorder(int radius) {
@@ -195,6 +197,40 @@ public class AddPetPanel extends JPanel {
             g.setColor(new Color(150, 200, 255));
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
+    }
+    public  String getNamePet(){
+        return txtName.getText();
+    }
+    public String getBreed(){
+        return txtBreed.getText();
+    }
+    public int getAge() {
+        return Integer.parseInt(txtAge.getText().trim());
+    }
+
+    public float getWeight() {
+        return Float.parseFloat(txtWeight.getText().trim());
+    }
+
+    public String getGender() {
+        return rdoMale.isSelected() ? "Đực" : "Cái";
+    }
+
+    public String getMedicalHistory() {
+        return txtMedicalHistory.getText().trim();
+    }
+
+    public void clear(){
+        txtName.setText("");
+        txtBreed.setText("");
+        txtAge.setText("");
+        txtWeight.setText("");
+        txtMedicalHistory.setText("");
+        genderGroup.clearSelection();
+    }
+
+    public JButton getBtnAdd() {
+        return btnAdd;
     }
 
     public static void main(String[] args) {
