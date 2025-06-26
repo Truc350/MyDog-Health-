@@ -62,7 +62,7 @@ public class LoginPanel extends JPanel {
 
         // Forgot Password
         lblForgot = new JLabel("Quên mật khẩu?");
-        lblForgot.setFont(new Font("Arial", Font.ITALIC, 14));
+        lblForgot.setFont(new Font("Roboto", Font.ITALIC, 16));
         lblForgot.setForeground(primaryColor);
         lblForgot.setBounds(210, 310, 150, 30);
 
@@ -84,11 +84,11 @@ public class LoginPanel extends JPanel {
 
         JLabel lblNoAccount = new JLabel("Nếu bạn chưa có tài khoản ?");
         lblNoAccount.setFont(new Font("Roboto" +
-                "", Font.ITALIC, 14));
+                "", Font.ITALIC, 16));
         lblNoAccount.setForeground(new Color(80, 80, 80));
 
-        lblRegister = new JLabel("Đăng ký");
-        lblRegister.setFont(new Font("Roboto", Font.BOLD, 14));
+        lblRegister = new JLabel("<html><u>Đăng ký</u></html>");
+        lblRegister.setFont(new Font("Roboto", Font.BOLD, 16));
         lblRegister.setForeground(primaryColor);
         lblRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblRegister.addMouseListener(new MouseAdapter() {
