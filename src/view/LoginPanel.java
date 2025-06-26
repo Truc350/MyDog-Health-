@@ -1,5 +1,9 @@
 package view;
 
+import dao.UserDAO;
+import model.AppSession;
+import model.User;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -70,6 +74,7 @@ public class LoginPanel extends JPanel {
         btnLogin.setFocusPainted(false);
         btnLogin.setBounds(120, 360, 160, 45);
         btnLogin.setBorder((Border) new RoundBorder(20)); // custom border
+        btnLogin.addActionListener(e -> handleLogin());
 
         // Bottom panel for register text
         panelBottom = new JPanel();
@@ -86,6 +91,7 @@ public class LoginPanel extends JPanel {
         lblRegister.setForeground(primaryColor);
         lblRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblRegister.addMouseListener(new MouseAdapter() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 cardLayout.show(mainPanel, "register");// Chuyển sang RegisterPanel
@@ -111,6 +117,26 @@ public class LoginPanel extends JPanel {
         add(lblForgot);
         add(btnLogin);
         add(panelBottom);
+    }
+
+    private void handleLogin() {
+       String email = txtEmail.getText().trim();
+       String password =  new String(txtPassword.getPassword()).trim();
+
+       if (email.isEmpty() || password.isEmpty()) {
+           JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!!!");
+           return;
+       }
+       UserDAO dao = new UserDAO();
+       User user = dao.login(email, password);
+       if (user != null) {
+           JOptionPane.showMessageDialog(this, "Đăng nhập thành công! \nXin chào, "+user.getName());
+           AppSession.currentUser = user;
+           cardLayout.show(mainPanel, "dashboard");
+       }else {
+           JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+       }
+
     }
 
     // Custom bo tròn border cho nút
