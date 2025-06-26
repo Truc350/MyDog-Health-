@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class AIAnalysisResultsPanel extends JPanel {
     JButton backButton;
@@ -9,8 +11,13 @@ public class AIAnalysisResultsPanel extends JPanel {
     JLabel status2, status1, fullResultLabel, titleLabel;
     JPanel resultPanel, infoPanel, contentPanel, topPanel;
     JTextArea infoLabel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public AIAnalysisResultsPanel() {
+    public AIAnalysisResultsPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
+
         setLayout(new BorderLayout()); // để thêm menu dưới cùng
         setBackground(new Color(200, 220, 245)); // nền xanh tổng thể
 
@@ -31,6 +38,9 @@ public class AIAnalysisResultsPanel extends JPanel {
         backButton = new JButton();
         backButton.setText("");
         backButton.setIcon(new ImageIcon("src/image/back.png"));
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "dogInfor");
+        });
 
         backButton.setFocusPainted(false);
         backButton.setContentAreaFilled(false);
@@ -147,6 +157,14 @@ public class AIAnalysisResultsPanel extends JPanel {
 
         // ===== Link xem kết quả =====
         fullResultLabel = new JLabel("<html><u>Xem toàn bộ kết quả</u></html>", SwingConstants.CENTER);
+        fullResultLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "medicalResult");
+            }
+        });
+
         fullResultLabel.setFont(new Font("Roboto", Font.ITALIC, 18));
         fullResultLabel.setForeground(Color.WHITE);
         fullResultLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -157,6 +175,13 @@ public class AIAnalysisResultsPanel extends JPanel {
 
         // ===== Nút xem hướng dẫn =====
         guideButton = customButton("Xem hướng dẫn chăm sóc");
+        guideButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "careGuide");
+            }
+        });
         ImageIcon iconHuongDan = new ImageIcon("src\\image\\instruct.png");
         Image image7 = iconHuongDan.getImage();
         Image newImage7 = image7.getScaledInstance(18, 18, Image.SCALE_SMOOTH);
@@ -186,16 +211,16 @@ public class AIAnalysisResultsPanel extends JPanel {
     }
 
     // For testing UI
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-
-        AIAnalysisResultsPanel panel = new AIAnalysisResultsPanel();
-        frame.add(panel, BorderLayout.CENTER);
-
-        frame.setSize(400, 700); // phù hợp kích thước mobile
-        frame.setLocationRelativeTo(null); // căn giữa màn hình
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame("Test");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setLayout(new BorderLayout());
+//
+//        AIAnalysisResultsPanel panel = new AIAnalysisResultsPanel();
+//        frame.add(panel, BorderLayout.CENTER);
+//
+//        frame.setSize(400, 700); // phù hợp kích thước mobile
+//        frame.setLocationRelativeTo(null); // căn giữa màn hình
+//        frame.setVisible(true);
+//    }
 }

@@ -3,12 +3,19 @@ package view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DogInforPanel extends JPanel {
     private JLabel lblMainSymptomContent, lblLocationContent, lblTimeContent, lblOtherSymptomsContent, imageLabel;
     private JButton btnEditInfo, btnAnalyzeAI, btnCallVet;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public DogInforPanel() {
+    public DogInforPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
+
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245));
 
@@ -179,6 +186,13 @@ public class DogInforPanel extends JPanel {
         ImageIcon icon6 = new ImageIcon(newImage6);
         btnEditInfo.setIcon(icon6);
         btnEditInfo.setMargin(new Insets(2, 6, 2, 6));
+        btnEditInfo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "checkSymptoms");
+            }
+        });
 
         // Phân tích AI
         btnAnalyzeAI = customButton("Phân tích AI");
@@ -188,9 +202,23 @@ public class DogInforPanel extends JPanel {
         ImageIcon icon7 = new ImageIcon(newImage7);
         btnAnalyzeAI.setIcon(icon7);
         btnAnalyzeAI.setMargin(new Insets(2, 6, 2, 6));
+        btnAnalyzeAI.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "aiAnalysisResults");
+            }
+        });
 
         // Gọi bác sĩ
         btnCallVet = customButtonCall("Gọi bác sĩ");
+        btnCallVet.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "doctorSelection");
+            }
+        });
         ImageIcon iconCall = new ImageIcon("src\\image\\call.png");
         Image image8 = iconCall.getImage();
         Image newImage8 = image8.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -242,16 +270,23 @@ public class DogInforPanel extends JPanel {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Thông tin chó");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        CardLayout cardLayout = new CardLayout();
+        JPanel mainPanel = new JPanel(cardLayout);
 
-            DogInforPanel dogInfoPanel = new DogInforPanel();
-            frame.setContentPane(dogInfoPanel);
+        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
+        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
+        DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
 
-            frame.setSize(400, 700); // phù hợp kích thước mobile
-            frame.setLocationRelativeTo(null); // căn giữa màn hình
-            frame.setVisible(true);
-        });
+        mainPanel.add(dogInforPanel, "dogInfor");
+        mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
+        mainPanel.add(doctorSelectionPanel, "doctorSelection");
+
+        JFrame frame = new JFrame("Test");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 700);
+        frame.setLocationRelativeTo(null);
+        frame.setContentPane(mainPanel);
+        cardLayout.show(mainPanel, "dogInfor");
+        frame.setVisible(true);
     }
 }

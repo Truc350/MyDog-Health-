@@ -5,16 +5,21 @@ import java.awt.*;
 
 public class ChatboxPanel extends JPanel {
     JButton backButton;
-    JPanel mainPanel, topPanel, buttonPanel, inputPanel, topPnel;
+    JPanel contentPanel, topPanel, buttonPanel, inputPanel, topPnel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public ChatboxPanel() {
+
+    public ChatboxPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245)); // nền xanh nhạt
 
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setOpaque(false);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         //         ===== Nút quay lại =====
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -23,6 +28,9 @@ public class ChatboxPanel extends JPanel {
         backButton = new JButton();
         backButton.setText("");
         backButton.setIcon(new ImageIcon("src/image/back.png"));
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "careGuide");
+        });
 
         backButton.setFocusPainted(false);
         backButton.setContentAreaFilled(false);
@@ -34,22 +42,22 @@ public class ChatboxPanel extends JPanel {
         backButton.setMaximumSize(new Dimension(36, 36));
         backButton.setBorder(new RoundedBorder(36)); // hình tròn
         topPanel.add(backButton);
-        mainPanel.add(topPanel);
-        mainPanel.add(Box.createVerticalStrut(4));
+        contentPanel.add(topPanel);
+        contentPanel.add(Box.createVerticalStrut(4));
 
         // === Tiêu đề ===
         JLabel titleLabel = new JLabel("Chatbox AI");
         titleLabel.setFont(new Font("Roboto", Font.BOLD, 20));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
-        mainPanel.add(titleLabel);
-        mainPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(titleLabel);
+        contentPanel.add(Box.createVerticalStrut(10));
 
 
         // === Các khung câu hỏi ===
-        mainPanel.add(createQuestionPanel("Thú cưng có bỏ ăn hoàn toàn không ?"));
-        mainPanel.add(Box.createVerticalStrut(15));
-        mainPanel.add(createQuestionPanel("Bạn sờ có thấy sưng tấy không ?"));
+        contentPanel.add(createQuestionPanel("Thú cưng có bỏ ăn hoàn toàn không ?"));
+        contentPanel.add(Box.createVerticalStrut(15));
+        contentPanel.add(createQuestionPanel("Bạn sờ có thấy sưng tấy không ?"));
 
         // === Ô nhập câu hỏi ===
         CustomTextField inputField = new CustomTextField(0);
@@ -70,7 +78,7 @@ public class ChatboxPanel extends JPanel {
         topPnel = new JPanel();
         topPnel.setBackground(new Color(200, 220, 245));
         topPnel.setLayout(new BorderLayout());
-        topPnel.add(mainPanel, BorderLayout.CENTER);
+        topPnel.add(contentPanel, BorderLayout.CENTER);
         topPnel.add(inputPanel, BorderLayout.SOUTH);
 
         add(topPnel, BorderLayout.CENTER);
@@ -123,12 +131,12 @@ public class ChatboxPanel extends JPanel {
 
 
     // Test thử giao diện
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Chatbot AI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setContentPane(new ChatboxPanel());
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame("Chatbot AI");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(400, 700);
+//        frame.setLocationRelativeTo(null);
+//        frame.setContentPane(new ChatboxPanel());
+//        frame.setVisible(true);
+//    }
 }

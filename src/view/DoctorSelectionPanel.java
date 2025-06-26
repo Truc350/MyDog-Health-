@@ -2,20 +2,26 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DoctorSelectionPanel extends JPanel {
-    JPanel mainPanel, doctorListPanel, filterPanel, topPanel;
+    JPanel contentPanel, doctorListPanel, filterPanel, topPanel;
     JButton backButton, filterButton;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public DoctorSelectionPanel() {
+    public DoctorSelectionPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245));
 
-        mainPanel = new JPanel();
-        mainPanel.setBackground(new Color(200, 220, 245));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20)); // padding trái phải
-        mainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel = new JPanel();
+        contentPanel.setBackground(new Color(200, 220, 245));
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20)); // padding trái phải
+        contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         //         ===== Nút quay lại =====
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -24,6 +30,9 @@ public class DoctorSelectionPanel extends JPanel {
         backButton = new JButton();
         backButton.setText("");
         backButton.setIcon(new ImageIcon("src/image/back.png"));
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "dashboard");
+        });
 
         backButton.setFocusPainted(false);
         backButton.setContentAreaFilled(false);
@@ -35,15 +44,15 @@ public class DoctorSelectionPanel extends JPanel {
         backButton.setMaximumSize(new Dimension(36, 36));
         backButton.setBorder(new RoundedBorder(36)); // hình tròn
         topPanel.add(backButton);
-        mainPanel.add(topPanel);
-        mainPanel.add(Box.createVerticalStrut(4));
+        contentPanel.add(topPanel);
+        contentPanel.add(Box.createVerticalStrut(4));
 
         // Tiêu đề
         JLabel titleLabel = new JLabel("Chọn bác sĩ mong muốn");
         titleLabel.setFont(new Font("Roboto", Font.BOLD, 20));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(titleLabel);
-        mainPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(titleLabel);
+        contentPanel.add(Box.createVerticalStrut(10));
 
         // Khung chứa danh sách bác sĩ
         doctorListPanel = new RoundedPanel(20, Color.WHITE, new Color(0, 0, 0, 0));
@@ -75,11 +84,14 @@ public class DoctorSelectionPanel extends JPanel {
         doctorListPanel.add(Box.createVerticalStrut(10)); // thêm khoảng cách nhỏ dưới filter
 
         // Thêm bác sĩ
-        doctorListPanel.add(createDoctorItem("src/image/doctor1.png", "Bác sĩ Trần Văn A", "Khoa da liễu"));
+        JPanel d1 = createDoctorItem("src/image/doctor1.png", "Bác sĩ Trần Văn A", "Khoa da liễu");
+        doctorListPanel.add(d1);
         doctorListPanel.add(Box.createVerticalStrut(10));
-        doctorListPanel.add(createDoctorItem("src/image/doctor2.png", "Bác sĩ Trần Văn B", "Khoa tiêu hóa"));
+        JPanel d2 = createDoctorItem("src/image/doctor2.png", "Bác sĩ Trần Văn B", "Khoa tiêu hóa");
+        doctorListPanel.add(d2);
         doctorListPanel.add(Box.createVerticalStrut(10));
-        doctorListPanel.add(createDoctorItem("src/image/doctor3.png", "Bác sĩ Trần Văn C", "Khoa di truyền"));
+        JPanel d3 = createDoctorItem("src/image/doctor3.png", "Bác sĩ Trần Văn C", "Khoa di truyền");
+        doctorListPanel.add(d3);
 
         doctorListPanel.add(Box.createVerticalGlue()); // đẩy nội dung lên trên
         doctorListPanel.add(Box.createVerticalGlue()); // đẩy nội dung lên trên
@@ -89,9 +101,9 @@ public class DoctorSelectionPanel extends JPanel {
         doctorListPanel.add(Box.createVerticalGlue()); // đẩy nội dung lên trên
         doctorListPanel.add(Box.createVerticalGlue()); // đẩy nội dung lên trên
 
-        mainPanel.add(doctorListPanel);
+        contentPanel.add(doctorListPanel);
 
-        add(mainPanel, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
         add(new BottomMenuPanel(), BorderLayout.SOUTH);
     }
 
@@ -121,16 +133,24 @@ public class DoctorSelectionPanel extends JPanel {
         textPanel.add(deptLabel);
         panel.add(textPanel);
 
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "callDoctor");
+            }
+        });
+
         return panel;
     }
 
     // ==== Main để test ====
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Chọn bác sĩ");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setContentPane(new DoctorSelectionPanel());
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame("Chọn bác sĩ");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(400, 700);
+//        frame.setLocationRelativeTo(null);
+//        frame.setContentPane(new DoctorSelectionPanel());
+//        frame.setVisible(true);
+//    }
 }
