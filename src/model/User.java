@@ -1,11 +1,32 @@
 package model;
 
+import dao.UserDAO;
+
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class User {
+    private String userId;
     private String name, email, password;
     private Image avatar;
+    private List<Pet> pets = new ArrayList<Pet>();
+    private List<HistoryRecord> historyRecords = new ArrayList<>();
+
+    public User(String userId) {
+        this.userId = UUID.randomUUID().toString();
+    }
+
+    public User(String userId, String name, String email, String password, Image avatar, List<Pet> pets, List<HistoryRecord> historyRecords) {
+        this.userId = UUID.randomUUID().toString();
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.avatar = avatar;
+        this.pets = pets;
+        this.historyRecords = historyRecords;
+    }
 
     public User(String name, String email, String password, Image avatar) {
         this.name = name;
@@ -20,6 +41,15 @@ public class User {
         this.password = password;
     }
 
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public User() {
+
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -30,6 +60,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setAvatar(Image avatar) {
@@ -51,16 +85,42 @@ public class User {
     public Image getAvatar() {
         return avatar;
     }
-    public  boolean login(String email, String password){
-        return false;
+
+    public String getUserId() {
+        return userId;
     }
-    public  boolean register(){
-        return false;
+
+    public List<Pet> getPets() {
+        return pets;
     }
-    public void managerPet(){
+
+    public List<HistoryRecord> getHistoryRecords() {
+        return historyRecords;
+    }
+
+    public void managerPet() {
 
     }
-    public List<HistoryRecord> viewHistory(){
-    return null;
+
+    public List<HistoryRecord> viewHistory() {
+        return null;
+    }
+
+    public boolean register() {
+        return new UserDAO().register(this);
+    }
+
+    public  boolean login(String email, String password) {
+        UserDAO dao = new UserDAO();
+        User userFromDB = dao.login(email, password);
+        if (userFromDB != null){
+            this.userId = userFromDB.getUserId();
+            this.name = userFromDB.getName();
+            this.email = userFromDB.getEmail();
+            this.password = userFromDB.getPassword();
+            this.avatar = userFromDB.getAvatar();
+            return true;
+        }
+        return false;
     }
 }

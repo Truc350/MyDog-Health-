@@ -7,16 +7,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 public class UserDAO {
     public boolean register(User user) {
-        String sql = "INSERT INTO Users (name,email, password) VALUES (?, ?)";
+
+        if (user.getUserId() == null || user.getUserId().isEmpty()){
+            user.setUserId(UUID.randomUUID().toString());
+        }
+
+
+        String sql = "INSERT INTO Users (userId, name, email, password) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, user.getName());
-            stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPassword());
+            stmt.setString(1, user.getUserId());
+            stmt.setString(2, user.getName());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getPassword());
 
             int rows = stmt.executeUpdate();
             return rows > 0;
@@ -28,19 +36,30 @@ public class UserDAO {
 
     }
 
-    public boolean login(String email, String password) {
+    public User login(String email, String password) {
         String sql = "SELECT * FROM Users WHERE email = ? AND password = ?";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1,email);
-            stmt.setString(2,password);
+            stmt.setString(1, email);
+            stmt.setString(2, password);
+
             ResultSet rs = stmt.executeQuery();
-            return rs.next();// Có kết quả thì đúng tài khoản
+            if (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getString("userId"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                //chua co avatar
+                return user;
+            }
 
         } catch (SQLException e) {
             System.err.println("Lỗi đăng nhập: " + e.getMessage());
-            throw new RuntimeException(e);
         }
+
+        return null;
     }
 }
