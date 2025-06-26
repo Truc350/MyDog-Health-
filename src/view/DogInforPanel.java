@@ -37,6 +37,8 @@ public class DogInforPanel extends JPanel {
         Image newImage1 = image1.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon1 = new ImageIcon(newImage1);
         JLabel lbIcon1 = new JLabel(icon1);
+        lbIcon1.setVerticalAlignment(SwingConstants.CENTER);  // Căn giữa icon theo chiều dọc
+        lbIcon1.setPreferredSize(new Dimension(16, 16));       // Đảm bảo kích thước không làm dòng thấp hơn
 
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -45,6 +47,7 @@ public class DogInforPanel extends JPanel {
         JLabel lblSymptomTitle = new JLabel("Triệu chứng chính: ");
         lblSymptomTitle.setFont(boldFont);
         gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.VERTICAL;
         contentPanel.add(lblSymptomTitle, gbc);
 
         lblMainSymptomContent = new JLabel("Chán ăn");
@@ -59,6 +62,9 @@ public class DogInforPanel extends JPanel {
         Image newImage2 = image2.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon2 = new ImageIcon(newImage2);
         JLabel lbIcon2 = new JLabel(icon2);
+        lbIcon2.setVerticalAlignment(SwingConstants.CENTER);  // Căn giữa icon theo chiều dọc
+        lbIcon2.setPreferredSize(new Dimension(16, 16));       // Đảm bảo kích thước không làm dòng thấp hơn
+
 
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -81,6 +87,9 @@ public class DogInforPanel extends JPanel {
         Image newImage3 = image3.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon3 = new ImageIcon(newImage3);
         JLabel lbIcon3 = new JLabel(icon3);
+        lbIcon3.setVerticalAlignment(SwingConstants.CENTER);  // Căn giữa icon theo chiều dọc
+        lbIcon3.setPreferredSize(new Dimension(16, 16));       // Đảm bảo kích thước không làm dòng thấp hơn
+
 
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -103,6 +112,9 @@ public class DogInforPanel extends JPanel {
         Image newImage4 = image4.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon4 = new ImageIcon(newImage4);
         JLabel lbIcon4 = new JLabel(icon4);
+        lbIcon4.setVerticalAlignment(SwingConstants.CENTER);  // Căn giữa icon theo chiều dọc
+        lbIcon4.setPreferredSize(new Dimension(16, 16));       // Đảm bảo kích thước không làm dòng thấp hơn
+
 
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -125,6 +137,9 @@ public class DogInforPanel extends JPanel {
         Image newImage5 = image5.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon5 = new ImageIcon(newImage5);
         JLabel lbIcon5 = new JLabel(icon5);
+        lbIcon5.setVerticalAlignment(SwingConstants.CENTER);  // Căn giữa icon theo chiều dọc
+        lbIcon5.setPreferredSize(new Dimension(16, 16));       // Đảm bảo kích thước không làm dòng thấp hơn
+
 
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -152,7 +167,7 @@ public class DogInforPanel extends JPanel {
         gbc.gridy = row;
         gbc.gridwidth = 3;
         gbc.anchor = GridBagConstraints.CENTER;
-        contentPanel.add(Box.createVerticalStrut(20), gbc); // khoảng cách 20px
+        contentPanel.add(Box.createVerticalStrut(10), gbc); // khoảng cách 20px
         row++;
 
         // 7. Nút chức năng
@@ -187,7 +202,7 @@ public class DogInforPanel extends JPanel {
         JButton[] buttons = {btnEditInfo, btnAnalyzeAI, btnCallVet};
         for (JButton btn : buttons) {
             btn.setPreferredSize(new Dimension(180, 22));
-            btn.setMargin(new Insets(4, 8, 4, 8));
+            btn.setMargin(new Insets(4, 8, 5, 8));
             gbc.gridx = 0;
             gbc.gridy = row;
             gbc.gridwidth = 3;
@@ -196,7 +211,7 @@ public class DogInforPanel extends JPanel {
             row++;
         }
 
-        wrapper.add(contentPanel, BorderLayout.NORTH);
+        wrapper.add(contentPanel, BorderLayout.CENTER);
         add(wrapper, BorderLayout.CENTER);
         add(new BottomMenuPanel(), BorderLayout.SOUTH);
     }
