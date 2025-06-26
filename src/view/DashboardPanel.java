@@ -14,8 +14,11 @@ public class DashboardPanel extends JPanel {
     private JPanel topPanel, centerWrapper, cardPanel, pet1, pet2;
     private JButton btnCheckSymptoms, btnCallDoctor, btnAddPet;
     private BottomMenuPanel bottomMenuPanel;
-
-    public DashboardPanel() {
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+    public DashboardPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245)); // Light blue
 

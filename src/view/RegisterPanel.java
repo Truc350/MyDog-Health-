@@ -13,11 +13,11 @@ public class RegisterPanel extends JPanel {
     private JTextField txtName, txtEmail;
     private JPasswordField txtPassword;
     private  CardLayout cardLayout;
-    private JPanel loginPanel;
+    private JPanel mainPanel;
 
     public RegisterPanel(CardLayout cardLayout,JPanel mainPanel ) {
         this.cardLayout = cardLayout;
-        loginPanel = new JPanel();
+        this.mainPanel = mainPanel;
         setBackground(Color.WHITE);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -76,7 +76,7 @@ public class RegisterPanel extends JPanel {
         btnRegister.addActionListener(e-> handleRegister());
     }
 
-    private void handleRegister() {
+    public void handleRegister() {
         String name = txtName.getText().trim();
         String email = txtEmail.getText().trim();
         String password = new String(txtPassword.getPassword());
@@ -90,7 +90,7 @@ public class RegisterPanel extends JPanel {
         if (dao.register(user)){
             JOptionPane.showMessageDialog(this,"Đăng ký tài khoản thành công!");
 
-           cardLayout.show(loginPanel,"login");
+           cardLayout.show(mainPanel,"login");
         }
 
 
