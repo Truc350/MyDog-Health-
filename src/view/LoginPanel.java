@@ -120,7 +120,7 @@ public class LoginPanel extends JPanel {
         add(panelBottom);
     }
 
-    private void handleLogin() {
+    public void handleLogin() {
        String email = txtEmail.getText().trim();
        String password =  new String(txtPassword.getPassword()).trim();
 
