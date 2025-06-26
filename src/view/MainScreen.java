@@ -25,13 +25,13 @@ public class MainScreen extends JFrame {
         CardLayout cardLayout = new CardLayout();
         JPanel mainPanel = new JPanel(cardLayout);
 
-
+        addPetPanel = new AddPetPanel();
         loginPanel = new LoginPanel(cardLayout, mainPanel);
         registerPanel = new RegisterPanel(cardLayout,mainPanel);
         dashboardPanel = new DashboardPanel(cardLayout,mainPanel);
 
 
-
+        mainPanel.add(addPetPanel,"addPet");
         mainPanel.add(dashboardPanel,"dashboard");
         mainPanel.add(loginPanel,"login");
         mainPanel.add(registerPanel, "register");
