@@ -77,7 +77,7 @@ public class RegisterPanel extends JPanel {
         btnRegister.addActionListener(e-> handleRegister());
     }
 
-    private void handleRegister() {
+    public void handleRegister() {
         String name = txtName.getText().trim();
         String email = txtEmail.getText().trim();
         String password = new String(txtPassword.getPassword());
