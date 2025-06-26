@@ -41,9 +41,10 @@ public class RegisterPanel extends JPanel {
         btnBack.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnBack.setPreferredSize(new Dimension(34, 34));
-        btnBack.setFont(new Font("Roboto", Font.BOLD, 16));
+        btnBack.setFont(new Font("Arial", Font.BOLD, 16));
         btnBack.setMaximumSize(new Dimension(36, 36));
         btnBack.setBorder(new RoundedBorder(36)); // hình tròn
+
 
 
         // Tiêu đề
@@ -57,7 +58,6 @@ public class RegisterPanel extends JPanel {
         lblName = createLabel("Họ và tên");
         txtName = createTextField();
 
-
         lblEmail = createLabel("Email");
         txtEmail = createTextField();
 
@@ -66,12 +66,13 @@ public class RegisterPanel extends JPanel {
         styleTextField(txtPassword);
 
         // Nút đăng ký
-        btnRegister = customButton("Đăng ký");
-        btnRegister.setFont(new Font("Roboto", Font.BOLD, 16));
+        btnRegister = new JButton("Đăng ký");
+        btnRegister.setFont(new Font("Arial", Font.BOLD, 14));
         btnRegister.setForeground(Color.WHITE);
         btnRegister.setBackground(new Color(70, 150, 236));
         btnRegister.setBorder(new RoundedBorder(20));
         btnRegister.setFocusPainted(false);
+        btnRegister.setMaximumSize(new Dimension(200, 40));
         btnRegister.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnRegister.addActionListener(e-> handleRegister());
     }
@@ -90,7 +91,7 @@ public class RegisterPanel extends JPanel {
         if (dao.register(user)){
             JOptionPane.showMessageDialog(this,"Đăng ký tài khoản thành công!");
 
-           cardLayout.show(mainPanel,"login");
+            cardLayout.show(mainPanel,"login");
         }
 
 
@@ -99,10 +100,9 @@ public class RegisterPanel extends JPanel {
     private void layoutComponents() {
         // Giao diện dùng BorderLayout cho bố cục rõ ràng
         setLayout(new BorderLayout());
-        Font fontLabel = new Font("Roboto", Font.PLAIN, 16);
+
         // ===== TOP: Nút quay lại =====
-        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topBar.setMaximumSize(new Dimension(1000, 50));
+        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         topBar.setOpaque(false);
         topBar.add(btnBack);
         add(topBar, BorderLayout.NORTH);
@@ -115,7 +115,7 @@ public class RegisterPanel extends JPanel {
 
         centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(lblTitle);
-        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.add(Box.createVerticalStrut(25));
         centerPanel.add(createInputGroup(lblName, txtName));
         centerPanel.add(Box.createVerticalStrut(15));
         centerPanel.add(createInputGroup(lblEmail, txtEmail));
@@ -133,10 +133,9 @@ public class RegisterPanel extends JPanel {
 
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
+        label.setFont(new Font("Arial", Font.PLAIN, 13));
         label.setForeground(new Color(70, 150, 236));
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setFont(new Font("Roboto", Font.PLAIN, 16));
-        label.setBorder(null);
         return label;
     }
 
@@ -147,11 +146,11 @@ public class RegisterPanel extends JPanel {
     }
 
     private void styleTextField(JTextField tf) {
-        tf.setPreferredSize(new Dimension(320, 45));
-        tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+        tf.setPreferredSize(new Dimension(200, 35));
+        tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         tf.setBorder(new RoundedBorder(15));
-        tf.setFont(new Font("Roboto", Font.PLAIN, 14));
-        tf.setMargin(new Insets(0, 8, 0, 8));
+        tf.setFont(new Font("Arial", Font.PLAIN, 14));
+        tf.setMargin(new Insets(8, 12, 8, 12));
     }
 
 
@@ -159,47 +158,11 @@ public class RegisterPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(Color.WHITE);
-
-        // Label
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        labelPanel.setBackground(Color.WHITE);
-        labelPanel.add(label);
-        panel.add(labelPanel);
-//        panel.add(Box.createVerticalStrut(4)); // giảm khoảng cách label và field
-
-        // Field
-//        field.setAlignmentX(Component.CENTER_ALIGNMENT);
-        field.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+        panel.setBorder(new EmptyBorder(10, 0, 0, 0));
+        panel.add(label);
+        panel.add(Box.createVerticalStrut(5));
         panel.add(field);
-
         return panel;
-
-    }
-
-    private CustomButton customButton(String text) {
-        CustomButton button = new CustomButton(text);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setMaximumSize(new Dimension(180, 35));
-        button.setBackgroundColor(new Color(70, 150, 236));
-        button.setTextColor(Color.WHITE);
-        button.setBorderRadius(20);
-        return button;
-    }
-
-    private CustomTextField customTextField(int column){
-        CustomTextField textField = new CustomTextField(column);
-        textField.setTextColor(Color.BLACK);
-        textField.setFont(new Font("Roboto", Font.PLAIN, 15));
-        textField.setPreferredSize(new Dimension(300, 40));
-        textField.setMaximumSize(new Dimension(300, 40));
-        textField.setMinimumSize(new Dimension(300, 40));
-        textField.setMargin(new Insets(5, 10, 5, 10));
-        textField.setBorderColor(new Color(70, 150, 236));
-        textField.setBackground(Color.WHITE);
-        textField.setBorderRadius(10);
-        textField.setBounds(60, 180, 280, 40);
-        textField.setDrawBorder(true);
-        return textField;
     }
 
 
