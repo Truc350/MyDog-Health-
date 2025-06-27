@@ -12,6 +12,7 @@ public class DogInforPanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
+
     public DogInforPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;

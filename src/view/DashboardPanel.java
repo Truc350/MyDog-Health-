@@ -110,6 +110,7 @@ public class DashboardPanel extends JPanel {
     }
 
 
+
     private JPanel createPetItem(String imagePath, String name) {
         JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
         panel.setOpaque(false);

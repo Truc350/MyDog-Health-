@@ -131,6 +131,7 @@ public class ChatboxPanel extends JPanel {
 
 
 
+
     // Test thử giao diện
 //    public static void main(String[] args) {
 //        JFrame frame = new JFrame("Chatbot AI");

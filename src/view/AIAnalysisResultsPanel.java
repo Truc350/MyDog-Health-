@@ -14,6 +14,7 @@ public class AIAnalysisResultsPanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
+
     public AIAnalysisResultsPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;

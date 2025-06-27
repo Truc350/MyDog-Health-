@@ -106,6 +106,7 @@ public class DoctorSelectionPanel extends JPanel {
         add(contentPanel, BorderLayout.CENTER);
         add(new BottomMenuPanel(), BorderLayout.SOUTH);
 
+
     }
 
     private JPanel createDoctorItem(String imgPath, String name, String department) {
