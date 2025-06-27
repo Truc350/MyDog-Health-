@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class CustomButton extends JButton {
     private Color borderColor = new Color(70, 150, 236);
-    private Color startGradientColor = Color.CYAN;
+    private Color startGradientColor = Color.getHSBColor(0,0,0);
     private Color endGradientColor = Color.BLUE;
     private Color backgroundColor = Color.BLACK;
     private Color hoverColor;

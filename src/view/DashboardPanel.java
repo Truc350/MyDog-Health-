@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -64,7 +66,21 @@ public class DashboardPanel extends JPanel {
         pet2 = createPetItem("src/image/dog2.jpg", "Đốm");
 
         btnCheckSymptoms = createButton("⚕", "Kiểm tra triệu chứng");
+        btnCheckSymptoms.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                cardLayout.show(mainPanel, "checkSymptoms");
+            }
+        });
         btnCallDoctor = createButton("📞", "Gọi bác sĩ");
+        btnCallDoctor.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "doctorSelection");
+            }
+        });
         btnAddPet = createButton("➕", "Thêm thú cưng");
         btnAddPet.addActionListener(e ->{
             cardLayout.show(mainPanel, "addPet");
@@ -92,6 +108,8 @@ public class DashboardPanel extends JPanel {
         bottomMenuPanel = new BottomMenuPanel();
         add(bottomMenuPanel, BorderLayout.SOUTH);
     }
+
+
 
     private JPanel createPetItem(String imagePath, String name) {
         JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
@@ -171,4 +189,44 @@ public class DashboardPanel extends JPanel {
             return new ImageIcon(); // fallback nếu lỗi
         }
     }
+
+    // ==== Main để test ====
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> new MainScreen());
+//    }
+
+    public static void main(String[] args) {
+        CardLayout cardLayout = new CardLayout();
+        JPanel mainPanel = new JPanel(cardLayout);
+
+        DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
+        CheckSymptomsPanel checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel);
+        DashboardPanel dashboardPanel = new DashboardPanel(cardLayout, mainPanel);
+        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
+        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
+        CareGuidePanel careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
+        MedicalResultPanel medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
+        ChatboxPanel chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
+        CallDoctorPanel callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
+
+
+        mainPanel.add(callDoctorPanel, "callDoctor");
+        mainPanel.add(chatboxPanel, "chatBoxAI");
+        mainPanel.add(medicalResultPanel, "medicalResult");
+        mainPanel.add(careGuidePanel, "careGuide");
+        mainPanel.add(dogInforPanel, "dogInfor");
+        mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
+        mainPanel.add(dashboardPanel, "dashboard");
+        mainPanel.add(checkSymptomsPanel, "checkSymptoms");
+        mainPanel.add(doctorSelectionPanel, "doctorSelection");
+
+        JFrame frame = new JFrame("Dashboard Test");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 700);
+        frame.setLocationRelativeTo(null);
+        frame.setContentPane(mainPanel);
+        cardLayout.show(mainPanel, "dashboard");
+        frame.setVisible(true);
+    }
+
 }

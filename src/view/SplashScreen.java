@@ -40,7 +40,7 @@ public class SplashScreen extends JFrame {
 
         // Chữ và icon bên trong hình tròn
         JLabel label = new JLabel("<html><div style='text-align: center;'>MyDog Health+<br>🐶</div></html>", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
+        label.setFont(new Font("Roboto", Font.BOLD, 20));
         label.setForeground(new Color(100, 149, 237));
         circlePanel.add(label, BorderLayout.CENTER);
 

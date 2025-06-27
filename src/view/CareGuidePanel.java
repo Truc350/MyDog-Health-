@@ -2,13 +2,23 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class CareGuidePanel extends JPanel {
     JPanel contentPanel, infoPanel, topPanel, skinPanel, wormPanel;
     JButton backButton, aiButton;
     JTextArea description;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public CareGuidePanel() {
+
+
+
+    public CareGuidePanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
+
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245)); // nền xanh nhạt nhẹ
 
@@ -29,6 +39,9 @@ public class CareGuidePanel extends JPanel {
         backButton = new JButton();
         backButton.setText("");
         backButton.setIcon(new ImageIcon("src/image/back.png"));
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "aiAnalysisResults");
+        });
 
         backButton.setFocusPainted(false);
         backButton.setContentAreaFilled(false);
@@ -92,6 +105,13 @@ public class CareGuidePanel extends JPanel {
 
         // ===== Nút hỏi thêm AI =====
         aiButton = customButton("Hỏi thêm AI");
+        aiButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                cardLayout.show(mainPanel, "chatBoxAI");
+            }
+        });
         aiButton.setFont(new Font("Roboto", Font.BOLD, 16));
         aiButton.setBackground(new Color(70, 150, 236));
         aiButton.setForeground(Color.WHITE);
@@ -168,12 +188,12 @@ public class CareGuidePanel extends JPanel {
     }
 
     // For testing
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Care Guide");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 700);
-        frame.setLocationRelativeTo(null);
-        frame.add(new CareGuidePanel());
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame("Care Guide");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(400, 700);
+//        frame.setLocationRelativeTo(null);
+//        frame.add(new CareGuidePanel());
+//        frame.setVisible(true);
+//    }
 }

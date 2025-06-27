@@ -7,13 +7,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class CustomTextField extends JTextField {
-    private Color borderColor = new Color(13, 153, 255);
-    private Color startGradientColor = new Color(13, 153, 255);
-    private Color endGradientColor = new Color(13, 153, 255);
+    private Color borderColor = new Color(70, 150, 236);
+    private Color startGradientColor = new Color(70, 150, 236);
+    private Color endGradientColor = new Color(70, 150, 236);
     private Color backgroundColor = Color.WHITE;
     private Color hoverColor;
     private Color textColor = Color.BLACK;
-    private int thickness = 1;
+    private int thickness = 2;
     private int borderRadius = 10;
     private boolean drawBorder = false;  // Mặc định không vẽ viền
     private boolean isHovered = false;
@@ -76,6 +76,8 @@ public class CustomTextField extends JTextField {
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        super.paintComponent(g);
+
         // Vẽ nền với màu hover nếu đang hover
         if (isHovered && hoverColor != null) {
             g2d.setColor(hoverColor);
@@ -85,7 +87,6 @@ public class CustomTextField extends JTextField {
 
         g2d.fillRoundRect(0, 0, getWidth(), getHeight(), borderRadius, borderRadius);
 
-        super.paintComponent(g);
 
         // Vẽ placeholder nếu rỗng và chưa focus
         if (getText().isEmpty() && !isFocusOwner() && placeholder != null) {

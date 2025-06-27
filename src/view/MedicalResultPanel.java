@@ -7,8 +7,15 @@ import java.awt.*;
 public class MedicalResultPanel extends JPanel {
     JPanel topPanel, contentPanel, diagnosisBox, diagnosisLine, adviceBox, datePanel, symptomPanel, detailPanel;
     JButton backButton;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public MedicalResultPanel() {
+
+
+    public MedicalResultPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
+
         setLayout(new BorderLayout());
         setBackground(new Color(226, 235, 245)); // Light blue-gray background
 
@@ -26,6 +33,9 @@ public class MedicalResultPanel extends JPanel {
         backButton = new JButton();
         backButton.setText("");
         backButton.setIcon(new ImageIcon("src/image/back.png"));
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "aiAnalysisResults");
+        });
 
         backButton.setFocusPainted(false);
         backButton.setContentAreaFilled(false);
@@ -168,12 +178,12 @@ public class MedicalResultPanel extends JPanel {
     }
 
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Kết quả khám");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setContentPane(new view.MedicalResultPanel());
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame("Kết quả khám");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(400, 700);
+//        frame.setLocationRelativeTo(null);
+//        frame.setContentPane(new view.MedicalResultPanel());
+//        frame.setVisible(true);
+//    }
 }

@@ -7,18 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatboxPanel extends JPanel {
-    private JButton backButton, resultButton, sendBtn;
-    private JPanel mainPanel, topPanel, inputPanel, topPnel;
-    private List<String> answers = new ArrayList<>();
 
-    public ChatboxPanel() {
+    JButton backButton;
+    JPanel contentPanel, topPanel, buttonPanel, inputPanel, topPnel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+// =======
+//     private JButton backButton, resultButton, sendBtn;
+//     private JPanel mainPanel, topPanel, inputPanel, topPnel;
+//     private List<String> answers = new ArrayList<>();
+// >>>>>>> main
+
+
+    public ChatboxPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245));
 
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.setOpaque(false);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setOpaque(false);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Nút quay lại
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -27,6 +37,13 @@ public class ChatboxPanel extends JPanel {
 
         backButton = new JButton();
         backButton.setIcon(new ImageIcon("src/image/back.png"));
+
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "careGuide");
+        });
+
+// =======
+// >>>>>>> main
         backButton.setFocusPainted(false);
         backButton.setContentAreaFilled(false);
         backButton.setBorder(BorderFactory.createLineBorder(new Color(90, 150, 255), 2));
@@ -36,38 +53,50 @@ public class ChatboxPanel extends JPanel {
         backButton.setBorder(new RoundedBorder(36));
         topPanel.add(backButton);
 
-        mainPanel.add(topPanel);
-        mainPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(topPanel);
+        contentPanel.add(Box.createVerticalStrut(4));
+// =======
+
+//         mainPanel.add(topPanel);
+//         mainPanel.add(Box.createVerticalStrut(10));
+// >>>>>>> main
 
         // Tiêu đề
         JLabel titleLabel = new JLabel("Chatbox AI");
         titleLabel.setFont(new Font("Roboto", Font.BOLD, 20));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
-        mainPanel.add(titleLabel);
-        mainPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(titleLabel);
+        contentPanel.add(Box.createVerticalStrut(10));
 
-        // Các câu hỏi
-        mainPanel.add(createQuestionPanel("Thú cưng có bỏ ăn hoàn toàn không?"));
-        mainPanel.add(Box.createVerticalStrut(15));
-        mainPanel.add(createQuestionPanel("Bạn sờ có thấy sưng tấy không?"));
-        mainPanel.add(Box.createVerticalStrut(15));
-        mainPanel.add(createQuestionPanel("Thú cưng có sốt trên 39.5°C không?"));
-        mainPanel.add(Box.createVerticalStrut(15));
 
-        // Kết quả chẩn đoán
-        resultButton = new JButton("Xem chẩn đoán");
-        resultButton.setFont(new Font("Roboto", Font.BOLD, 14));
-        resultButton.setBackground(new Color(70, 150, 236));
-        resultButton.setForeground(Color.WHITE);
-        resultButton.setFocusPainted(false);
-        resultButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        resultButton.setMaximumSize(new Dimension(200, 36));
-        resultButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        resultButton.addActionListener(e -> showResult());
+        // === Các khung câu hỏi ===
+        contentPanel.add(createQuestionPanel("Thú cưng có bỏ ăn hoàn toàn không ?"));
+        contentPanel.add(Box.createVerticalStrut(15));
+        contentPanel.add(createQuestionPanel("Bạn sờ có thấy sưng tấy không ?"));
+// =======
+//         // Các câu hỏi
+//         mainPanel.add(createQuestionPanel("Thú cưng có bỏ ăn hoàn toàn không?"));
+//         mainPanel.add(Box.createVerticalStrut(15));
+//         mainPanel.add(createQuestionPanel("Bạn sờ có thấy sưng tấy không?"));
+//         mainPanel.add(Box.createVerticalStrut(15));
+//         mainPanel.add(createQuestionPanel("Thú cưng có sốt trên 39.5°C không?"));
+//         mainPanel.add(Box.createVerticalStrut(15));
 
-        mainPanel.add(resultButton);
-        mainPanel.add(Box.createVerticalStrut(10));
+//         // Kết quả chẩn đoán
+//         resultButton = new JButton("Xem chẩn đoán");
+//         resultButton.setFont(new Font("Roboto", Font.BOLD, 14));
+//         resultButton.setBackground(new Color(70, 150, 236));
+//         resultButton.setForeground(Color.WHITE);
+//         resultButton.setFocusPainted(false);
+//         resultButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//         resultButton.setMaximumSize(new Dimension(200, 36));
+//         resultButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+//         resultButton.addActionListener(e -> showResult());
+
+//         mainPanel.add(resultButton);
+//         mainPanel.add(Box.createVerticalStrut(10));
+// >>>>>>> main
 
         // Ô nhập tự do
         JTextField inputField = new JTextField();
@@ -98,7 +127,7 @@ public class ChatboxPanel extends JPanel {
         topPnel = new JPanel();
         topPnel.setBackground(new Color(200, 220, 245));
         topPnel.setLayout(new BorderLayout());
-        topPnel.add(mainPanel, BorderLayout.CENTER);
+        topPnel.add(contentPanel, BorderLayout.CENTER);
         topPnel.add(inputPanel, BorderLayout.SOUTH);
 
         add(topPnel, BorderLayout.CENTER);
@@ -166,13 +195,27 @@ public class ChatboxPanel extends JPanel {
         JOptionPane.showMessageDialog(this, message, "Kết quả chẩn đoán", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // Test
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Chatbox AI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setContentPane(new ChatboxPanel());
-        frame.setVisible(true);
-    }
+
+
+
+    // Test thử giao diện
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame("Chatbot AI");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(400, 700);
+//        frame.setLocationRelativeTo(null);
+//        frame.setContentPane(new ChatboxPanel());
+//        frame.setVisible(true);
+//    }
+
+//     // Test
+//     public static void main(String[] args) {
+//         JFrame frame = new JFrame("Chatbox AI");
+//         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//         frame.setSize(400, 700);
+//         frame.setLocationRelativeTo(null);
+//         frame.setContentPane(new ChatboxPanel());
+//         frame.setVisible(true);
+//     }
+// >>>>>>> main
 }

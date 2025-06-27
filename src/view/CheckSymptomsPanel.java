@@ -5,6 +5,8 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class CheckSymptomsPanel extends JPanel {
 
@@ -14,8 +16,12 @@ public class CheckSymptomsPanel extends JPanel {
     private JTextArea symptomArea;
     private JCheckBox[] symptomChecks;
     private BottomMenuPanel bottomMenuPanel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public CheckSymptomsPanel() {
+    public CheckSymptomsPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         setLayout(null);
         setPreferredSize(new Dimension(400, 700));
         setBackground(new Color(214, 229, 250)); // nền xanh nhạt
@@ -27,6 +33,9 @@ public class CheckSymptomsPanel extends JPanel {
     private void initComponents() {
         // Nút quay lại
         backButton = new JButton(new ImageIcon("src/image/back.png"));
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "dashboard");
+        });
         styleIconButton(backButton);
 
         // Tiêu đề
@@ -41,6 +50,8 @@ public class CheckSymptomsPanel extends JPanel {
             symptomChecks[i].setFont(new Font("Arial", Font.PLAIN, 13));
             symptomChecks[i].setOpaque(false);
         }
+
+
 
         // Ngày
         dateField = new JTextField();
@@ -86,6 +97,10 @@ public class CheckSymptomsPanel extends JPanel {
 
         // Nút tiếp tục
         continueButton = new JButton("Tiếp tục");
+        continueButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "dogInfor");
+        });
+
         stylePrimaryButton(continueButton);
 
         // Footer

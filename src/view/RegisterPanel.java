@@ -49,7 +49,7 @@ public class RegisterPanel extends JPanel {
 
         // Tiêu đề
         lblTitle = new JLabel("Đăng ký");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
+        lblTitle.setFont(new Font("Roboto", Font.BOLD, 30));
         lblTitle.setForeground(new Color(70, 150, 236));
         lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblTitle.setBorder(new EmptyBorder(20, 0, 30, 0));
@@ -67,7 +67,7 @@ public class RegisterPanel extends JPanel {
 
         // Nút đăng ký
         btnRegister = new JButton("Đăng ký");
-        btnRegister.setFont(new Font("Arial", Font.BOLD, 14));
+        btnRegister.setFont(new Font("Roboto", Font.BOLD, 14));
         btnRegister.setForeground(Color.WHITE);
         btnRegister.setBackground(new Color(70, 150, 236));
         btnRegister.setBorder(new RoundedBorder(20));
@@ -91,7 +91,7 @@ public class RegisterPanel extends JPanel {
         if (dao.register(user)){
             JOptionPane.showMessageDialog(this,"Đăng ký tài khoản thành công!");
 
-           cardLayout.show(mainPanel,"login");
+            cardLayout.show(mainPanel,"login");
         }
 
 
@@ -133,7 +133,7 @@ public class RegisterPanel extends JPanel {
 
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Arial", Font.PLAIN, 13));
+        label.setFont(new Font("Roboto", Font.PLAIN, 13));
         label.setForeground(new Color(70, 150, 236));
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         return label;
@@ -149,7 +149,7 @@ public class RegisterPanel extends JPanel {
         tf.setPreferredSize(new Dimension(200, 35));
         tf.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         tf.setBorder(new RoundedBorder(15));
-        tf.setFont(new Font("Arial", Font.PLAIN, 14));
+        tf.setFont(new Font("Roboto", Font.PLAIN, 14));
         tf.setMargin(new Insets(8, 12, 8, 12));
     }
 
