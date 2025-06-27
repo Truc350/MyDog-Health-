@@ -61,5 +61,6 @@ public class MainScreen extends JFrame {
         cardLayout.show(mainPanel, "login");
 
         this.setVisible(true);
+
     }
 }

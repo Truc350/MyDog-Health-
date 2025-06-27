@@ -165,6 +165,7 @@ public class AIAnalysisResultsPanel extends JPanel {
             }
         });
 
+
         fullResultLabel.setFont(new Font("Roboto", Font.ITALIC, 18));
         fullResultLabel.setForeground(Color.WHITE);
         fullResultLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

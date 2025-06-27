@@ -10,6 +10,7 @@ public class MedicalResultPanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
+
     public MedicalResultPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;

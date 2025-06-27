@@ -13,6 +13,7 @@ public class CareGuidePanel extends JPanel {
     private JPanel mainPanel;
 
 
+
     public CareGuidePanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;

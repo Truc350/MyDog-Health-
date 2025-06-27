@@ -9,6 +9,7 @@ public class CallDoctorPanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
+
     public CallDoctorPanel(CardLayout cardLayout, JPanel mainPanel) {
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245)); // nền xanh nhạt ngoài cùng

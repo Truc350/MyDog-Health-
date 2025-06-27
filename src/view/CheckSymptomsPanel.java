@@ -51,6 +51,7 @@ public class CheckSymptomsPanel extends JPanel {
             symptomChecks[i].setOpaque(false);
         }
 
+
         // Ngày
         dateField = new JTextField();
         dateField.setFont(new Font("Arial", Font.PLAIN, 13));

@@ -269,6 +269,7 @@ public class DogInforPanel extends JPanel {
         return button;
     }
 
+
     public static void main(String[] args) {
         CardLayout cardLayout = new CardLayout();
         JPanel mainPanel = new JPanel(cardLayout);
