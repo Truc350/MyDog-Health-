@@ -15,7 +15,7 @@ public class ChatboxPanel extends JPanel {
 // =======
 //     private JButton backButton, resultButton, sendBtn;
 //     private JPanel mainPanel, topPanel, inputPanel, topPnel;
-//     private List<String> answers = new ArrayList<>();
+     private List<String> answers = new ArrayList<>();
 // >>>>>>> main
 
 
@@ -105,7 +105,7 @@ public class ChatboxPanel extends JPanel {
         inputField.setMaximumSize(new Dimension(220, 36));
         inputField.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
 
-        sendBtn = new JButton("Gửi");
+      JButton  sendBtn = new JButton("Gửi");
         sendBtn.setFont(new Font("Roboto", Font.PLAIN, 14));
         sendBtn.setBackground(Color.WHITE);
         sendBtn.setForeground(new Color(90, 150, 255));
@@ -209,13 +209,13 @@ public class ChatboxPanel extends JPanel {
 //    }
 
 //     // Test
-//     public static void main(String[] args) {
-//         JFrame frame = new JFrame("Chatbox AI");
-//         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//         frame.setSize(400, 700);
-//         frame.setLocationRelativeTo(null);
-//         frame.setContentPane(new ChatboxPanel());
-//         frame.setVisible(true);
-//     }
+     public static void main(String[] args) {
+         JFrame frame = new JFrame("Chatbox AI");
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         frame.setSize(400, 700);
+         frame.setLocationRelativeTo(null);
+         frame.setContentPane(new ChatboxPanel(new CardLayout(),new JPanel() ));
+         frame.setVisible(true);
+     }
 // >>>>>>> main
 }
