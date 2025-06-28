@@ -1,5 +1,7 @@
 package view;
 
+import model.CareAdvice;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,6 +15,7 @@ public class AIAnalysisResultsPanel extends JPanel {
     JTextArea infoLabel;
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private CareGuidePanel careGuidePanel;
 
 
     public AIAnalysisResultsPanel(CardLayout cardLayout, JPanel mainPanel) {
@@ -181,6 +184,23 @@ public class AIAnalysisResultsPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                if (careGuidePanel != null) {
+                    java.util.List<CareAdvice> adviceList = new java.util.ArrayList<>();
+                    adviceList.add(new CareAdvice(
+                            "Viêm da dị ứng",
+                            "Vệ sinh vùng da bằng nước muối sinh lý 2 lần/ngày.;Không để thú cưng liếm hoặc cào vào vùng bị ngứa.;Có thể dùng thuốc bôi dị ứng do bác sĩ kê đơn trước đó.",
+                            "Vùng da đỏ, rỉ dịch, vật cào gãi nhiều",
+                            "Theo dõi tiến triển trong 2-3 ngày, nếu không cải thiện nên đưa đến bác sĩ."
+                    ));
+                    adviceList.add(new CareAdvice(
+                            "Nhiễm giun",
+                            "Kiểm tra lại sổ tiêm/ngừa giun gần nhất.;Cho uống thuốc tẩy giun đúng liều (có thể tham khảo bác sĩ thú y).;Vệ sinh chỗ nằm, thức ăn, nước uống thường xuyên.",
+                            "Bụng to bất thường, nôn, tiêu chảy",
+                            "Lưu ý không dùng thuốc tẩy giun quá liều."
+                    ));
+                    careGuidePanel.showCareAdviceList(adviceList);
+                }
+
                 cardLayout.show(mainPanel, "careGuide");
             }
         });
@@ -210,6 +230,10 @@ public class AIAnalysisResultsPanel extends JPanel {
         button.setBorderRadius(20);
         button.setDrawBorder(false);
         return button;
+    }
+
+    public void setCareGuidePanel(CareGuidePanel panel) {
+        this.careGuidePanel = panel;
     }
 
     // For testing UI

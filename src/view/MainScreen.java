@@ -45,6 +45,8 @@ public class MainScreen extends JFrame {
         chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
         callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
 
+        aiAnalysisResultsPanel.setCareGuidePanel(careGuidePanel);
+
         mainPanel.add(callDoctorPanel, "callDoctor");
         mainPanel.add(chatboxPanel, "chatBoxAI");
         mainPanel.add(medicalResultPanel, "medicalResult");
