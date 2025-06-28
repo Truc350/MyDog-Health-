@@ -1,5 +1,9 @@
 package view;
 
+import controller.DoctorContext;
+import model.CallService;
+import model.Doctor;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -60,20 +64,28 @@ public class CallDoctorPanel extends JPanel {
         callOptionsPanel.setBorder(BorderFactory.createEmptyBorder(15, 10, 15, 10));
         callOptionsPanel.setMaximumSize(new Dimension(320, 220));
 
-        callOptionsPanel.add(wrapWithPadding(createCallOption("src/image/phone.png", "Cuộc gọi điện thoại", new Color(0, 132, 255))));
+        callOptionsPanel.add(wrapWithPadding(createCallOption("src/image/phone.png", "Cuộc gọi điện thoại", new Color(0, 132, 255), "audio")));
         callOptionsPanel.add(Box.createVerticalStrut(10));
-        callOptionsPanel.add(wrapWithPadding(createCallOption("src/image/video.png", "Cuộc gọi video", new Color(37, 145, 163))));
+        callOptionsPanel.add(wrapWithPadding(createCallOption("src/image/video.png", "Cuộc gọi video", new Color(37, 145, 163), "video")));
         callOptionsPanel.add(Box.createVerticalStrut(10));
-        callOptionsPanel.add(wrapWithPadding(createCallOption("src/image/mail.png", "Nhắn tin", new Color(197, 173, 141))));
+        callOptionsPanel.add(wrapWithPadding(createCallOption("src/image/mail.png", "Nhắn tin", new Color(197, 173, 141), "chat")));
 
         contentPanel.add(callOptionsPanel);
         contentPanel.add(Box.createVerticalGlue());
 
         add(contentPanel, BorderLayout.CENTER);
         add(new BottomMenuPanel(), BorderLayout.SOUTH);
+
+        // === Lấy thông tin bác sĩ được chọn từ DoctorContext ===
+        Doctor selectedDoctor = DoctorContext.getSelectedDoctor();
+        if (selectedDoctor != null) {
+            System.out.println("Tên bác sĩ: " + selectedDoctor.getName());
+            System.out.println("Chuyên môn: " + selectedDoctor.getSpecialization());
+            System.out.println("Trạng thái: " + selectedDoctor.getStatus());
+        }
     }
 
-    private JPanel createCallOption(String iconPath, String text, Color bgColor) {
+    private JPanel createCallOption(String iconPath, String text, Color bgColor, String callType) {
         JPanel panel = new RoundedPanel(20, Color.WHITE, new Color(0, 132, 255));
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
@@ -100,6 +112,17 @@ public class CallDoctorPanel extends JPanel {
 
         panel.add(iconPanel, BorderLayout.WEST);
         panel.add(label, BorderLayout.CENTER);
+
+        // Bắt sự kiện click để ghi log cuộc gọi
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                recordCall(callType);
+                JOptionPane.showMessageDialog(null, "📞 Bạn đã chọn: " + text);
+            }
+        });
+
+
         return panel;
     }
 
@@ -111,6 +134,52 @@ public class CallDoctorPanel extends JPanel {
         wrapper.add(panel, BorderLayout.CENTER);
         return wrapper;
     }
+
+    private void recordCall(String callTypeStr) {
+        CallService.CallType callType;
+
+        // Chuyển từ chuỗi sang enum
+        switch (callTypeStr.toLowerCase()) {
+            case "audio":
+                callType = CallService.CallType.AUDIO;
+                break;
+            case "video":
+                callType = CallService.CallType.VIDEO;
+                break;
+            case "chat":
+                callType = CallService.CallType.CHAT;
+                break;
+            default:
+                throw new IllegalArgumentException("Loại cuộc gọi không hợp lệ: " + callTypeStr);
+        }
+
+        // Lấy bác sĩ đã chọn từ DoctorContext
+        Doctor selectedDoctor = DoctorContext.getSelectedDoctor();
+        if (selectedDoctor == null) {
+            JOptionPane.showMessageDialog(null, "❗ Bạn chưa chọn bác sĩ nào.");
+            return;
+        }
+
+        //  Kiểm tra xem bác sĩ có sẵn sàng với loại cuộc gọi này không
+        if (!selectedDoctor.isAvailableFor(callType)) {
+            JOptionPane.showMessageDialog(null, "❌ Bác sĩ hiện không sẵn sàng cho loại cuộc gọi này.");
+            return;
+        }
+
+
+        // Tạo đối tượng CallService và xử lý
+        CallService call = new CallService(callType);
+        call.setDoctorName(selectedDoctor.getName()); // Giả sử có hàm này
+        call.startCall();     // thời gian bắt đầu
+        try {
+            Thread.sleep(10000); // giả lập gọi 10 giây
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        call.endCall();       // thời gian kết thúc
+        call.record();        // lưu vào danh sách lịch sử
+    }
+
 
     // ==== Test thử giao diện ====
 //    public static void main(String[] args) {

@@ -1,5 +1,9 @@
 package view;
 
+import model.AppSession;
+import model.Setting;
+import model.User;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -7,8 +11,10 @@ import java.awt.*;
 
 public class SettingPanel extends JPanel {
     private BottomMenuPanel bottomMenuPanel;
+    private Setting settingModel;
 
     public SettingPanel() {
+        this.settingModel = AppSession.currentUser.getSetting();
         setLayout(null);
         setBackground(new Color(214, 229, 250));
         setPreferredSize(new Dimension(400, 700));
@@ -56,8 +62,10 @@ public class SettingPanel extends JPanel {
         JPanel notifyPanel = createCardPanel();
         notifyPanel.setLayout(new GridLayout(2, 1, 0, 5));
         notifyPanel.setBounds(20, 175, 360, 70);
-        notifyPanel.add(createToggleRow("Cảnh báo lịch khám sắp tới"));
-        notifyPanel.add(createToggleRow("Nhận thông báo từ bác sĩ"));
+        notifyPanel.add(createToggleRow("Cảnh báo lịch khám sắp tới", settingModel.isAppointmentReminder(),
+                () -> settingModel.toggleAppointmentReminder()));
+        notifyPanel.add(createToggleRow("Nhận thông báo từ bác sĩ", settingModel.isDoctorNotification(),
+                () -> settingModel.toggleDoctorNotification()));
         add(notifyPanel);
 
         // Bảo mật
@@ -70,8 +78,32 @@ public class SettingPanel extends JPanel {
         securityPanel.setLayout(new GridLayout(3, 1, 0, 10));
         securityPanel.setBounds(20, 290, 360, 140);
         securityPanel.add(createPasswordRow("Đổi mật khẩu"));
-        securityPanel.add(createButton("Đăng xuất"));
-        securityPanel.add(createButton("Xóa tài khoản"));
+        JButton logoutBtn = createButton("Đăng xuất");
+        logoutBtn.addActionListener(e -> {
+            AppSession.logoutCurrentUser();
+            // Điều hướng về màn hình đăng nhập
+        });
+        securityPanel.add(logoutBtn);
+
+        JButton deleteBtn = createButton("Xóa tài khoản");
+        deleteBtn.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Bạn có chắc muốn xóa tài khoản?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                User currentUser = AppSession.currentUser;
+                if (currentUser != null && currentUser.deleteAccount()) {
+                    AppSession.logoutCurrentUser();
+                    // Điều hướng về màn hình chào mừng
+                    JOptionPane.showMessageDialog(this, "Tài khoản đã bị xóa.");
+                    // Ví dụ: new WelcomeFrame().setVisible(true);
+                    new SplashScreen().setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa tài khoản thất bại!");
+                }
+            }
+        });
+
+        securityPanel.add(deleteBtn);
         add(securityPanel);
 
         // Footer cố định
@@ -87,7 +119,7 @@ public class SettingPanel extends JPanel {
         return panel;
     }
 
-    private JPanel createToggleRow(String labelText) {
+    private JPanel createToggleRow(String labelText,boolean initialValue, Runnable onToggle) {
         JPanel row = new JPanel(new BorderLayout());
         row.setOpaque(false);
         row.setBorder(new EmptyBorder(0, 0, 0, 10));
@@ -96,9 +128,14 @@ public class SettingPanel extends JPanel {
         label.setFont(new Font("Roboto", Font.PLAIN, 13));
 
         JToggleButton toggle = new JToggleButton();
-        toggle.setSelected(true);
+        toggle.setSelected(initialValue);
         toggle.setPreferredSize(new Dimension(50, 25));
         toggle.setUI(new ToggleButtonUI());
+
+        // Khi người dùng nhấn nút → chạy hành động
+        toggle.addActionListener(e -> {
+            onToggle.run();
+        });
 
         row.add(label, BorderLayout.WEST);
         row.add(toggle, BorderLayout.EAST);

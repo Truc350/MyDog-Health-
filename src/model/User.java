@@ -13,6 +13,7 @@ public class User {
     private Image avatar;
     private List<Pet> pets = new ArrayList<Pet>();
     private List<HistoryRecord> historyRecords = new ArrayList<>();
+    private Setting setting = new Setting();
 
     public User(String userId) {
         this.userId = UUID.randomUUID().toString();
@@ -107,6 +108,14 @@ public class User {
         return historyRecords;
     }
 
+    public Setting getSetting() {
+        return setting;
+    }
+
+    public void setSetting(Setting setting) {
+        this.setting = setting;
+    }
+
     public void managerPet() {
 
     }
@@ -145,5 +154,10 @@ public class User {
             System.out.println((i + 1) + ". " + pet.getBasicInfo());
         }
     }
+
+    public boolean deleteAccount() {
+        return new UserDAO().delete(this.userId);
+    }
+
 
 }

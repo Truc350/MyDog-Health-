@@ -5,4 +5,8 @@ package model;
  */
 public class AppSession {
     public static User currentUser = null;
+
+    public static void logoutCurrentUser() {
+        currentUser = null;
+    }
 }
