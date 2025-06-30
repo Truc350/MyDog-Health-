@@ -15,6 +15,8 @@ public class PetDAO {
 
     }
 
+
+
     public boolean addPet(Pet pet) {
         String sql = "INSERT INTO Pets (petId, userId, name, breed, age, weight, gender, medicalHistory) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
@@ -35,5 +37,9 @@ public class PetDAO {
         }
         return false;
     }
+//
+//    public  boolean addPet(Pet pet) {
+//        if (pet.getPetId())
+//    }
 
 }
