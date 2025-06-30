@@ -23,11 +23,11 @@ public class ChatboxPanel extends JPanel {
         this.mainPanel = mainPanel;
 
         setLayout(new BorderLayout());
-        setBackground(new Color(230, 240, 255));
+        setBackground(Color.WHITE);
 
-        // === Header với nút Back ===
+        // Header (Back + Tiêu đề)
         JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(230, 240, 255));
+        headerPanel.setBackground(Color.WHITE);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
         backButton = new JButton(new ImageIcon("src/image/back.png"));
@@ -39,20 +39,21 @@ public class ChatboxPanel extends JPanel {
         titleLabel.setFont(new Font("Roboto", Font.BOLD, 18));
         headerPanel.add(titleLabel, BorderLayout.CENTER);
 
-        // === Message Panel ===
+        // Message Panel
         messagePanel = new JPanel();
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
-        messagePanel.setBackground(new Color(245, 250, 255));
+        messagePanel.setBackground(Color.WHITE);
 
         scrollPane = new JScrollPane(messagePanel);
         scrollPane.setBorder(null);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); // mượt hơn
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0)); // ẩn hoàn toàn ngang
 
-        // === Input Panel ===
+        // Input Panel
         inputField = new JTextField();
         inputField.setFont(new Font("Roboto", Font.PLAIN, 15));
-        inputField.setPreferredSize(new Dimension(260, 36));
 
         sendButton = new JButton("Gửi");
         sendButton.setFont(new Font("Roboto", Font.BOLD, 14));
@@ -60,16 +61,15 @@ public class ChatboxPanel extends JPanel {
         sendButton.setForeground(Color.WHITE);
         sendButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         sendButton.setFocusPainted(false);
-        sendButton.setPreferredSize(new Dimension(80, 36));
         sendButton.addActionListener(e -> handleSend());
 
         JPanel inputPanel = new JPanel(new BorderLayout(10, 0));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        inputPanel.setBackground(new Color(230, 240, 255));
+        inputPanel.setBackground(Color.WHITE);
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
 
-        // === Add to layout ===
+        // Add to layout
         add(headerPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(inputPanel, BorderLayout.SOUTH);
@@ -79,13 +79,14 @@ public class ChatboxPanel extends JPanel {
         btn.setBorderPainted(false);
         btn.setContentAreaFilled(false);
         btn.setFocusPainted(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void handleSend() {
         String userInput = inputField.getText().trim();
         if (userInput.isEmpty()) return;
 
-        addMessage(userInput, true);
+        addMessage("👤 Bạn: " + userInput, true);
         inputField.setText("");
         sendButton.setEnabled(false);
         addMessage("💬 Đang suy nghĩ...", false);
@@ -95,7 +96,7 @@ public class ChatboxPanel extends JPanel {
                 String response = openAIService.ask(userInput);
                 SwingUtilities.invokeLater(() -> {
                     removeLastMessage();
-                    addMessage(response, false);
+                    addMessage("🤖 AI: " + response, false);
                     sendButton.setEnabled(true);
                 });
             } catch (IOException e) {
@@ -109,40 +110,20 @@ public class ChatboxPanel extends JPanel {
     }
 
     private void addMessage(String text, boolean isUser) {
-        JTextArea messageLabel = new JTextArea(text);
-        messageLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
-        messageLabel.setLineWrap(true);
-        messageLabel.setWrapStyleWord(true);
-        messageLabel.setEditable(false);
-        messageLabel.setOpaque(true);
-        messageLabel.setForeground(Color.BLACK);
-        messageLabel.setBackground(isUser ? new Color(180, 220, 255) : new Color(230, 230, 230));
-        messageLabel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+        JTextArea messageText = new JTextArea(text);
+        messageText.setFont(new Font("Roboto", Font.PLAIN, 14));
+        messageText.setLineWrap(true);
+        messageText.setWrapStyleWord(true);
+        messageText.setEditable(false);
+        messageText.setOpaque(false);
+        messageText.setBorder(null);
 
-        // ✅ Giới hạn độ rộng khung
-        int maxWidth = 180; // nhỏ hơn nữa nếu bạn muốn
-        messageLabel.setMaximumSize(new Dimension(maxWidth, Integer.MAX_VALUE));
-
-        // ✅ Tạo khung tròn bo viền
-        messageLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 200), 1, true),
-                BorderFactory.createEmptyBorder(8, 12, 8, 12)
-        ));
-
-        JPanel wrapper = new JPanel();
-        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
+        JPanel wrapper = new JPanel(new FlowLayout(isUser ? FlowLayout.RIGHT : FlowLayout.LEFT));
         wrapper.setOpaque(false);
-
-        if (isUser) {
-            wrapper.add(Box.createHorizontalGlue());
-            wrapper.add(messageLabel);
-        } else {
-            wrapper.add(messageLabel);
-            wrapper.add(Box.createHorizontalGlue());
-        }
+        wrapper.add(messageText);
 
         messagePanel.add(wrapper);
-        messagePanel.add(Box.createVerticalStrut(6));
+        messagePanel.add(Box.createVerticalStrut(4));
         messagePanel.revalidate();
         messagePanel.repaint();
 
@@ -154,7 +135,7 @@ public class ChatboxPanel extends JPanel {
         int count = messagePanel.getComponentCount();
         if (count >= 2) {
             messagePanel.remove(count - 1); // khoảng cách
-            messagePanel.remove(count - 2); // message
+            messagePanel.remove(count - 2); // panel chứa text
             messagePanel.revalidate();
             messagePanel.repaint();
         }
@@ -170,8 +151,8 @@ public class ChatboxPanel extends JPanel {
             CardLayout layout = new CardLayout();
             JPanel mainPanel = new JPanel(layout);
             ChatboxPanel chatbox = new ChatboxPanel(layout, mainPanel);
-            mainPanel.add(chatbox, "chat");
 
+            mainPanel.add(chatbox, "chat");
             frame.setContentPane(mainPanel);
             frame.setVisible(true);
         });
