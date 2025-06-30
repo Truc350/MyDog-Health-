@@ -1,221 +1,179 @@
 package view;
 
+import model.OpenAIService;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 public class ChatboxPanel extends JPanel {
 
-    JButton backButton;
-    JPanel contentPanel, topPanel, buttonPanel, inputPanel, topPnel;
+    private JButton sendButton;
+    private JTextField inputField;
+    private JPanel messagePanel;
+    private JScrollPane scrollPane;
+    private JButton backButton;
+    private OpenAIService openAIService = new OpenAIService();
+
     private CardLayout cardLayout;
     private JPanel mainPanel;
-// =======
-//     private JButton backButton, resultButton, sendBtn;
-//     private JPanel mainPanel, topPanel, inputPanel, topPnel;
-     private List<String> answers = new ArrayList<>();
-// >>>>>>> main
-
 
     public ChatboxPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
+
         setLayout(new BorderLayout());
-        setBackground(new Color(200, 220, 245));
+        setBackground(new Color(230, 240, 255));
 
-        contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setOpaque(false);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // === Header với nút Back ===
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(230, 240, 255));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
-        // Nút quay lại
-        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setOpaque(false);
-        topPanel.setMaximumSize(new Dimension(1000, 50));
+        backButton = new JButton(new ImageIcon("src/image/back.png"));
+        styleIconButton(backButton);
+        backButton.addActionListener(e -> cardLayout.show(mainPanel, "careGuide"));
+        headerPanel.add(backButton, BorderLayout.WEST);
 
-        backButton = new JButton();
-        backButton.setIcon(new ImageIcon("src/image/back.png"));
+        JLabel titleLabel = new JLabel("Chatbox AI Chẩn đoán", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 18));
+        headerPanel.add(titleLabel, BorderLayout.CENTER);
 
-        backButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "careGuide");
-        });
+        // === Message Panel ===
+        messagePanel = new JPanel();
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+        messagePanel.setBackground(new Color(245, 250, 255));
 
-// =======
-// >>>>>>> main
-        backButton.setFocusPainted(false);
-        backButton.setContentAreaFilled(false);
-        backButton.setBorder(BorderFactory.createLineBorder(new Color(90, 150, 255), 2));
-        backButton.setForeground(new Color(90, 150, 255));
-        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        backButton.setPreferredSize(new Dimension(34, 34));
-        backButton.setBorder(new RoundedBorder(36));
-        topPanel.add(backButton);
+        scrollPane = new JScrollPane(messagePanel);
+        scrollPane.setBorder(null);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // mượt hơn
 
-        contentPanel.add(topPanel);
-        contentPanel.add(Box.createVerticalStrut(4));
-// =======
-
-//         mainPanel.add(topPanel);
-//         mainPanel.add(Box.createVerticalStrut(10));
-// >>>>>>> main
-
-        // Tiêu đề
-        JLabel titleLabel = new JLabel("Chatbox AI");
-        titleLabel.setFont(new Font("Roboto", Font.BOLD, 20));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
-        contentPanel.add(titleLabel);
-        contentPanel.add(Box.createVerticalStrut(10));
-
-
-        // === Các khung câu hỏi ===
-        contentPanel.add(createQuestionPanel("Thú cưng có bỏ ăn hoàn toàn không ?"));
-        contentPanel.add(Box.createVerticalStrut(15));
-        contentPanel.add(createQuestionPanel("Bạn sờ có thấy sưng tấy không ?"));
-// =======
-//         // Các câu hỏi
-//         mainPanel.add(createQuestionPanel("Thú cưng có bỏ ăn hoàn toàn không?"));
-//         mainPanel.add(Box.createVerticalStrut(15));
-//         mainPanel.add(createQuestionPanel("Bạn sờ có thấy sưng tấy không?"));
-//         mainPanel.add(Box.createVerticalStrut(15));
-//         mainPanel.add(createQuestionPanel("Thú cưng có sốt trên 39.5°C không?"));
-//         mainPanel.add(Box.createVerticalStrut(15));
-
-//         // Kết quả chẩn đoán
-//         resultButton = new JButton("Xem chẩn đoán");
-//         resultButton.setFont(new Font("Roboto", Font.BOLD, 14));
-//         resultButton.setBackground(new Color(70, 150, 236));
-//         resultButton.setForeground(Color.WHITE);
-//         resultButton.setFocusPainted(false);
-//         resultButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-//         resultButton.setMaximumSize(new Dimension(200, 36));
-//         resultButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//         resultButton.addActionListener(e -> showResult());
-
-//         mainPanel.add(resultButton);
-//         mainPanel.add(Box.createVerticalStrut(10));
-// >>>>>>> main
-
-        // Ô nhập tự do
-        JTextField inputField = new JTextField();
+        // === Input Panel ===
+        inputField = new JTextField();
         inputField.setFont(new Font("Roboto", Font.PLAIN, 15));
-        inputField.setPreferredSize(new Dimension(220, 36));
-        inputField.setMaximumSize(new Dimension(220, 36));
-        inputField.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150)));
+        inputField.setPreferredSize(new Dimension(260, 36));
 
-      JButton  sendBtn = new JButton("Gửi");
-        sendBtn.setFont(new Font("Roboto", Font.PLAIN, 14));
-        sendBtn.setBackground(Color.WHITE);
-        sendBtn.setForeground(new Color(90, 150, 255));
-        sendBtn.setFocusPainted(false);
-        sendBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        sendBtn.addActionListener(e -> {
-            String text = inputField.getText().trim();
-            if (!text.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "📩 Bạn đã hỏi: " + text);
-                inputField.setText("");
+        sendButton = new JButton("Gửi");
+        sendButton.setFont(new Font("Roboto", Font.BOLD, 14));
+        sendButton.setBackground(new Color(90, 150, 255));
+        sendButton.setForeground(Color.WHITE);
+        sendButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        sendButton.setFocusPainted(false);
+        sendButton.setPreferredSize(new Dimension(80, 36));
+        sendButton.addActionListener(e -> handleSend());
+
+        JPanel inputPanel = new JPanel(new BorderLayout(10, 0));
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        inputPanel.setBackground(new Color(230, 240, 255));
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(sendButton, BorderLayout.EAST);
+
+        // === Add to layout ===
+        add(headerPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(inputPanel, BorderLayout.SOUTH);
+    }
+
+    private void styleIconButton(JButton btn) {
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setFocusPainted(false);
+    }
+
+    private void handleSend() {
+        String userInput = inputField.getText().trim();
+        if (userInput.isEmpty()) return;
+
+        addMessage(userInput, true);
+        inputField.setText("");
+        sendButton.setEnabled(false);
+        addMessage("💬 Đang suy nghĩ...", false);
+
+        new Thread(() -> {
+            try {
+                String response = openAIService.ask(userInput);
+                SwingUtilities.invokeLater(() -> {
+                    removeLastMessage();
+                    addMessage(response, false);
+                    sendButton.setEnabled(true);
+                });
+            } catch (IOException e) {
+                SwingUtilities.invokeLater(() -> {
+                    removeLastMessage();
+                    addMessage("❌ Lỗi: " + e.getMessage(), false);
+                    sendButton.setEnabled(true);
+                });
             }
-        });
-
-        inputPanel = new JPanel();
-        inputPanel.setOpaque(false);
-        inputPanel.add(inputField);
-        inputPanel.add(sendBtn);
-
-        topPnel = new JPanel();
-        topPnel.setBackground(new Color(200, 220, 245));
-        topPnel.setLayout(new BorderLayout());
-        topPnel.add(contentPanel, BorderLayout.CENTER);
-        topPnel.add(inputPanel, BorderLayout.SOUTH);
-
-        add(topPnel, BorderLayout.CENTER);
-        add(new BottomMenuPanel(), BorderLayout.SOUTH);
+        }).start();
     }
 
-    private JPanel createQuestionPanel(String questionText) {
-        JPanel panel = new RoundedPanel(20, Color.WHITE, new Color(13, 153, 255));
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.setMaximumSize(new Dimension(300, 100));
+    private void addMessage(String text, boolean isUser) {
+        JTextArea messageLabel = new JTextArea(text);
+        messageLabel.setFont(new Font("Roboto", Font.PLAIN, 14));
+        messageLabel.setLineWrap(true);
+        messageLabel.setWrapStyleWord(true);
+        messageLabel.setEditable(false);
+        messageLabel.setOpaque(true);
+        messageLabel.setForeground(Color.BLACK);
+        messageLabel.setBackground(isUser ? new Color(180, 220, 255) : new Color(230, 230, 230));
+        messageLabel.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
 
-        JLabel question = new JLabel(questionText);
-        question.setFont(new Font("Roboto", Font.PLAIN, 16));
-        question.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(question);
-        panel.add(Box.createVerticalStrut(10));
+        // ✅ Giới hạn độ rộng khung
+        int maxWidth = 180; // nhỏ hơn nữa nếu bạn muốn
+        messageLabel.setMaximumSize(new Dimension(maxWidth, Integer.MAX_VALUE));
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        buttonPanel.setOpaque(false);
+        // ✅ Tạo khung tròn bo viền
+        messageLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200), 1, true),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
 
-        JButton yesButton = customButton("Có");
-        JButton noButton = customButton("Không");
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.X_AXIS));
+        wrapper.setOpaque(false);
 
-        // Xử lý sự kiện
-        ActionListener answerHandler = e -> {
-            String answer = ((JButton) e.getSource()).getText();
-            answers.add(answer);
-            yesButton.setEnabled(false);
-            noButton.setEnabled(false);
-            JOptionPane.showMessageDialog(this, "✅ Trả lời: " + answer);
-        };
-
-        yesButton.addActionListener(answerHandler);
-        noButton.addActionListener(answerHandler);
-
-        buttonPanel.add(yesButton);
-        buttonPanel.add(noButton);
-
-        panel.add(buttonPanel);
-        return panel;
-    }
-
-    private JButton customButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Roboto", Font.PLAIN, 14));
-        button.setFocusPainted(false);
-        button.setBackground(Color.WHITE);
-        button.setForeground(Color.BLACK);
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.setBorder(BorderFactory.createLineBorder(new Color(70, 150, 236), 1));
-        return button;
-    }
-
-    private void showResult() {
-        int countYes = (int) answers.stream().filter(ans -> ans.equals("Có")).count();
-        String message;
-        if (countYes >= 3) {
-            message = "⚠️ Có dấu hiệu nguy hiểm. Vui lòng gặp bác sĩ!";
-        } else if (countYes == 2) {
-            message = "🔍 Nên theo dõi thêm và kiểm tra triệu chứng khác.";
+        if (isUser) {
+            wrapper.add(Box.createHorizontalGlue());
+            wrapper.add(messageLabel);
         } else {
-            message = "✅ Có vẻ thú cưng vẫn ổn.";
+            wrapper.add(messageLabel);
+            wrapper.add(Box.createHorizontalGlue());
         }
-        JOptionPane.showMessageDialog(this, message, "Kết quả chẩn đoán", JOptionPane.INFORMATION_MESSAGE);
+
+        messagePanel.add(wrapper);
+        messagePanel.add(Box.createVerticalStrut(6));
+        messagePanel.revalidate();
+        messagePanel.repaint();
+
+        SwingUtilities.invokeLater(() ->
+                scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum()));
     }
 
+    private void removeLastMessage() {
+        int count = messagePanel.getComponentCount();
+        if (count >= 2) {
+            messagePanel.remove(count - 1); // khoảng cách
+            messagePanel.remove(count - 2); // message
+            messagePanel.revalidate();
+            messagePanel.repaint();
+        }
+    }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Chatbox AI");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(420, 680);
+            frame.setLocationRelativeTo(null);
 
+            CardLayout layout = new CardLayout();
+            JPanel mainPanel = new JPanel(layout);
+            ChatboxPanel chatbox = new ChatboxPanel(layout, mainPanel);
+            mainPanel.add(chatbox, "chat");
 
-    // Test thử giao diện
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("Chatbot AI");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(400, 700);
-//        frame.setLocationRelativeTo(null);
-//        frame.setContentPane(new ChatboxPanel());
-//        frame.setVisible(true);
-//    }
-
-//     // Test
-     public static void main(String[] args) {
-         JFrame frame = new JFrame("Chatbox AI");
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         frame.setSize(400, 700);
-         frame.setLocationRelativeTo(null);
-         frame.setContentPane(new ChatboxPanel(new CardLayout(),new JPanel() ));
-         frame.setVisible(true);
-     }
-// >>>>>>> main
+            frame.setContentPane(mainPanel);
+            frame.setVisible(true);
+        });
+    }
 }
