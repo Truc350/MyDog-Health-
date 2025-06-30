@@ -12,6 +12,9 @@ public class Setting {
         this.doctorNotification = doctorNotification;
     }
 
+    public Setting() {
+    }
+
     public String getNameUser() {
         return nameUser;
     }
@@ -43,4 +46,35 @@ public class Setting {
     public void setDoctorNotification(boolean doctorNotification) {
         this.doctorNotification = doctorNotification;
     }
+
+    // bBật/tắt nhắc lịch tái khám
+    public void toggleAppointmentReminder() {
+        this.appointmentReminder = !this.appointmentReminder;
+    }
+
+    // Bật/tắt nhận thông báo từ bác sĩ
+    public void toggleDoctorNotification() {
+        this.doctorNotification = !this.doctorNotification;
+    }
+
+    // Cập nhật email người dùng
+    public void updateEmail(String newEmail) {
+        if (newEmail != null && newEmail.contains("@")) {
+            this.email = newEmail;
+        } else {
+            throw new IllegalArgumentException("Email không hợp lệ.");
+        }
+    }
+
+    // Hàm hiển thị cấu hình dưới dạng chuỗi dễ đọc (dùng để hiển thị trên UI nếu cần)
+    public String formatForDisplay() {
+        return String.format(
+                "👤 Tên người dùng: %s\n📧 Email: %s\n📅 Nhắc lịch khám: %s\n👨‍⚕️ Nhận thông báo bác sĩ: %s",
+                nameUser,
+                email,
+                appointmentReminder ? "Bật" : "Tắt",
+                doctorNotification ? "Bật" : "Tắt"
+        );
+    }
+
 }

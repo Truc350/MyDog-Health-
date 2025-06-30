@@ -1,5 +1,8 @@
 package view;
 
+import controller.DoctorContext;
+import model.Doctor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -139,6 +142,8 @@ public class DoctorSelectionPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                Doctor selectedDoctor = new Doctor(name, department, "online");
+                DoctorContext.setSelectedDoctor(selectedDoctor);
                 cardLayout.show(mainPanel, "callDoctor");
             }
         });

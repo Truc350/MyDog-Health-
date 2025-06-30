@@ -1,9 +1,13 @@
 package view;
 
+import model.CareAdvice;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CareGuidePanel extends JPanel {
     JPanel contentPanel, infoPanel, topPanel, skinPanel, wormPanel;
@@ -11,8 +15,6 @@ public class CareGuidePanel extends JPanel {
     JTextArea description;
     private CardLayout cardLayout;
     private JPanel mainPanel;
-
-
 
 
     public CareGuidePanel(CardLayout cardLayout, JPanel mainPanel) {
@@ -86,22 +88,40 @@ public class CareGuidePanel extends JPanel {
 
 
         // ===== Viêm da dị ứng =====
-        skinPanel = createDiseasePanel("Viêm da dị ứng", "src/image/skin.png", new String[]{
-                "Vệ sinh vùng da bằng nước muối sinh lý 2 lần/ngày.",
-                "Không để thú cưng liếm hoặc cào vào vùng bị ngứa.",
-                "Có thể dùng thuốc bôi dị ứng do bác sĩ kê đơn trước đó."
-        }, boldFont, bodyFont);
-        contentPanel.add(skinPanel);
-        contentPanel.add(Box.createVerticalStrut(12));
+//        skinPanel = createDiseasePanel("Viêm da dị ứng", "src/image/skin.png", new String[]{
+//                "Vệ sinh vùng da bằng nước muối sinh lý 2 lần/ngày.",
+//                "Không để thú cưng liếm hoặc cào vào vùng bị ngứa.",
+//                "Có thể dùng thuốc bôi dị ứng do bác sĩ kê đơn trước đó."
+//        }, boldFont, bodyFont);
+//        contentPanel.add(skinPanel);
+//        contentPanel.add(Box.createVerticalStrut(12));
+//
+//        // ===== Nhiễm giun =====
+//        wormPanel = createDiseasePanel("Nhiễm giun", "src/image/worm.png", new String[]{
+//                "Kiểm tra lại sổ tiêm/ngừa giun gần nhất.",
+//                "Cho uống thuốc tẩy giun đúng liều (có thể tham khảo bác sĩ thú y).",
+//                "Vệ sinh chỗ nằm, thức ăn, nước uống thường xuyên."
+//        }, boldFont, bodyFont);
+//        contentPanel.add(wormPanel);
+//        contentPanel.add(Box.createVerticalStrut(20));
 
-        // ===== Nhiễm giun =====
-        wormPanel = createDiseasePanel("Nhiễm giun", "src/image/worm.png", new String[]{
-                "Kiểm tra lại sổ tiêm/ngừa giun gần nhất.",
-                "Cho uống thuốc tẩy giun đúng liều (có thể tham khảo bác sĩ thú y).",
-                "Vệ sinh chỗ nằm, thức ăn, nước uống thường xuyên."
-        }, boldFont, bodyFont);
-        contentPanel.add(wormPanel);
-        contentPanel.add(Box.createVerticalStrut(20));
+        // Tạo danh sách dữ liệu mẫu
+        java.util.List<CareAdvice> adviceList = new java.util.ArrayList<>();
+        adviceList.add(new CareAdvice(
+                "Viêm da dị ứng",
+                "Vệ sinh vùng da bằng nước muối sinh lý 2 lần/ngày.;Không để thú cưng liếm hoặc cào vào vùng bị ngứa.;Có thể dùng thuốc bôi dị ứng do bác sĩ kê đơn trước đó.",
+                "Vùng da đỏ, rỉ dịch, vật cào gãi nhiều",
+                "Theo dõi tiến triển trong 2-3 ngày, nếu không cải thiện nên đưa đến bác sĩ."
+        ));
+        adviceList.add(new CareAdvice(
+                "Nhiễm giun",
+                "Kiểm tra lại sổ tiêm/ngừa giun gần nhất.;Cho uống thuốc tẩy giun đúng liều (có thể tham khảo bác sĩ thú y).;Vệ sinh chỗ nằm, thức ăn, nước uống thường xuyên.",
+                "Bụng to bất thường, nôn, tiêu chảy",
+                "Lưu ý không dùng thuốc tẩy giun quá liều."
+        ));
+
+// Gọi hàm để hiển thị
+        showCareAdviceList(adviceList);
 
         // ===== Nút hỏi thêm AI =====
         aiButton = customButton("Hỏi thêm AI");
@@ -169,10 +189,6 @@ public class CareGuidePanel extends JPanel {
             textArea.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
             panel.add(textArea);
 
-//            label.setFont(bodyFont);
-//            label.setAlignmentX(Component.LEFT_ALIGNMENT);
-//            label.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0)); // thêm khoảng cách giữa các dòng
-            panel.add(textArea);
         }
         return panel;
     }
@@ -186,6 +202,53 @@ public class CareGuidePanel extends JPanel {
         button.setBorderRadius(20);
         return button;
     }
+
+    // ✅ Hàm hiển thị danh sách CareAdvice
+    public void showCareAdviceList(List<CareAdvice> adviceList) {
+        contentPanel.removeAll();
+        contentPanel.add(topPanel);
+        contentPanel.add(Box.createVerticalStrut(4));
+
+        JLabel titleLabel = new JLabel("Hướng dẫn chăm sóc");
+        titleLabel.setFont(new Font("Roboto", Font.BOLD, 20));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel.add(titleLabel);
+        contentPanel.add(Box.createVerticalStrut(10));
+
+        contentPanel.add(infoPanel);
+        contentPanel.add(Box.createVerticalStrut(10));
+
+        Font boldFont = new Font("Roboto", Font.BOLD, 16);
+        Font bodyFont = new Font("Roboto", Font.PLAIN, 15);
+
+        for (CareAdvice advice : adviceList) {
+            List<String> items = new ArrayList<>();
+            for (String s : advice.getAdvice().split(";")) {
+                items.add(s.trim());
+            }
+
+            if (advice.isCriticalAdvice()) {
+                items.add("⚠️ Dấu hiệu nguy hiểm: " + advice.getDangerSigns());
+            }
+
+            if (advice.hasExtraNotes()) {
+                items.add("📝 Lưu ý thêm: " + advice.getExtraNotes());
+            }
+
+            String iconPath = advice.isCriticalAdvice() ? "src/image/warning.png" : "src/image/skin.png";
+
+            JPanel panel = createDiseasePanel(advice.getDiseaseName(), iconPath,
+                    items.toArray(new String[0]), boldFont, bodyFont);
+            contentPanel.add(panel);
+            contentPanel.add(Box.createVerticalStrut(12));
+        }
+
+        contentPanel.add(aiButton);
+        contentPanel.add(Box.createVerticalStrut(15));
+        revalidate();
+        repaint();
+    }
+
 
     // For testing
 //    public static void main(String[] args) {
