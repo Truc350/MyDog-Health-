@@ -65,6 +65,13 @@ public class LoginPanel extends JPanel {
         lblForgot.setFont(new Font("Roboto", Font.ITALIC, 16));
         lblForgot.setForeground(primaryColor);
         lblForgot.setBounds(210, 310, 150, 30);
+        lblForgot.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        lblForgot.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleForgotPassword();
+            }
+        });
 
         // Login button
         btnLogin = new JButton("Đăng nhập");
@@ -119,6 +126,33 @@ public class LoginPanel extends JPanel {
         add(btnLogin);
         add(panelBottom);
     }
+    private void handleForgotPassword() {
+        String email = JOptionPane.showInputDialog(this, "Nhập email đã đăng ký:", "Quên mật khẩu", JOptionPane.QUESTION_MESSAGE);
+
+        if (email == null || email.trim().isEmpty()) return;
+
+        UserDAO dao = new UserDAO();
+        User user = dao.findByEmail(email.trim());
+
+        if (user != null) {
+            String subject = "Khôi phục mật khẩu - PetCare";
+            String body = "Xin chào " + user.getName() + ",\n\n"
+                    + "Bạn đã yêu cầu khôi phục mật khẩu.\n"
+                    + "Mật khẩu hiện tại của bạn là: " + user.getPassword() + "\n\n"
+                    + "Vui lòng đăng nhập và đổi mật khẩu nếu cần.\n"
+                    + "Cảm ơn bạn.";
+
+            boolean sent = util.EmailSender.send(user.getEmail(), subject, body);
+            if (sent) {
+                JOptionPane.showMessageDialog(this, "✅ Mật khẩu đã được gửi đến email của bạn.");
+            } else {
+                JOptionPane.showMessageDialog(this, "❌ Gửi email thất bại. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy tài khoản với email này.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     public void handleLogin() {
        String email = txtEmail.getText().trim();
@@ -167,4 +201,5 @@ public class LoginPanel extends JPanel {
             return insets;
         }
     }
+
 }

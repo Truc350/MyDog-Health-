@@ -17,8 +17,12 @@ public class AddPetPanel extends JPanel {
     private JPanel petListPanel;
     private BottomMenuPanel bottomMenuPanel;
     private File selectedAvatarFile;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
-    public AddPetPanel() {
+    public AddPetPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         setPreferredSize(new Dimension(400, 700));
         setBackground(new Color(200, 220, 245));
         setLayout(null);
@@ -300,7 +304,7 @@ public class AddPetPanel extends JPanel {
         JFrame frame = new JFrame("Thêm thú cưng");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 700);
-        frame.setContentPane(new AddPetPanel());
+//        frame.setContentPane(new AddPetPanel());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

@@ -79,4 +79,59 @@ public class UserDAO {
         }
     }
 
+    public User findByEmail(String email) {
+        String sql = "SELECT * FROM Users WHERE email = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getString("userId"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                return user;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi tìm người dùng theo email: " + e.getMessage());
+        }
+
+        return null;
+    }
+    public boolean updatePassword(String userId, String newPassword) {
+        String sql = "UPDATE Users SET password = ? WHERE userId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newPassword);
+            stmt.setString(2, userId);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi cập nhật mật khẩu: " + e.getMessage());
+            return false;
+        }
+    }
+
+
+    public boolean updateEmail(String userId, String newEmail) {
+        String sql = "UPDATE Users SET email = ? WHERE userId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newEmail);
+            stmt.setString(2, userId);
+
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("❌ Lỗi khi cập nhật email: " + e.getMessage());
+            return false;
+        }
+    }
 }
