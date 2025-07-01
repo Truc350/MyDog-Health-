@@ -16,9 +16,8 @@ public class PetDAO {
     }
 
 
-
     public boolean addPet(Pet pet) {
-        String sql = "INSERT INTO Pets (petId, userId, name, breed, age, weight, gender, medicalHistory) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Pets (petId, userId, name, breed, age, weight, gender, medicalHistory, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -30,6 +29,7 @@ public class PetDAO {
             stmt.setFloat(6, pet.getWeight());
             stmt.setString(7, pet.getGender());
             stmt.setString(8, pet.getMedicalHistory());
+            stmt.setBytes(9, pet.getAvatar());
 
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {
@@ -37,9 +37,7 @@ public class PetDAO {
         }
         return false;
     }
-//
-//    public  boolean addPet(Pet pet) {
-//        if (pet.getPetId())
-//    }
 
 }
+
+

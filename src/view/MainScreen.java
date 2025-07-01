@@ -1,5 +1,7 @@
 package view;
 
+import controller.PetController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -57,6 +59,9 @@ public class MainScreen extends JFrame {
 //        mainPanel.add(checkSymptomsPanel, "checkSymptoms");
 //        mainPanel.add(doctorSelectionPanel, "doctorSelection");
 //        mainPanel.add(addPetPanel, "addPet");
+
+        new PetController(addPetPanel);
+        mainPanel.add(addPetPanel, "addPet");
 
         mainPanel.add(new SettingPanel(cardLayout, mainPanel), "setting");
         mainPanel.add(new ChangePasswordPanel(cardLayout, mainPanel), "changePassword");
