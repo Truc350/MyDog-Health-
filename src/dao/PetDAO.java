@@ -37,6 +37,28 @@ public class PetDAO {
         }
         return false;
     }
+    public boolean deletePet(String userId, String petName) {
+        String sql = "DELETE FROM Pets WHERE userId = ? AND name = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.setString(2, petName);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deletePetByNameAndUserId(String petName, String userId) throws SQLException {
+        String sql = "DELETE FROM Pets WHERE name = ? AND userId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, petName);
+            stmt.setString(2, userId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
 
 }
 
