@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class PetController {
     private AddPetPanel view;
@@ -22,7 +21,11 @@ public class PetController {
     }
 
     private void init() {
+        // Xử lý nút Thêm thú cưng
         view.getBtnAdd().addActionListener(e -> addPet());
+
+        // Kết nối sự kiện nút Xóa
+        view.setDeleteListener(petName -> deletePet(petName));
     }
 
     private void addPet() {
@@ -55,10 +58,25 @@ public class PetController {
                 JOptionPane.showMessageDialog(null, "Đã thêm thú cưng thành công!");
             }
 
-
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Lỗi khi thêm thú cưng: " + ex.getMessage());
+        }
+    }
+
+    private void deletePet(String petName) {
+        try {
+            String userId = AppSession.currentUser.getUserId();
+            boolean success = petDAO.deletePetByNameAndUserId(petName, userId);
+            if (success) {
+                view.removePetFromListPanel(petName);
+                JOptionPane.showMessageDialog(null, "Đã xóa thú cưng: " + petName);
+            } else {
+                JOptionPane.showMessageDialog(null, "Không thể xóa thú cưng: " + petName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi xóa thú cưng: " + e.getMessage());
         }
     }
 
@@ -67,6 +85,4 @@ public class PetController {
             return fis.readAllBytes();
         }
     }
-
-
 }

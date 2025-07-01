@@ -10,6 +10,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class AddPetPanel extends JPanel {
     private JButton btnBack, btnUploadAvatar, btnAdd;
@@ -21,6 +22,9 @@ public class AddPetPanel extends JPanel {
     private File selectedAvatarFile;
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private Consumer<String> deleteListener;
+    private JScrollPane scrollPane;
+
 
     public AddPetPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
@@ -63,8 +67,6 @@ public class AddPetPanel extends JPanel {
         btnUploadAvatar.addActionListener(e -> chooseAvatarImage());
 
 
-
-
         btnAdd = new JButton("Thêm");
         btnAdd.setFont(new Font("Arial", Font.BOLD, 14));
         btnAdd.setForeground(Color.WHITE);
@@ -74,9 +76,11 @@ public class AddPetPanel extends JPanel {
 
         bottomMenuPanel = new BottomMenuPanel();
     }
+
     public File getAvatarFile() {
         return selectedAvatarFile;
     }
+
     private void chooseAvatarImage() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn ảnh đại diện");
@@ -165,11 +169,19 @@ public class AddPetPanel extends JPanel {
         petListPanel = new JPanel();
         petListPanel.setLayout(new BoxLayout(petListPanel, BoxLayout.Y_AXIS));
         petListPanel.setBackground(Color.WHITE);
-        petListPanel.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
-        petListPanel.setBounds(20, 345, 360, 160);
-        petListPanel.add(createPetItem("src/image/dog1.jpg", "Miu"));
-        petListPanel.add(createPetItem("src/image/dog2.jpg", "Đốm"));
-        add(petListPanel);
+
+// Bọc trong JScrollPane
+        scrollPane = new JScrollPane(petListPanel);
+        scrollPane.setBounds(20, 345, 360, 160);
+        scrollPane.setBorder(new LineBorder(new Color(220, 220, 220), 1, true));
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        add(scrollPane);
+
+//        petListPanel.add(createPetItem("src/image/dog1.jpg", "Miu"));
+//        petListPanel.add(createPetItem("src/image/dog2.jpg", "Đốm"));
+
 
         btnAdd.setBounds(80, 515, 240, 45);
         add(btnAdd);
@@ -200,10 +212,36 @@ public class AddPetPanel extends JPanel {
         JButton btnDelete = new JButton("Xóa");
         btnDelete.setBounds(270, 20, 60, 30);
         styleSmallButton(btnDelete);
+        btnDelete.addActionListener(e -> {
+            if (deleteListener != null) {
+                deleteListener.accept(name); // Gửi tên thú cưng về controller
+            }
+        });
         panel.add(btnDelete);
+
 
         return panel;
     }
+
+    public void removePetFromListPanel(String name) {
+        Component[] components = petListPanel.getComponents();
+        for (Component comp : components) {
+            if (comp instanceof JPanel panel) {
+                for (Component child : panel.getComponents()) {
+                    if (child instanceof JLabel label) {
+                        String labelText = label.getText();
+                        if (labelText != null && labelText.equals(name)) {
+                            petListPanel.remove(panel);
+                            petListPanel.revalidate();
+                            petListPanel.repaint();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     private JTextField createRoundedTextField(String placeholder) {
         JTextField field = new JTextField(placeholder);
@@ -256,9 +294,20 @@ public class AddPetPanel extends JPanel {
     }
 
 
+    /**
+     * Đây là một callback function để khi bạn nhấn nút "Xóa" ở từng thú cưng,
+     * view sẽ gọi deleteListener.accept(tên_thú_cưng);
+     *
+     * @param listener
+     */
+    public void setDeleteListener(Consumer<String> listener) {
+        this.deleteListener = listener;
+    }
+
 
     static class RoundedBorder extends AbstractBorder {
         private final int radius;
+
         public RoundedBorder(int radius) {
             this.radius = radius;
         }
@@ -269,12 +318,15 @@ public class AddPetPanel extends JPanel {
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
-    public  String getNamePet(){
+
+    public String getNamePet() {
         return txtName.getText();
     }
-    public String getBreed(){
+
+    public String getBreed() {
         return txtBreed.getText();
     }
+
     public int getAge() {
         return Integer.parseInt(txtAge.getText().trim());
     }
@@ -292,20 +344,20 @@ public class AddPetPanel extends JPanel {
         return txtMedicalHistory.getText().trim();
     }
 
-    public void clear(){
+    public void clear() {
         txtName.setText("");
         txtBreed.setText("");
         txtAge.setText("");
         txtWeight.setText("");
         txtMedicalHistory.setText("");
+        selectedAvatarFile = null;
         genderGroup.clearSelection();
+
     }
 
     public JButton getBtnAdd() {
         return btnAdd;
     }
-
-
 
 
     public static void main(String[] args) {
