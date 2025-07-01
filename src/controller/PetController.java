@@ -6,6 +6,7 @@ import model.Pet;
 import view.AddPetPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,12 +22,66 @@ public class PetController {
     }
 
     private void init() {
-        // Xử lý nút Thêm thú cưng
         view.getBtnAdd().addActionListener(e -> addPet());
-
-        // Kết nối sự kiện nút Xóa
         view.setDeleteListener(petName -> deletePet(petName));
+        view.setEditListener(petName -> editPet(petName));
+        view.getBtnUpdate().addActionListener(e -> updatePet());
+
     }
+
+
+//    private void editPet(String petName) {
+//        Pet pet = petDAO.findPetByNameAndUserId(petName, AppSession.currentUser.getUserId());
+//        if (pet != null) {
+//            ImageIcon icon = (pet.getAvatar() != null) ?
+//                    new ImageIcon(new ImageIcon(pet.getAvatar()).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH)) :
+//                    new ImageIcon("src/image/default_pet.png");
+//
+//            view.loadPetToEdit(pet, icon);
+//        }
+//    }
+    private void editPet(String petName) {
+        Pet pet = petDAO.findPetByNameAndUserId(petName, AppSession.currentUser.getUserId());
+        if (pet != null) {
+            view.loadPetToEdit(pet);
+        }
+    }
+
+
+
+    private void updatePet() {
+        try {
+            Pet pet = new Pet(
+                    view.getNamePet(),
+                    view.getBreed(),
+                    view.getAge(),
+                    view.getWeight(),
+                    view.getGender(),
+                    view.getMedicalHistory()
+            );
+            pet.setUserId(AppSession.currentUser.getUserId());
+            pet.setPetId(view.getEditingPetId()); // Lấy id đang sửa
+
+            File avatarFile = view.getAvatarFile();
+            if (avatarFile != null) {
+                pet.setAvatar(readFileToBytes(avatarFile));
+            }
+
+            boolean success = petDAO.updatePet(pet);
+            if (success) {
+                view.clear();
+                JOptionPane.showMessageDialog(null, "Cập nhật thú cưng thành công!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Không thể cập nhật thú cưng!");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật: " + ex.getMessage());
+        }
+    }
+
+
 
     private void addPet() {
         try {

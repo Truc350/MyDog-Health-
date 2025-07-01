@@ -1,6 +1,7 @@
 package view;
 
 import controller.PetController;
+import model.Pet;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,7 +10,6 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.function.Consumer;
 
 public class AddPetPanel extends JPanel {
@@ -23,8 +23,13 @@ public class AddPetPanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private Consumer<String> deleteListener;
-    private JScrollPane scrollPane;
+    private Consumer<String> editListener;
+    private JButton btnUpdate;
 
+
+    private JScrollPane scrollPane;
+    private String editingPetId = null;// luu Id thu cung dang sua
+    private JButton btnEdit;
 
     public AddPetPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
@@ -73,6 +78,13 @@ public class AddPetPanel extends JPanel {
         btnAdd.setBackground(new Color(90, 150, 255));
         btnAdd.setBorder(new RoundedBorder(12));
         btnAdd.setFocusPainted(false);
+        btnUpdate = new JButton("Cập nhật");
+        btnUpdate.setFont(new Font("Arial", Font.BOLD, 14));
+        btnUpdate.setForeground(Color.WHITE);
+        btnUpdate.setBackground(new Color(90, 150, 255));
+        btnUpdate.setBorder(new RoundedBorder(12));
+        btnUpdate.setFocusPainted(false);
+        btnUpdate.setVisible(false); // ẩn ban đầu
 
         bottomMenuPanel = new BottomMenuPanel();
     }
@@ -185,9 +197,16 @@ public class AddPetPanel extends JPanel {
 
         btnAdd.setBounds(80, 515, 240, 45);
         add(btnAdd);
+        btnUpdate.setBounds(80, 515, 240, 45);
+        add(btnUpdate);
+
 
         bottomMenuPanel.setBounds(0, 610, 400, 60);
         add(bottomMenuPanel);
+    }
+
+    public JButton getBtnUpdate() {
+        return btnUpdate;
     }
 
     private JPanel createPetItem(String imagePath, String name) {
@@ -204,8 +223,14 @@ public class AddPetPanel extends JPanel {
         nameLabel.setBounds(70, 25, 100, 20);
         panel.add(nameLabel);
 
-        JButton btnEdit = new JButton("Sửa");
+        btnEdit = new JButton("Sửa");
         btnEdit.setBounds(200, 20, 60, 30);
+        btnEdit.addActionListener(e -> {
+            if (editListener != null) {
+                editListener.accept(name); // name là tên pet
+            }
+        });
+
         styleSmallButton(btnEdit);
         panel.add(btnEdit);
 
@@ -304,6 +329,11 @@ public class AddPetPanel extends JPanel {
         this.deleteListener = listener;
     }
 
+    public void setEditListener(Consumer<String> listener) {
+        this.editListener = listener;
+    }
+
+
 
     static class RoundedBorder extends AbstractBorder {
         private final int radius;
@@ -340,25 +370,119 @@ public class AddPetPanel extends JPanel {
         return rdoMale.isSelected() ? "Đực" : "Cái";
     }
 
+    public JButton getBtnEdit() {
+        return btnEdit;
+    }
+
     public String getMedicalHistory() {
         return txtMedicalHistory.getText().trim();
     }
 
     public void clear() {
+        // Xóa nội dung các trường nhập
         txtName.setText("");
         txtBreed.setText("");
         txtAge.setText("");
         txtWeight.setText("");
         txtMedicalHistory.setText("");
-        selectedAvatarFile = null;
+
+        // Xóa giới tính được chọn
         genderGroup.clearSelection();
 
+        // Reset ảnh đại diện về mặc định
+        ImageIcon defaultIcon = new ImageIcon("src/image/uploadImg.png");
+        btnUploadAvatar.setIcon(defaultIcon);
+        btnUploadAvatar.setText(""); // Nếu có text thì xóa luôn
+
+        // Xóa file ảnh đã chọn
+        selectedAvatarFile = null;
+
+        // Thoát chế độ chỉnh sửa
+        editingPetId = null;
+        btnAdd.setVisible(true);
+        if (btnUpdate != null) {
+            btnUpdate.setVisible(false);
+        }
     }
+
+
 
     public JButton getBtnAdd() {
         return btnAdd;
     }
+    public void loadPetToEdit(Pet pet, ImageIcon avatarIcon) {
+        txtName.setText(pet.getName());
+        txtBreed.setText(pet.getBreed());
+        txtAge.setText(String.valueOf(pet.getAge()));
+        txtWeight.setText(String.valueOf(pet.getWeight()));
+        txtMedicalHistory.setText(pet.getMedicalHistory());
 
+        if ("Đực".equals(pet.getGender())) {
+            rdoMale.setSelected(true);
+        } else {
+            rdoFemale.setSelected(true);
+        }
+
+        if (avatarIcon != null) {
+            Image scaledImage = avatarIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+            BufferedImage rounded = makeRoundedImage(scaledImage, 80);
+            btnUploadAvatar.setIcon(new ImageIcon(rounded));
+        } else {
+            btnUploadAvatar.setIcon(new ImageIcon("src/image/uploadImg.png"));
+        }
+
+        selectedAvatarFile = null; // reset vì chưa chọn ảnh mới
+        editingPetId = pet.getPetId();
+        btnAdd.setVisible(false);
+        if (btnUpdate != null) btnUpdate.setVisible(true);
+    }
+
+
+    public void loadPetToEdit(Pet pet) {
+        txtName.setText(pet.getName());
+        txtBreed.setText(pet.getBreed());
+        txtAge.setText(String.valueOf(pet.getAge()));
+        txtWeight.setText(String.valueOf(pet.getWeight()));
+        txtMedicalHistory.setText(pet.getMedicalHistory());
+
+        if ("Đực".equals(pet.getGender())) {
+            rdoMale.setSelected(true);
+        } else {
+            rdoFemale.setSelected(true);
+        }
+
+        // ✅ Load avatar từ byte[] nếu có
+        if (pet.getAvatar() != null) {
+            ImageIcon icon = new ImageIcon(pet.getAvatar());
+            Image scaledImage = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+            BufferedImage rounded = makeRoundedImage(scaledImage, 80);
+            btnUploadAvatar.setIcon(new ImageIcon(rounded));
+        } else {
+            btnUploadAvatar.setIcon(new ImageIcon("src/image/uploadImg.png"));
+        }
+
+        selectedAvatarFile = null; // reset lại
+        editingPetId = pet.getPetId();
+        btnAdd.setVisible(false);
+        if (btnUpdate != null) btnUpdate.setVisible(true);
+    }
+
+
+
+
+    public boolean isEditMode() {
+        return editingPetId != null;
+    }
+
+    public String getEditingPetId() {
+        return editingPetId;
+    }
+
+    public void exitEditMode() {
+        editingPetId = null;
+        btnAdd.setVisible(true);
+        btnEdit.setVisible(false);
+    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Thêm thú cưng");
@@ -381,6 +505,5 @@ public class AddPetPanel extends JPanel {
         model.User fakeUser = new model.User("3acce9e5-0285-4c6a-9db9-6e58377c6816");
         model.AppSession.currentUser = fakeUser;
     }
-
 
 }
