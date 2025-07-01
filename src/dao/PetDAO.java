@@ -3,10 +3,7 @@ package dao;
 import config.DBConnection;
 import model.Pet;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class PetDAO {
     private Connection conn;
@@ -59,6 +56,57 @@ public class PetDAO {
             return stmt.executeUpdate() > 0;
         }
     }
+
+    public Pet findPetByNameAndUserId(String name, String userId) {
+        String sql = "SELECT * FROM Pets WHERE name = ? AND userId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setString(2, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Pet pet = new Pet(
+                        rs.getString("name"),
+                        rs.getString("breed"),
+                        rs.getInt("age"),
+                        rs.getFloat("weight"),
+                        rs.getString("gender"),
+                        rs.getString("medicalHistory")
+                );
+                pet.setUserId(rs.getString("userId"));
+                pet.setPetId(rs.getString("petId"));
+                pet.setAvatar(rs.getBytes("avatar"));
+                return pet;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean updatePet(Pet pet) {
+        String sql = "UPDATE Pets SET name = ?, breed = ?, age = ?, weight = ?, gender = ?, medicalHistory = ?, avatar = ? WHERE petId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, pet.getName());
+            stmt.setString(2, pet.getBreed());
+            stmt.setInt(3, pet.getAge());
+            stmt.setFloat(4, pet.getWeight());
+            stmt.setString(5, pet.getGender());
+            stmt.setString(6, pet.getMedicalHistory());
+            stmt.setBytes(7, pet.getAvatar());
+            stmt.setString(8, pet.getPetId());
+            stmt.setBytes(9, pet.getAvatar());
+
+            return stmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 
 }
 
