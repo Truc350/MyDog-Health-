@@ -33,7 +33,7 @@ public class DashboardPanel extends JPanel {
         avatarLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         nameLabel = new JLabel("Nguyễn Anh Tú");
-        nameLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        nameLabel.setFont(new Font("Roboto", Font.BOLD, 16));
         nameLabel.setForeground(Color.BLACK);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -59,7 +59,7 @@ public class DashboardPanel extends JPanel {
         cardPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
         petTitle = new JLabel("Thú cưng đã thêm");
-        petTitle.setFont(new Font("SansSerif", Font.BOLD, 18));
+        petTitle.setFont(new Font("Roboto", Font.BOLD, 18));
         petTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         pet1 = createPetItem("src/image/dog1.jpg", "Miu");
@@ -124,7 +124,7 @@ public class DashboardPanel extends JPanel {
         JLabel imgLabel = new JLabel(new ImageIcon(img));
 
         JLabel nameLabel = new JLabel("<html><i>" + name + "</i></html>");
-        nameLabel.setFont(new Font("SansSerif", Font.ITALIC, 14));
+        nameLabel.setFont(new Font("Roboto", Font.ITALIC, 14));
 
         infoPanel.add(imgLabel);
         infoPanel.add(Box.createHorizontalStrut(10));
@@ -136,7 +136,7 @@ public class DashboardPanel extends JPanel {
         deleteButton.setContentAreaFilled(false);
         deleteButton.setBorderPainted(false);
         deleteButton.setForeground(Color.RED);
-        deleteButton.setFont(new Font("SansSerif", Font.BOLD, 14));
+        deleteButton.setFont(new Font("Roboto", Font.BOLD, 14));
         deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         deleteButton.addActionListener(e -> {
@@ -167,7 +167,7 @@ public class DashboardPanel extends JPanel {
         button.setBackground(new Color(90, 150, 255));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
-        button.setFont(new Font("SansSerif", Font.BOLD, 14));
+        button.setFont(new Font("Roboto", Font.BOLD, 14));
         button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setMaximumSize(new Dimension(240, 40));

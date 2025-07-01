@@ -20,4 +20,5 @@ public class VideoCallPanel extends JPanel {
         add(videoArea, BorderLayout.CENTER);
         add(endCallBtn, BorderLayout.SOUTH);
     }
+
 }

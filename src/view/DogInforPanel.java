@@ -348,24 +348,24 @@ public class DogInforPanel extends JPanel {
 
 
 
-    public static void main(String[] args) {
-        CardLayout cardLayout = new CardLayout();
-        JPanel mainPanel = new JPanel(cardLayout);
-
-        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
-        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
-        DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
-
-        mainPanel.add(dogInforPanel, "dogInfor");
-        mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
-        mainPanel.add(doctorSelectionPanel, "doctorSelection");
-
-        JFrame frame = new JFrame("Test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setContentPane(mainPanel);
-        cardLayout.show(mainPanel, "dogInfor");
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        CardLayout cardLayout = new CardLayout();
+//        JPanel mainPanel = new JPanel(cardLayout);
+//
+//        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
+//        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
+//        DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
+//
+//        mainPanel.add(dogInforPanel, "dogInfor");
+//        mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
+//        mainPanel.add(doctorSelectionPanel, "doctorSelection");
+//
+//        JFrame frame = new JFrame("Test");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(400, 700);
+//        frame.setLocationRelativeTo(null);
+//        frame.setContentPane(mainPanel);
+//        cardLayout.show(mainPanel, "dogInfor");
+//        frame.setVisible(true);
+//    }
 }

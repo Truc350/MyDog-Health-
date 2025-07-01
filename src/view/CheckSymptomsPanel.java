@@ -334,6 +334,7 @@ public class CheckSymptomsPanel extends JPanel {
         this.dogInforPanel = dogInforPanel;
     }
 
+
     // ============ MAIN TEST ============
 //    public static void main(String[] args) {
 //        JFrame frame = new JFrame("Kiểm tra triệu chứng");

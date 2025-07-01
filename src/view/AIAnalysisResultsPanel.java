@@ -241,6 +241,7 @@ public class AIAnalysisResultsPanel extends JPanel {
     }
 
 
+
     // For testing UI
 //    public static void main(String[] args) {
 //        JFrame frame = new JFrame("Test");

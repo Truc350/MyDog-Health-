@@ -39,4 +39,5 @@ public class ChatWithDoctorPanel extends JPanel {
         add(bottom, BorderLayout.SOUTH);
         add(back, BorderLayout.NORTH);
     }
+
 }
