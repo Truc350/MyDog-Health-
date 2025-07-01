@@ -1,5 +1,7 @@
 package view;
 
+import controller.PetController;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -247,6 +249,12 @@ public class AddPetPanel extends JPanel {
         btn.setBorder(new RoundedBorder(10));
     }
 
+    public void addPetToListPanel(String imagePath, String name) {
+        petListPanel.add(createPetItem(imagePath, name));
+        petListPanel.revalidate(); // cập nhật layout
+        petListPanel.repaint();    // vẽ lại giao diện
+    }
+
 
 
     static class RoundedBorder extends AbstractBorder {
@@ -304,8 +312,23 @@ public class AddPetPanel extends JPanel {
         JFrame frame = new JFrame("Thêm thú cưng");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 700);
-//        frame.setContentPane(new AddPetPanel());
+
+        JPanel mainPanel = new JPanel(new CardLayout());
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+
+        AddPetPanel addPetPanel = new AddPetPanel(cardLayout, mainPanel);
+        new PetController(addPetPanel); // Controller gắn sự kiện
+
+        mainPanel.add(addPetPanel, "AddPet");
+
+        frame.setContentPane(mainPanel);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        // Gán userId đã tồn tại trong DB
+        model.User fakeUser = new model.User("3acce9e5-0285-4c6a-9db9-6e58377c6816");
+        model.AppSession.currentUser = fakeUser;
     }
+
+
 }

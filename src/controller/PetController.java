@@ -48,10 +48,13 @@ public class PetController {
             boolean success = petDAO.addPet(pet);
             if (success) {
                 view.clear();
+                view.addPetToListPanel( // ✅ Thêm mới vào danh sách
+                        avatarFile != null ? avatarFile.getAbsolutePath() : "src/image/default_pet.png",
+                        pet.getName()
+                );
                 JOptionPane.showMessageDialog(null, "Đã thêm thú cưng thành công!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Không thể thêm thú cưng.");
             }
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -64,4 +67,6 @@ public class PetController {
             return fis.readAllBytes();
         }
     }
+
+
 }

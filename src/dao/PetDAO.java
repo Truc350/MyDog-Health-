@@ -21,7 +21,7 @@ public class PetDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, pet.getPetId());
+            stmt.setString(1, pet.getPetId()); // UUID tự sinh trong model
             stmt.setString(2, pet.getUserId());
             stmt.setString(3, pet.getName());
             stmt.setString(4, pet.getBreed());
