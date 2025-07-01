@@ -26,8 +26,10 @@ public class Pet {
         this.weight = weight;
         this.gender = gender;
         this.medicalHistory = medicalHistory;
-        this.symptoms = new ArrayList<>();
+        List<Symptom> symptoms = new ArrayList<>();
     }
+
+
 
     public Pet() {
     }

@@ -15,6 +15,7 @@ public class User {
     private List<HistoryRecord> historyRecords = new ArrayList<>();
     private Setting setting = new Setting();
 
+
     public User(String userId) {
         this.userId = userId;
     }
