@@ -27,28 +27,28 @@ public class DoctorSelectionPanel extends JPanel {
         contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         //         ===== Nút quay lại =====
-        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setOpaque(false);
-        topPanel.setMaximumSize(new Dimension(1000, 50));
-        backButton = new JButton();
-        backButton.setText("");
-        backButton.setIcon(new ImageIcon("src/image/back.png"));
-        backButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "dashboard");
-        });
-
-        backButton.setFocusPainted(false);
-        backButton.setContentAreaFilled(false);
-        backButton.setBorder(BorderFactory.createLineBorder(new Color(90, 150, 255), 2));
-        backButton.setForeground(new Color(90, 150, 255));
-        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        backButton.setPreferredSize(new Dimension(34, 34));
-        backButton.setFont(new Font("Roboto", Font.BOLD, 16));
-        backButton.setMaximumSize(new Dimension(36, 36));
-        backButton.setBorder(new RoundedBorder(36)); // hình tròn
-        topPanel.add(backButton);
-        contentPanel.add(topPanel);
-        contentPanel.add(Box.createVerticalStrut(4));
+//        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+//        topPanel.setOpaque(false);
+//        topPanel.setMaximumSize(new Dimension(1000, 50));
+//        backButton = new JButton();
+//        backButton.setText("");
+//        backButton.setIcon(new ImageIcon("src/image/back.png"));
+//        backButton.addActionListener(e -> {
+//            cardLayout.show(mainPanel, "dashboard");
+//        });
+//
+//        backButton.setFocusPainted(false);
+//        backButton.setContentAreaFilled(false);
+//        backButton.setBorder(BorderFactory.createLineBorder(new Color(90, 150, 255), 2));
+//        backButton.setForeground(new Color(90, 150, 255));
+//        backButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+//        backButton.setPreferredSize(new Dimension(34, 34));
+//        backButton.setFont(new Font("Roboto", Font.BOLD, 16));
+//        backButton.setMaximumSize(new Dimension(36, 36));
+//        backButton.setBorder(new RoundedBorder(36)); // hình tròn
+//        topPanel.add(backButton);
+//        contentPanel.add(topPanel);
+//        contentPanel.add(Box.createVerticalStrut(4));
 
         // Tiêu đề
         JLabel titleLabel = new JLabel("Chọn bác sĩ mong muốn");
@@ -142,7 +142,7 @@ public class DoctorSelectionPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                Doctor selectedDoctor = new Doctor(name, department, "online");
+                Doctor selectedDoctor = new Doctor(name, department, "online", imgPath);
                 DoctorContext.setSelectedDoctor(selectedDoctor);
                 cardLayout.show(mainPanel, "callDoctor");
             }

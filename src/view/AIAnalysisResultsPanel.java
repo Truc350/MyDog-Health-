@@ -236,6 +236,11 @@ public class AIAnalysisResultsPanel extends JPanel {
         this.careGuidePanel = panel;
     }
 
+    public void setAnalysisResult(String resultText) {
+        infoLabel.setText("<html><body style='width: 300px;'>" + resultText.replace("\n", "<br>") + "</body></html>");
+    }
+
+
     // For testing UI
 //    public static void main(String[] args) {
 //        JFrame frame = new JFrame("Test");

@@ -200,9 +200,9 @@ public class DashboardPanel extends JPanel {
         JPanel mainPanel = new JPanel(cardLayout);
 
         DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
-        CheckSymptomsPanel checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel);
         DashboardPanel dashboardPanel = new DashboardPanel(cardLayout, mainPanel);
         DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
+        CheckSymptomsPanel checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel, dogInforPanel);
         AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
         CareGuidePanel careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
         MedicalResultPanel medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);

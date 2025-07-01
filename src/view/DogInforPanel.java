@@ -1,10 +1,17 @@
 package view;
 
+import model.OpenAIService;
+import model.Symptom;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class DogInforPanel extends JPanel {
     private JLabel lblMainSymptomContent, lblLocationContent, lblTimeContent, lblOtherSymptomsContent, imageLabel;
@@ -203,13 +210,48 @@ public class DogInforPanel extends JPanel {
         ImageIcon icon7 = new ImageIcon(newImage7);
         btnAnalyzeAI.setIcon(icon7);
         btnAnalyzeAI.setMargin(new Insets(2, 6, 2, 6));
-        btnAnalyzeAI.addMouseListener(new MouseAdapter() {
+        btnAnalyzeAI.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                cardLayout.show(mainPanel, "aiAnalysisResults");
+            public void actionPerformed(ActionEvent e) {
+                String mainSymptom = lblMainSymptomContent.getText();
+                String location = lblLocationContent.getText();
+                String time = lblTimeContent.getText();
+                String otherSymptoms = lblOtherSymptomsContent.getText();
+
+                String prompt = String.format(
+                        "Chó có triệu chứng chính là '%s' ở vị trí '%s', xuất hiện %s. Các triệu chứng khác gồm: %s. "
+                                + "Hãy chẩn đoán bệnh và đưa ra hướng điều trị phù hợp.",
+                        mainSymptom, location, time, otherSymptoms
+                );
+
+                // Gọi AI trong thread riêng
+                new Thread(() -> {
+                    OpenAIService ai = new OpenAIService();
+                    try {
+                        String result = ai.ask(prompt);
+
+                        // Gọi lại UI ở EDT
+                        SwingUtilities.invokeLater(() -> {
+                            Component comp = findComponentByName("aiAnalysisResults");
+                            if (comp instanceof AIAnalysisResultsPanel aiPanel) {
+                                aiPanel.setAnalysisResult(result);
+                                cardLayout.show(mainPanel, "aiAnalysisResults");
+                            }
+                        });
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        SwingUtilities.invokeLater(() ->
+                                JOptionPane.showMessageDialog(DogInforPanel.this,
+                                        "Không thể kết nối tới AI. Hãy kiểm tra Ollama server.",
+                                        "Lỗi AI", JOptionPane.ERROR_MESSAGE)
+                        );
+                    }
+                }).start();
             }
         });
+
+
+
 
         // Gọi bác sĩ
         btnCallVet = customButtonCall("Gọi bác sĩ");
@@ -269,6 +311,41 @@ public class DogInforPanel extends JPanel {
         button.setBorderRadius(10);
         return button;
     }
+
+    public void updateDogInfo(Symptom symptom) {
+        lblMainSymptomContent.setText(symptom.getName());
+        lblLocationContent.setText(symptom.getLocation());
+
+        // Format thời gian từ Date -> String
+        lblTimeContent.setText(symptom.getDateNoticed());
+
+        lblOtherSymptomsContent.setText(symptom.getDescription());
+
+        setDogImage(symptom.getImagePath());
+    }
+
+    private Component findComponentByName(String name) {
+        for (Component comp : mainPanel.getComponents()) {
+            if (mainPanel.getComponentZOrder(comp) != -1 && name.equals(mainPanel.getComponentZOrder(comp) + "")) {
+                return comp;
+            }
+            if (mainPanel.getLayout() instanceof CardLayout layout) {
+                for (Component c : mainPanel.getComponents()) {
+                    if (mainPanel.isAncestorOf(c) && name.equals(mainPanel.getComponentZOrder(c) + "")) {
+                        return c;
+                    }
+                }
+            }
+            if (mainPanel.getComponentZOrder(comp) != -1 && name.equals(mainPanel.getComponentZOrder(comp) + "")) {
+                return comp;
+            }
+            if (mainPanel.getComponentZOrder(comp) != -1 && name.equals(comp.getName())) {
+                return comp;
+            }
+        }
+        return mainPanel.getComponent(1); // fallback
+    }
+
 
 
     public static void main(String[] args) {
