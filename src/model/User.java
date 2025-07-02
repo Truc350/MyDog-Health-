@@ -166,7 +166,7 @@ public class User {
     public boolean changePassword(String oldPass, String newPass) {
         if (checkPassword(oldPass)) {
             this.password = newPass;
-            return true;
+            return new UserDAO().updatePassword(userId, newPass);
         }
         return false;
     }

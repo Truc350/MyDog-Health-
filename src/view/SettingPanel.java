@@ -269,26 +269,32 @@ public class SettingPanel extends JPanel {
     public static void main(String[] args) {
         // Tạo user tạm thời và đăng nhập
         User temp = new User();
-        if (temp.login("1091@gmail.com", "1234")) {
+        if (temp.login("1091@gmail.com", "12345")) {
             AppSession.currentUser = temp;
             System.out.println("✅ Đăng nhập thành công!");
             System.out.println("🧾 UserId: " + AppSession.currentUser.getUserId());
         } else {
             System.out.println("❌ Đăng nhập thất bại");
-            return; // dừng nếu đăng nhập sai
+            return;
         }
 
-        // Tiếp tục hiển thị giao diện
         JFrame frame = new JFrame("User Account");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         JPanel mainPanel = new JPanel(new CardLayout());
         CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+
         mainPanel.add(new SettingPanel(cardLayout, mainPanel), "setting");
+        mainPanel.add(new ChangePasswordPanel(cardLayout, mainPanel), "changePassword"); // 👈 Thêm dòng này
+
+        cardLayout.show(mainPanel, "setting"); // Hiển thị trang đầu
+
         frame.setContentPane(mainPanel);
-        frame.pack();
+        frame.setSize(400, 700);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+
 
 
 }

@@ -22,8 +22,11 @@ public class ChangePasswordPanel extends JPanel {
         titleLabel.setBounds(120, 30, 200, 30);
         add(titleLabel);
 
-        backButton = new JButton("← Quay lại");
-        backButton.setBounds(20, 20, 100, 30);
+        backButton = new JButton(new ImageIcon("src/image/back.png"));
+        backButton.setFocusPainted(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setBorderPainted(false);
+        backButton.setBounds(20, 15, 36, 36);
         backButton.addActionListener(e -> cardLayout.show(mainPanel, "setting"));
         add(backButton);
 
@@ -51,8 +54,15 @@ public class ChangePasswordPanel extends JPanel {
             User currentUser = AppSession.currentUser;
             if (currentUser != null && currentUser.changePassword(oldPass, newPass)) {
                 JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công!");
+
+                // Xoá nội dung các trường
+                oldPasswordField.setText("");
+                newPasswordField.setText("");
+                confirmPasswordField.setText("");
+
                 cardLayout.show(mainPanel, "setting");
-            } else {
+            }
+            else {
                 JOptionPane.showMessageDialog(this, "Mật khẩu cũ không đúng hoặc lỗi hệ thống.");
             }
         });
