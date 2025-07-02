@@ -1,5 +1,6 @@
 package view;
 
+import dao.UserDAO;
 import model.AppSession;
 import model.Setting;
 import model.User;
@@ -12,8 +13,11 @@ import java.awt.*;
 public class SettingPanel extends JPanel {
     private BottomMenuPanel bottomMenuPanel;
     private Setting settingModel;
-
-    public SettingPanel() {
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+    public SettingPanel(CardLayout cardLayout,JPanel mainPanel) {
+       this.cardLayout = cardLayout;
+       this.mainPanel = mainPanel;
         this.settingModel = AppSession.currentUser.getSetting();
         setLayout(null);
         setBackground(new Color(214, 229, 250));
@@ -50,6 +54,7 @@ public class SettingPanel extends JPanel {
         JButton editBtn = new JButton(new ImageIcon("src/image/edit.png"));
         editBtn.setBounds(320, 18, 24, 24);
         styleRoundIconButton(editBtn);
+        editBtn.addActionListener(e -> editUserEmail(email));
         userInfo.add(editBtn);
         add(userInfo);
 
@@ -80,9 +85,14 @@ public class SettingPanel extends JPanel {
         securityPanel.add(createPasswordRow("Đổi mật khẩu"));
         JButton logoutBtn = createButton("Đăng xuất");
         logoutBtn.addActionListener(e -> {
-            AppSession.logoutCurrentUser();
-            // Điều hướng về màn hình đăng nhập
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Bạn có chắc muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                AppSession.logoutCurrentUser();
+                cardLayout.show(mainPanel, "login");
+            }
         });
+
         securityPanel.add(logoutBtn);
 
         JButton deleteBtn = createButton("Xóa tài khoản");
@@ -95,8 +105,8 @@ public class SettingPanel extends JPanel {
                     AppSession.logoutCurrentUser();
                     // Điều hướng về màn hình chào mừng
                     JOptionPane.showMessageDialog(this, "Tài khoản đã bị xóa.");
-                    // Ví dụ: new WelcomeFrame().setVisible(true);
-                    new SplashScreen().setVisible(true);
+                    cardLayout.show(mainPanel, "login");
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Xóa tài khoản thất bại!");
                 }
@@ -110,6 +120,22 @@ public class SettingPanel extends JPanel {
         bottomMenuPanel = new BottomMenuPanel();
         bottomMenuPanel.setBounds(0, 640, 400, 60);
         add(bottomMenuPanel);
+    }
+
+    private void editUserEmail(JLabel emailLabel) {
+        String currentEmail = AppSession.currentUser.getEmail();
+        String newEmail = JOptionPane.showInputDialog(this, "Nhập email mới:", currentEmail);
+
+        if (newEmail != null && !newEmail.trim().isEmpty() && !newEmail.equals(currentEmail)) {
+            boolean updated = new UserDAO().updateEmail(AppSession.currentUser.getUserId(), newEmail);
+            if (updated) {
+                AppSession.currentUser.setEmail(newEmail);
+                emailLabel.setText(newEmail);
+                JOptionPane.showMessageDialog(this, "✔️ Đã cập nhật email vào hệ thống.");
+            } else {
+                JOptionPane.showMessageDialog(this, "❌ Cập nhật email thất bại!");
+            }
+        }
     }
 
     private JPanel createCardPanel() {
@@ -174,6 +200,11 @@ public class SettingPanel extends JPanel {
         JButton icon = new JButton(new ImageIcon("src/image/edit.png"));
         icon.setPreferredSize(new Dimension(30, 30));
         styleRoundIconButton(icon);
+        // trong createPasswordRow
+        icon.addActionListener(e -> {
+            cardLayout.show(mainPanel, "changePassword");
+        });
+
         row.add(icon, BorderLayout.EAST);
 
         return row;
@@ -235,14 +266,31 @@ public class SettingPanel extends JPanel {
             return new Dimension(50, 25);
         }
     }
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("User Account");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setContentPane(new SettingPanel());
-//        frame.pack();
-//        frame.setLocationRelativeTo(null);
-//        frame.setVisible(true);
-//    }
+    public static void main(String[] args) {
+        // Tạo user tạm thời và đăng nhập
+        User temp = new User();
+        if (temp.login("1091@gmail.com", "1234")) {
+            AppSession.currentUser = temp;
+            System.out.println("✅ Đăng nhập thành công!");
+            System.out.println("🧾 UserId: " + AppSession.currentUser.getUserId());
+        } else {
+            System.out.println("❌ Đăng nhập thất bại");
+            return; // dừng nếu đăng nhập sai
+        }
+
+        // Tiếp tục hiển thị giao diện
+        JFrame frame = new JFrame("User Account");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel mainPanel = new JPanel(new CardLayout());
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        mainPanel.add(new SettingPanel(cardLayout, mainPanel), "setting");
+        frame.setContentPane(mainPanel);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
+
 }
 
 

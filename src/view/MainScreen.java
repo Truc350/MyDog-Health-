@@ -1,5 +1,7 @@
 package view;
 
+import controller.PetController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -33,7 +35,8 @@ public class MainScreen extends JFrame {
         CardLayout cardLayout = new CardLayout();
         JPanel mainPanel = new JPanel(cardLayout);
 
-        addPetPanel = new AddPetPanel();
+        addPetPanel = new AddPetPanel(cardLayout, mainPanel); // ✅ truyền đúng layout & panel
+
         loginPanel = new LoginPanel(cardLayout, mainPanel);
         registerPanel = new RegisterPanel(cardLayout, mainPanel);
         dashboardPanel = new DashboardPanel(cardLayout, mainPanel);

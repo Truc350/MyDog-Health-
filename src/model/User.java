@@ -15,8 +15,9 @@ public class User {
     private List<HistoryRecord> historyRecords = new ArrayList<>();
     private Setting setting = new Setting();
 
+
     public User(String userId) {
-        this.userId = UUID.randomUUID().toString();
+        this.userId = userId;
     }
 
     public User(String userId, String name, String email, String password, Image avatar, List<Pet> pets, List<HistoryRecord> historyRecords) {
@@ -157,6 +158,17 @@ public class User {
 
     public boolean deleteAccount() {
         return new UserDAO().delete(this.userId);
+    }
+    public boolean checkPassword(String oldPass) {
+        return this.password.equals(oldPass); // nên hash và so sánh hash
+    }
+
+    public boolean changePassword(String oldPass, String newPass) {
+        if (checkPassword(oldPass)) {
+            this.password = newPass;
+            return true;
+        }
+        return false;
     }
 
 

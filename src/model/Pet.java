@@ -26,10 +26,24 @@ public class Pet {
         this.weight = weight;
         this.gender = gender;
         this.medicalHistory = medicalHistory;
-        this.symptoms = new ArrayList<>();
+        List<Symptom> symptoms = new ArrayList<>();
     }
 
+
+
     public Pet() {
+    }
+
+
+    public Pet(String petId, String userId, String name, String breed, int age, float weight, String medicalHistory, String gender) {
+        this.petId = petId;
+        this.userId = userId;
+        this.name = name;
+        this.breed = breed;
+        this.age = age;
+        this.weight = weight;
+        this.medicalHistory = medicalHistory;
+        this.gender = gender;
     }
 
     public String getPetId() {
