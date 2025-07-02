@@ -7,14 +7,16 @@ public class Doctor {
     private String name;
     private String specialization;// chuyen mon cua bac si
     private String status;// online, offline
+    private String imagePath;
 
     // Danh sách tĩnh quản lý tất cả bác sĩ (nếu không dùng DB)
     private static List<Doctor> doctorList = new ArrayList<>();
 
-    public Doctor(String name, String specialization, String status) {
+    public Doctor(String name, String specialization, String status, String imagePath) {
         this.name = name;
         this.specialization = specialization;
         this.status = status;
+        this.imagePath = imagePath;
     }
 
     public String getName() {
@@ -39,6 +41,14 @@ public class Doctor {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     // Chuyển trạng thái online/offline

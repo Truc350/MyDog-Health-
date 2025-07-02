@@ -10,10 +10,19 @@ public class Symptom {
     private String location;
     private String name;
     private String description;
-    private Date dateNoticed;
+    private String dateNoticed;
     private  String severity;// tình trạng : nặng , nhẹ, trung bình này kia
+    private String imagePath;
 
-    public Symptom(int id, String location, String name, String description, Date dateNoticed, String severity) {
+    public Symptom(String name, String location, String dateNoticed, String description, String imagePath) {
+        this.name = name;
+        this.location = location;
+        this.dateNoticed = dateNoticed;
+        this.description = description;
+        this.imagePath = imagePath;
+    }
+
+    public Symptom(int id, String location, String name, String description, String dateNoticed, String severity) {
         this.id = id;
         this.location = location;
         this.name = name;
@@ -21,6 +30,10 @@ public class Symptom {
         this.dateNoticed = dateNoticed;
         this.severity = severity;
     }
+
+
+
+
 
     public void setId(int id) {
         this.id = id;
@@ -42,7 +55,7 @@ public class Symptom {
         this.description = description;
     }
 
-    public void setDateNoticed(Date dateNoticed) {
+    public void setDateNoticed(String dateNoticed) {
         this.dateNoticed = dateNoticed;
     }
 
@@ -62,11 +75,19 @@ public class Symptom {
         return description;
     }
 
-    public Date getDateNoticed() {
+    public String getDateNoticed() {
         return dateNoticed;
     }
 
     public String getSeverity() {
         return severity;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

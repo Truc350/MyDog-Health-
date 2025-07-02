@@ -19,6 +19,7 @@ public class MainScreen extends JFrame {
     private MedicalResultPanel medicalResultPanel;
     private ChatboxPanel chatboxPanel;
     private CallDoctorPanel callDoctorPanel;
+    private OngoingCallPanel ongoingCallPanel;
 
     public MainScreen() throws HeadlessException {
         setTitle("MyDog Health+");
@@ -39,33 +40,29 @@ public class MainScreen extends JFrame {
         loginPanel = new LoginPanel(cardLayout, mainPanel);
         registerPanel = new RegisterPanel(cardLayout, mainPanel);
         dashboardPanel = new DashboardPanel(cardLayout, mainPanel);
-//        checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel);
-//        doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
-//        dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
-//        aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
-//        careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
-//        medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
-//        chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
-//        callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
+        checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel, dogInforPanel);
+        doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
+        dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
+        aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
+        careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
+        medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
+        chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
+        callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
 
-//        aiAnalysisResultsPanel.setCareGuidePanel(careGuidePanel);
 
-//        mainPanel.add(callDoctorPanel, "callDoctor");
-//        mainPanel.add(chatboxPanel, "chatBoxAI");
-//        mainPanel.add(medicalResultPanel, "medicalResult");
-//        mainPanel.add(careGuidePanel, "careGuide");
-//        mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
-//        mainPanel.add(dogInforPanel, "dogInfor");
-//        mainPanel.add(checkSymptomsPanel, "checkSymptoms");
-//        mainPanel.add(doctorSelectionPanel, "doctorSelection");
-//        mainPanel.add(addPetPanel, "addPet");
 
-        new PetController(addPetPanel);
+        aiAnalysisResultsPanel.setCareGuidePanel(careGuidePanel);
+        checkSymptomsPanel.setDogInforPanel(dogInforPanel);
+
+        mainPanel.add(callDoctorPanel, "callDoctor");
+        mainPanel.add(chatboxPanel, "chatBoxAI");
+        mainPanel.add(medicalResultPanel, "medicalResult");
+        mainPanel.add(careGuidePanel, "careGuide");
+        mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
+        mainPanel.add(dogInforPanel, "dogInfor");
+        mainPanel.add(checkSymptomsPanel, "checkSymptoms");
+        mainPanel.add(doctorSelectionPanel, "doctorSelection");
         mainPanel.add(addPetPanel, "addPet");
-
-        mainPanel.add(new SettingPanel(cardLayout, mainPanel), "setting");
-        mainPanel.add(new ChangePasswordPanel(cardLayout, mainPanel), "changePassword");
-
         mainPanel.add(dashboardPanel, "dashboard");
         mainPanel.add(loginPanel, "login");
         mainPanel.add(registerPanel, "register");

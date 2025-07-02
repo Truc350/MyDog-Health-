@@ -84,7 +84,7 @@ public class CareGuidePanel extends JPanel {
 //        description.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         infoPanel.add(description);
         contentPanel.add(infoPanel);
-        contentPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(Box.createVerticalStrut(20));
 
 
         // ===== Viêm da dị ứng =====
@@ -104,24 +104,6 @@ public class CareGuidePanel extends JPanel {
 //        }, boldFont, bodyFont);
 //        contentPanel.add(wormPanel);
 //        contentPanel.add(Box.createVerticalStrut(20));
-
-        // Tạo danh sách dữ liệu mẫu
-        java.util.List<CareAdvice> adviceList = new java.util.ArrayList<>();
-        adviceList.add(new CareAdvice(
-                "Viêm da dị ứng",
-                "Vệ sinh vùng da bằng nước muối sinh lý 2 lần/ngày.;Không để thú cưng liếm hoặc cào vào vùng bị ngứa.;Có thể dùng thuốc bôi dị ứng do bác sĩ kê đơn trước đó.",
-                "Vùng da đỏ, rỉ dịch, vật cào gãi nhiều",
-                "Theo dõi tiến triển trong 2-3 ngày, nếu không cải thiện nên đưa đến bác sĩ."
-        ));
-        adviceList.add(new CareAdvice(
-                "Nhiễm giun",
-                "Kiểm tra lại sổ tiêm/ngừa giun gần nhất.;Cho uống thuốc tẩy giun đúng liều (có thể tham khảo bác sĩ thú y).;Vệ sinh chỗ nằm, thức ăn, nước uống thường xuyên.",
-                "Bụng to bất thường, nôn, tiêu chảy",
-                "Lưu ý không dùng thuốc tẩy giun quá liều."
-        ));
-
-// Gọi hàm để hiển thị
-        showCareAdviceList(adviceList);
 
         // ===== Nút hỏi thêm AI =====
         aiButton = customButton("Hỏi thêm AI");
@@ -148,9 +130,26 @@ public class CareGuidePanel extends JPanel {
         ImageIcon icon = new ImageIcon(newImage);
         aiButton.setIcon(icon);
         aiButton.setMargin(new Insets(2, 6, 2, 6));
-        contentPanel.add(aiButton);
-        contentPanel.add(Box.createVerticalStrut(15));
+//        contentPanel.add(aiButton);
+//        contentPanel.add(Box.createVerticalStrut(15));
 
+        // Tạo danh sách dữ liệu mẫu
+        java.util.List<CareAdvice> adviceList = new java.util.ArrayList<>();
+        adviceList.add(new CareAdvice(
+                "Viêm da dị ứng",
+                "Vệ sinh vùng da bằng nước muối sinh lý 2 lần/ngày.;Không để thú cưng liếm hoặc cào vào vùng bị ngứa.;Có thể dùng thuốc bôi dị ứng do bác sĩ kê đơn trước đó.",
+                "Vùng da đỏ, rỉ dịch, vật cào gãi nhiều",
+                "Theo dõi tiến triển trong 2-3 ngày, nếu không cải thiện nên đưa đến bác sĩ."
+        ));
+        adviceList.add(new CareAdvice(
+                "Nhiễm giun",
+                "Kiểm tra lại sổ tiêm/ngừa giun gần nhất.;Cho uống thuốc tẩy giun đúng liều (có thể tham khảo bác sĩ thú y).;Vệ sinh chỗ nằm, thức ăn, nước uống thường xuyên.",
+                "Bụng to bất thường, nôn, tiêu chảy",
+                "Lưu ý không dùng thuốc tẩy giun quá liều."
+        ));
+
+        // Gọi hàm để hiển thị
+        showCareAdviceList(adviceList);
 
         add(contentPanel, BorderLayout.CENTER);
         add(new BottomMenuPanel(), BorderLayout.SOUTH);

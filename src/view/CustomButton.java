@@ -26,7 +26,7 @@ public class CustomButton extends JButton {
     @Override
     protected void paintComponent(Graphics g) {
         if (isSelected) {
-            g.setColor(new Color(236, 177, 118)); // nền khi được chọn (vàng nhạt)
+            g.setColor(new Color(0, 0, 0, 0)); // nền khi được chọn (vàng nhạt)
         } else if (getModel().isPressed()) {
             g.setColor(backgroundColor.darker());
         } else if (getModel().isRollover() && hoverColor != null) {
