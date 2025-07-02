@@ -20,7 +20,7 @@ public class MainScreen extends JFrame {
     private ChatboxPanel chatboxPanel;
     private CallDoctorPanel callDoctorPanel;
     private OngoingCallPanel ongoingCallPanel;
-
+    private ChangePasswordPanel changePasswordPanel;
     public MainScreen() throws HeadlessException {
         setTitle("MyDog Health+");
         setSize(400, 700);
@@ -48,8 +48,8 @@ public class MainScreen extends JFrame {
         medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
         chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
         callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
-
-
+        changePasswordPanel = new ChangePasswordPanel(cardLayout, mainPanel);
+        settingPanel = new SettingPanel(cardLayout, mainPanel);
 
         aiAnalysisResultsPanel.setCareGuidePanel(careGuidePanel);
         checkSymptomsPanel.setDogInforPanel(dogInforPanel);
@@ -66,6 +66,8 @@ public class MainScreen extends JFrame {
         mainPanel.add(dashboardPanel, "dashboard");
         mainPanel.add(loginPanel, "login");
         mainPanel.add(registerPanel, "register");
+        mainPanel.add(changePasswordPanel, "changePassword");
+        mainPanel.add(settingPanel, "setting");
         add(mainPanel);
         cardLayout.show(mainPanel, "login");
 

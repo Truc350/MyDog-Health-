@@ -1,10 +1,12 @@
 package model;
 
+import java.awt.*;
+
 public class Setting {
     private String nameUser,email;
     private boolean appointmentReminder;// canh bao lich kham ebnh cho thu
     private boolean doctorNotification;// nhan thong bao tu bac si
-
+    private Image avatar;
     public Setting(String nameUser, String email, boolean appointmentReminder, boolean doctorNotification) {
         this.nameUser = nameUser;
         this.email = email;
@@ -12,7 +14,23 @@ public class Setting {
         this.doctorNotification = doctorNotification;
     }
 
+    public Setting(String nameUser, String email, boolean appointmentReminder, boolean doctorNotification, Image avatar) {
+        this.nameUser = nameUser;
+        this.email = email;
+        this.appointmentReminder = appointmentReminder;
+        this.doctorNotification = doctorNotification;
+        this.avatar = avatar;
+    }
+
     public Setting() {
+    }
+
+    public Image getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
     }
 
     public String getNameUser() {
@@ -75,6 +93,13 @@ public class Setting {
                 appointmentReminder ? "Bật" : "Tắt",
                 doctorNotification ? "Bật" : "Tắt"
         );
+    }
+    public void updateAvatar(Image newAvatar) {
+        if (newAvatar != null) {
+            this.avatar = newAvatar;
+        }else {
+            throw new IllegalArgumentException("Ảnh đại diện không hợp lệ.");
+        }
     }
 
 }
