@@ -152,7 +152,9 @@ public class CareGuidePanel extends JPanel {
         showCareAdviceList(adviceList);
 
         add(contentPanel, BorderLayout.CENTER);
-        add(new BottomMenuPanel(), BorderLayout.SOUTH);
+        BottomMenuPanel bottomMenuPanel = new BottomMenuPanel();
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+        add(bottomMenuPanel, BorderLayout.SOUTH);
     }
 
     private JPanel createDiseasePanel(String title, String iconPath, String[] items, Font titleFont, Font bodyFont) {

@@ -7,12 +7,12 @@ public class ChatWithDoctorPanel extends JPanel {
     public ChatWithDoctorPanel(String doctorName, Runnable onExit) {
         setLayout(new BorderLayout());
 
-        Font font = new Font("Roboto", Font.PLAIN, 14);
+        Font font = new Font("Roboto", Font.PLAIN, 15);
 
         JTextArea chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setFont(font);
-        chatArea.setText("💬 Bắt đầu trò chuyện với Dr. " + doctorName + "...\n");
+        chatArea.setText("💬 Bắt đầu trò chuyện với " + doctorName );
 
         JTextField input = new JTextField();
         input.setFont(font);

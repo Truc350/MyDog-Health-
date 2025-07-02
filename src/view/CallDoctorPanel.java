@@ -92,7 +92,9 @@ public class CallDoctorPanel extends JPanel {
         contentPanel.add(Box.createVerticalGlue());
 
         add(contentPanel, BorderLayout.CENTER);
-        add(new BottomMenuPanel(), BorderLayout.SOUTH);
+        BottomMenuPanel bottomMenuPanel = new BottomMenuPanel();
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+        add(bottomMenuPanel, BorderLayout.SOUTH);
 
 //        // === Lấy thông tin bác sĩ được chọn từ DoctorContext ===
 //        Doctor selectedDoctor = DoctorContext.getSelectedDoctor();

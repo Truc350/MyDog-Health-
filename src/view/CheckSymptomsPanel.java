@@ -230,9 +230,8 @@ public class CheckSymptomsPanel extends JPanel {
         continueButton.setBounds(20, 520, 360, 40);
 
         // Footer cố định
-//        bottomMenuPanel.setBounds(0, 640, 400, 60);
         bottomMenuPanel.setBounds(0, 610, 400, 60); // Đẩy lên 10px
-
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
         add(bottomMenuPanel);
     }
 
@@ -277,7 +276,7 @@ public class CheckSymptomsPanel extends JPanel {
         btn.setFocusPainted(false);
     }
 
-//     ============ ROUNDED PANEL ============
+    //     ============ ROUNDED PANEL ============
     static class RoundedPanel extends JPanel {
         private final int radius;
         private final Color bgColor;

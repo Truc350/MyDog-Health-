@@ -18,6 +18,7 @@ public class DashboardPanel extends JPanel {
     private BottomMenuPanel bottomMenuPanel;
     private CardLayout cardLayout;
     private JPanel mainPanel;
+
     public DashboardPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
@@ -33,7 +34,7 @@ public class DashboardPanel extends JPanel {
         avatarLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         nameLabel = new JLabel("Nguyễn Anh Tú");
-        nameLabel.setFont(new Font("Roboto", Font.BOLD, 16));
+        nameLabel.setFont(new Font("Roboto", Font.BOLD, 18));
         nameLabel.setForeground(Color.BLACK);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -82,7 +83,7 @@ public class DashboardPanel extends JPanel {
             }
         });
         btnAddPet = createButton("➕", "Thêm thú cưng");
-        btnAddPet.addActionListener(e ->{
+        btnAddPet.addActionListener(e -> {
             cardLayout.show(mainPanel, "addPet");
         });
 
@@ -106,9 +107,9 @@ public class DashboardPanel extends JPanel {
 
         // ===== BOTTOM MENU PANEL =====
         bottomMenuPanel = new BottomMenuPanel();
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
         add(bottomMenuPanel, BorderLayout.SOUTH);
     }
-
 
 
     private JPanel createPetItem(String imagePath, String name) {
@@ -124,13 +125,14 @@ public class DashboardPanel extends JPanel {
         JLabel imgLabel = new JLabel(new ImageIcon(img));
 
         JLabel nameLabel = new JLabel("<html><i>" + name + "</i></html>");
-        nameLabel.setFont(new Font("Roboto", Font.ITALIC, 14));
+        nameLabel.setFont(new Font("Roboto", Font.ITALIC, 15));
 
         infoPanel.add(imgLabel);
         infoPanel.add(Box.createHorizontalStrut(10));
         infoPanel.add(nameLabel);
 
         JButton deleteButton = new JButton("x");
+        deleteButton.setFont(new Font("Roboto", Font.BOLD, 15));
         deleteButton.setPreferredSize(new Dimension(30, 30));
         deleteButton.setFocusPainted(false);
         deleteButton.setContentAreaFilled(false);
@@ -167,7 +169,7 @@ public class DashboardPanel extends JPanel {
         button.setBackground(new Color(90, 150, 255));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
-        button.setFont(new Font("Roboto", Font.BOLD, 14));
+        button.setFont(new Font("Roboto", Font.BOLD, 16));
         button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setMaximumSize(new Dimension(240, 40));
@@ -208,8 +210,11 @@ public class DashboardPanel extends JPanel {
         MedicalResultPanel medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
         ChatboxPanel chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
         CallDoctorPanel callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
+        SettingPanel settingPanel = new SettingPanel(cardLayout, mainPanel);
+        AddPetPanel addPetPanel = new AddPetPanel(cardLayout, mainPanel);
 
-
+        mainPanel.add(addPetPanel, "addPet");
+        mainPanel.add(settingPanel, "settings");
         mainPanel.add(callDoctorPanel, "callDoctor");
         mainPanel.add(chatboxPanel, "chatBoxAI");
         mainPanel.add(medicalResultPanel, "medicalResult");
@@ -227,6 +232,7 @@ public class DashboardPanel extends JPanel {
         frame.setContentPane(mainPanel);
         cardLayout.show(mainPanel, "dashboard");
         frame.setVisible(true);
+        frame.setResizable(false);
     }
 
 }

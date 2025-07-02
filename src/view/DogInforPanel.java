@@ -213,40 +213,41 @@ public class DogInforPanel extends JPanel {
         btnAnalyzeAI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String mainSymptom = lblMainSymptomContent.getText();
-                String location = lblLocationContent.getText();
-                String time = lblTimeContent.getText();
-                String otherSymptoms = lblOtherSymptomsContent.getText();
-
-                String prompt = String.format(
-                        "Chó có triệu chứng chính là '%s' ở vị trí '%s', xuất hiện %s. Các triệu chứng khác gồm: %s. "
-                                + "Hãy chẩn đoán bệnh và đưa ra hướng điều trị phù hợp.",
-                        mainSymptom, location, time, otherSymptoms
-                );
-
-                // Gọi AI trong thread riêng
-                new Thread(() -> {
-                    OpenAIService ai = new OpenAIService();
-                    try {
-                        String result = ai.ask(prompt);
-
-                        // Gọi lại UI ở EDT
-                        SwingUtilities.invokeLater(() -> {
-                            Component comp = findComponentByName("aiAnalysisResults");
-                            if (comp instanceof AIAnalysisResultsPanel aiPanel) {
-                                aiPanel.setAnalysisResult(result);
-                                cardLayout.show(mainPanel, "aiAnalysisResults");
-                            }
-                        });
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        SwingUtilities.invokeLater(() ->
-                                JOptionPane.showMessageDialog(DogInforPanel.this,
-                                        "Không thể kết nối tới AI. Hãy kiểm tra Ollama server.",
-                                        "Lỗi AI", JOptionPane.ERROR_MESSAGE)
-                        );
-                    }
-                }).start();
+                cardLayout.show(mainPanel, "aiAnalysisResults");
+//                String mainSymptom = lblMainSymptomContent.getText();
+//                String location = lblLocationContent.getText();
+//                String time = lblTimeContent.getText();
+//                String otherSymptoms = lblOtherSymptomsContent.getText();
+//
+//                String prompt = String.format(
+//                        "Chó có triệu chứng chính là '%s' ở vị trí '%s', xuất hiện %s. Các triệu chứng khác gồm: %s. "
+//                                + "Hãy chẩn đoán bệnh và đưa ra hướng điều trị phù hợp.",
+//                        mainSymptom, location, time, otherSymptoms
+//                );
+//
+//                // Gọi AI trong thread riêng
+//                new Thread(() -> {
+//                    OpenAIService ai = new OpenAIService();
+//                    try {
+//                        String result = ai.ask(prompt);
+//
+//                        // Gọi lại UI ở EDT
+//                        SwingUtilities.invokeLater(() -> {
+//                            Component comp = findComponentByName("aiAnalysisResults");
+//                            if (comp instanceof AIAnalysisResultsPanel aiPanel) {
+//                                aiPanel.setAnalysisResult(result);
+//                                cardLayout.show(mainPanel, "aiAnalysisResults");
+//                            }
+//                        });
+//                    } catch (IOException ex) {
+//                        ex.printStackTrace();
+//                        SwingUtilities.invokeLater(() ->
+//                                JOptionPane.showMessageDialog(DogInforPanel.this,
+//                                        "Không thể kết nối tới AI. Hãy kiểm tra Ollama server.",
+//                                        "Lỗi AI", JOptionPane.ERROR_MESSAGE)
+//                        );
+//                    }
+//                }).start();
             }
         });
 

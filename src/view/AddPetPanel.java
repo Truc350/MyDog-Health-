@@ -87,6 +87,7 @@ public class AddPetPanel extends JPanel {
         btnUpdate.setVisible(false); // ẩn ban đầu
 
         bottomMenuPanel = new BottomMenuPanel();
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
     }
 
     public File getAvatarFile() {
@@ -201,7 +202,7 @@ public class AddPetPanel extends JPanel {
         add(btnUpdate);
 
 
-        bottomMenuPanel.setBounds(0, 610, 400, 60);
+        bottomMenuPanel.setBounds(0, 606, 400, 60);
         add(bottomMenuPanel);
     }
 

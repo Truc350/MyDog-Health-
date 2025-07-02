@@ -162,7 +162,9 @@ public class MedicalResultPanel extends JPanel {
 
         // === Add to main panel ===
         add(contentPanel, BorderLayout.CENTER);
-        add(new BottomMenuPanel(), BorderLayout.SOUTH);
+        BottomMenuPanel bottomMenuPanel = new BottomMenuPanel();
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+        add(bottomMenuPanel, BorderLayout.SOUTH);
     }
 
     private JLabel createBoldLabel(String text, int fontSize) {
