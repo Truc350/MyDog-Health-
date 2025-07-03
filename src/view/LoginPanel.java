@@ -1,5 +1,6 @@
 package view;
 
+import controller.PetController;
 import dao.UserDAO;
 import model.AppSession;
 import model.User;
@@ -18,9 +19,13 @@ public class LoginPanel extends JPanel {
     public JPanel panelBottom;
     private  CardLayout cardLayout;
     private  JPanel mainPanel;
+    private PetController petController;
+    private AddPetPanel addPetPanel;
     public LoginPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
+        this.addPetPanel = new AddPetPanel(cardLayout, mainPanel);
+        mainPanel.add(addPetPanel, "dashboard");
         setLayout(null);
         setBackground(Color.WHITE);
 
@@ -167,6 +172,9 @@ public class LoginPanel extends JPanel {
        if (user != null) {
            JOptionPane.showMessageDialog(this, "Đăng nhập thành công! \nXin chào, "+user.getName());
            AppSession.currentUser = user;
+           petController = new PetController(addPetPanel);
+           petController.reloadPetList();
+
            cardLayout.show(mainPanel, "dashboard");
        }else {
            JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);

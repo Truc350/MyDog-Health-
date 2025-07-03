@@ -4,6 +4,8 @@ import config.DBConnection;
 import model.Pet;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PetDAO {
     private Connection conn;
@@ -97,7 +99,6 @@ public class PetDAO {
             stmt.setString(6, pet.getMedicalHistory());
             stmt.setBytes(7, pet.getAvatar());
             stmt.setString(8, pet.getPetId());
-            stmt.setBytes(9, pet.getAvatar());
 
             return stmt.executeUpdate() > 0;
         } catch (Exception e) {
@@ -107,6 +108,39 @@ public class PetDAO {
     }
 
 
+
+    public List<Pet> getPetsByUserId(String userId) {
+        List<Pet> petList = new ArrayList<>();
+        String sql = "SELECT * FROM Pets WHERE userId = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Pet pet = new Pet(
+                        rs.getString("name"),
+                        rs.getString("breed"),
+                        rs.getInt("age"),
+                        rs.getFloat("weight"),
+                        rs.getString("gender"),
+                        rs.getString("medicalHistory")
+                );
+                pet.setPetId(rs.getString("petId"));
+                pet.setUserId(rs.getString("userId"));
+                pet.setAvatar(rs.getBytes("avatar"));
+
+                petList.add(pet);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return petList;
+    }
 
 }
 
