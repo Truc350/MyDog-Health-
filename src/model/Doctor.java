@@ -6,7 +6,7 @@ import java.util.List;
 public class Doctor {
     private String name;
     private String specialization;// chuyen mon cua bac si
-    private String status;// online, offline
+    private String status;// online, offline, busy
     private String imagePath;
 
     // Danh sách tĩnh quản lý tất cả bác sĩ (nếu không dùng DB)
@@ -17,6 +17,12 @@ public class Doctor {
         this.specialization = specialization;
         this.status = status;
         this.imagePath = imagePath;
+    }
+
+    public Doctor(String name, String specialization, String status) {
+        this.name = name;
+        this.specialization = specialization;
+        this.status = status;
     }
 
     public String getName() {
@@ -90,5 +96,22 @@ public class Doctor {
             }
         }
         return onlineDoctors;
+    }
+
+    public static Doctor findByName(String name) {
+        for (Doctor d : doctorList) {
+            if (d.getName().equalsIgnoreCase(name)) {
+                return d;
+            }
+        }
+        return null;
+    }
+
+    // Cập nhật trạng thái theo tên (dùng nếu chỉ có tên trong UI)
+    public static void updateStatus(String name, String newStatus) {
+        Doctor d = findByName(name);
+        if (d != null) {
+            d.setStatus(newStatus);
+        }
     }
 }

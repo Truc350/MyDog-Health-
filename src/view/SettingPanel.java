@@ -15,13 +15,17 @@ public class SettingPanel extends JPanel {
     private Setting settingModel;
     private CardLayout cardLayout;
     private JPanel mainPanel;
-    public SettingPanel(CardLayout cardLayout,JPanel mainPanel) {
-       this.cardLayout = cardLayout;
-       this.mainPanel = mainPanel;
+    public SettingPanel(CardLayout cardLayout, JPanel mainPanel) {
+        this.cardLayout = cardLayout;
+        this.mainPanel = mainPanel;
         this.settingModel = AppSession.currentUser.getSetting();
-        setLayout(null);
+
+        setLayout(new BorderLayout());
         setBackground(new Color(214, 229, 250));
         setPreferredSize(new Dimension(400, 700));
+
+        JPanel contentPanel = new JPanel(null);
+        contentPanel.setBackground(new Color(214, 229, 250));
 
         // Header cố định
         JButton btnBack = new JButton(new ImageIcon("src/image/back.png"));
@@ -29,12 +33,12 @@ public class SettingPanel extends JPanel {
         btnBack.setContentAreaFilled(false);
         btnBack.setBorderPainted(false);
         btnBack.setBounds(20, 15, 36, 36);
-        add(btnBack);
+        contentPanel.add(btnBack);
 
         JLabel title = new JLabel("Tài khoản người dùng");
         title.setFont(new Font("Roboto", Font.BOLD, 20));
         title.setBounds(70, 20, 300, 30);
-        add(title);
+        contentPanel.add(title);
 
         // User Info
         JPanel userInfo = createCardPanel();
@@ -56,13 +60,13 @@ public class SettingPanel extends JPanel {
         styleRoundIconButton(editBtn);
         editBtn.addActionListener(e -> editUserEmail(email));
         userInfo.add(editBtn);
-        add(userInfo);
+        contentPanel.add(userInfo);
 
         // Thông báo
         JLabel notifyLabel = new JLabel("Thông báo");
         notifyLabel.setFont(new Font("Roboto", Font.BOLD, 15));
         notifyLabel.setBounds(20, 145, 200, 25);
-        add(notifyLabel);
+        contentPanel.add(notifyLabel);
 
         JPanel notifyPanel = createCardPanel();
         notifyPanel.setLayout(new GridLayout(2, 1, 0, 5));
@@ -71,13 +75,13 @@ public class SettingPanel extends JPanel {
                 () -> settingModel.toggleAppointmentReminder()));
         notifyPanel.add(createToggleRow("Nhận thông báo từ bác sĩ", settingModel.isDoctorNotification(),
                 () -> settingModel.toggleDoctorNotification()));
-        add(notifyPanel);
+        contentPanel.add(notifyPanel);
 
         // Bảo mật
         JLabel securityLabel = new JLabel("Bảo mật");
         securityLabel.setFont(new Font("Roboto", Font.BOLD, 15));
         securityLabel.setBounds(20, 260, 100, 25);
-        add(securityLabel);
+        contentPanel.add(securityLabel);
 
         JPanel securityPanel = createCardPanel();
         securityPanel.setLayout(new GridLayout(3, 1, 0, 10));
@@ -103,10 +107,8 @@ public class SettingPanel extends JPanel {
                 User currentUser = AppSession.currentUser;
                 if (currentUser != null && currentUser.deleteAccount()) {
                     AppSession.logoutCurrentUser();
-                    // Điều hướng về màn hình chào mừng
                     JOptionPane.showMessageDialog(this, "Tài khoản đã bị xóa.");
                     cardLayout.show(mainPanel, "login");
-
                 } else {
                     JOptionPane.showMessageDialog(this, "Xóa tài khoản thất bại!");
                 }
@@ -114,13 +116,17 @@ public class SettingPanel extends JPanel {
         });
 
         securityPanel.add(deleteBtn);
-        add(securityPanel);
+        contentPanel.add(securityPanel);
 
-        // Footer cố định
+        add(contentPanel, BorderLayout.CENTER);
+
+        // Footer
         bottomMenuPanel = new BottomMenuPanel();
-        bottomMenuPanel.setBounds(0, 640, 400, 60);
-        add(bottomMenuPanel);
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+//        bottomMenuPanel.setPreferredSize(new Dimension(400, 60));
+        add(bottomMenuPanel, BorderLayout.SOUTH);
     }
+
 
     private void editUserEmail(JLabel emailLabel) {
         String currentEmail = AppSession.currentUser.getEmail();
@@ -216,7 +222,7 @@ public class SettingPanel extends JPanel {
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
         button.setOpaque(false);
-        button.setFont(new Font("Arial", Font.BOLD, 13));
+        button.setFont(new Font("Roboto", Font.BOLD, 13));
         button.setForeground(Color.WHITE);
 
         button.setUI(new BasicButtonUI() {

@@ -216,8 +216,10 @@ public class AIAnalysisResultsPanel extends JPanel {
         contentPanel.add(Box.createVerticalGlue());
 
         // ===== Thêm content và menu vào chính panel =====
+        BottomMenuPanel bottomMenuPanel = new BottomMenuPanel();
         add(contentPanel, BorderLayout.CENTER);
-        add(new BottomMenuPanel(), BorderLayout.SOUTH);
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+        add(bottomMenuPanel, BorderLayout.SOUTH);
 
     }
 
