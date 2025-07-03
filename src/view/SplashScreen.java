@@ -51,7 +51,7 @@ public class SplashScreen extends JFrame {
         setContentPane(layeredPane);
 
         // Timer chuyển sang MainScreen
-        Timer timer = new Timer(4000, (ActionEvent e) -> {
+        Timer timer = new Timer(3000, (ActionEvent e) -> {
             new MainScreen().setVisible(true);
             dispose();
         });

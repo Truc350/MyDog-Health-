@@ -65,6 +65,12 @@ public class PetController {
             File avatarFile = view.getAvatarFile();
             if (avatarFile != null) {
                 pet.setAvatar(readFileToBytes(avatarFile));
+            } else {
+                // ❗Lấy lại avatar cũ từ DB nếu người dùng không chọn avatar mới
+                Pet old = petDAO.findPetByNameAndUserId(pet.getName(), AppSession.currentUser.getUserId());
+                if (old != null) {
+                    pet.setAvatar(old.getAvatar());
+                }
             }
 
             boolean success = petDAO.updatePet(pet);
@@ -80,6 +86,7 @@ public class PetController {
             JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật: " + ex.getMessage());
         }
     }
+
 
 
 
@@ -140,4 +147,8 @@ public class PetController {
             return fis.readAllBytes();
         }
     }
+    public void reloadPetList() {
+        view.loadPetListFromDatabase();
+    }
+
 }

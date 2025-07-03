@@ -10,7 +10,11 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 import java.util.function.Consumer;
+import dao.PetDAO;
+import model.AppSession;
+
 
 public class AddPetPanel extends JPanel {
     private JButton btnBack, btnUploadAvatar, btnAdd;
@@ -25,6 +29,7 @@ public class AddPetPanel extends JPanel {
     private Consumer<String> deleteListener;
     private Consumer<String> editListener;
     private JButton btnUpdate;
+    private PetDAO petDAO;
 
 
     private JScrollPane scrollPane;
@@ -37,14 +42,76 @@ public class AddPetPanel extends JPanel {
         setPreferredSize(new Dimension(400, 700));
         setBackground(new Color(200, 220, 245));
         setLayout(null);
+        this.petDAO = new PetDAO();
+
 
         initComponents();
         layoutComponents();
+        loadPetListFromDatabase();// khi login lai thi se hien thi danh sach thu cung
     }
+
+    public void loadPetListFromDatabase() {
+        petListPanel.removeAll(); // Xóa danh sách cũ nếu có
+
+        if (AppSession.currentUser == null) return;
+
+        List<Pet> pets = petDAO.getPetsByUserId(AppSession.currentUser.getUserId());
+        for (Pet pet : pets) {
+            ImageIcon avatarIcon = null;
+            if (pet.getAvatar() != null) {
+                avatarIcon = new ImageIcon(pet.getAvatar());
+            }
+            addPetToListPanel(avatarIcon, pet.getName());
+        }
+    }
+
+    public void addPetToListPanel(ImageIcon avatarIcon, String name) {
+        JPanel panel = new JPanel(null);
+        panel.setPreferredSize(new Dimension(360, 70));
+        panel.setBackground(Color.WHITE);
+
+        JLabel imgLabel;
+        if (avatarIcon != null) {
+            Image scaled = avatarIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            BufferedImage rounded = makeRoundedImage(scaled, 50);
+            imgLabel = new JLabel(new ImageIcon(rounded));
+        } else {
+            imgLabel = new JLabel(new ImageIcon("src/image/defaultAvatar.png"));
+        }
+        imgLabel.setBounds(10, 10, 50, 50);
+        panel.add(imgLabel);
+
+        JLabel nameLabel = new JLabel(name);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        nameLabel.setBounds(70, 25, 100, 20);
+        panel.add(nameLabel);
+
+        JButton btnEdit = new JButton("Sửa");
+        btnEdit.setBounds(200, 20, 60, 30);
+        styleSmallButton(btnEdit);
+        btnEdit.addActionListener(e -> {
+            if (editListener != null) editListener.accept(name);
+        });
+        panel.add(btnEdit);
+
+        JButton btnDelete = new JButton("Xóa");
+        btnDelete.setBounds(270, 20, 60, 30);
+        styleSmallButton(btnDelete);
+        btnDelete.addActionListener(e -> {
+            if (deleteListener != null) deleteListener.accept(name);
+        });
+        panel.add(btnDelete);
+
+        petListPanel.add(panel);
+        petListPanel.revalidate();
+        petListPanel.repaint();
+    }
+
 
     private void initComponents() {
         btnBack = new JButton(new ImageIcon("src/image/back.png"));
         styleIconButton(btnBack);
+        btnBack.addActionListener(e -> cardLayout.show(mainPanel, "dashboard"));
 
         txtName = createRoundedTextField("Tên thú cưng");
         txtBreed = createRoundedTextField("Giống loài");
@@ -477,6 +544,7 @@ public class AddPetPanel extends JPanel {
     public String getEditingPetId() {
         return editingPetId;
     }
+
 
     public void exitEditMode() {
         editingPetId = null;
