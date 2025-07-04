@@ -1,23 +1,26 @@
 package view;
 
+import model.DiagnosisResult;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class MedicalResultPanel extends JPanel {
     JPanel topPanel, contentPanel, diagnosisBox, diagnosisLine, adviceBox, datePanel, symptomPanel, detailPanel;
+    JLabel dateLabel, symptomTitle, diagnosis, diagnosisText, adviceTitle, adviceContent, followUpTitle, followUpDate;
     JButton backButton;
     private CardLayout cardLayout;
     private JPanel mainPanel;
-
-
 
     public MedicalResultPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
 
         setLayout(new BorderLayout());
-        setBackground(new Color(226, 235, 245)); // Light blue-gray background
+        setBackground(new Color(226, 235, 245));
 
         // === Main content panel ===
         contentPanel = new JPanel();
@@ -26,7 +29,7 @@ public class MedicalResultPanel extends JPanel {
         contentPanel.setBorder(new EmptyBorder(10, 15, 10, 15));
         contentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //         ===== Nút quay lại =====
+        // === Back button ===
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.setOpaque(false);
         topPanel.setMaximumSize(new Dimension(1000, 50));
@@ -34,7 +37,7 @@ public class MedicalResultPanel extends JPanel {
         backButton.setText("");
         backButton.setIcon(new ImageIcon("src/image/back.png"));
         backButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "aiAnalysisResults");
+            cardLayout.show(mainPanel, "dogInfor"); // Quay lại DogInforPanel
         });
 
         backButton.setFocusPainted(false);
@@ -45,7 +48,7 @@ public class MedicalResultPanel extends JPanel {
         backButton.setPreferredSize(new Dimension(34, 34));
         backButton.setFont(new Font("Roboto", Font.BOLD, 16));
         backButton.setMaximumSize(new Dimension(36, 36));
-        backButton.setBorder(new RoundedBorder(36)); // hình tròn
+        backButton.setBorder(new RoundedBorder(36));
         topPanel.add(backButton);
         contentPanel.add(topPanel);
         contentPanel.add(Box.createVerticalStrut(4));
@@ -58,7 +61,7 @@ public class MedicalResultPanel extends JPanel {
         diagnosisBox.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
         diagnosisBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel dateLabel = createBoldLabel("Ngày 20 tháng 6, 2025", 15);
+        dateLabel = createBoldLabel("", 15);
         ImageIcon iconCa = new ImageIcon("src\\image\\calendar.png");
         Image image1 = iconCa.getImage();
         Image newImage1 = image1.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -68,10 +71,10 @@ public class MedicalResultPanel extends JPanel {
         datePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         datePanel.setOpaque(false);
         datePanel.add(dateLabel);
-        diagnosisBox.add(Box.createVerticalStrut(1)); // thêm khoảng cách nhỏ
+        diagnosisBox.add(Box.createVerticalStrut(1));
         diagnosisBox.add(datePanel);
 
-        JLabel symptomTitle = createBoldLabel("Triệu chứng", 15);
+        symptomTitle = createBoldLabel("Triệu chứng", 15);
         ImageIcon iconSym = new ImageIcon("src\\image\\stethoscope.png");
         Image image2 = iconSym.getImage();
         Image newImage2 = image2.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -88,29 +91,22 @@ public class MedicalResultPanel extends JPanel {
         detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
         detailPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         detailPanel.setOpaque(false);
-
-        detailPanel.add(createPlainLabel("+ Sốt"));
-        detailPanel.add(Box.createVerticalStrut(2)); // khoảng cách nhỏ
-        detailPanel.add(createPlainLabel("+ Nôn"));
-        detailPanel.add(Box.createVerticalStrut(2)); // khoảng cách nhỏ
-        detailPanel.add(createPlainLabel("+ Tiêu chảy"));
         diagnosisBox.add(detailPanel);
 
-        JLabel diagnosis = createBoldLabel("Chẩn đoán: ", 15);
+        diagnosis = createBoldLabel("Chẩn đoán: ", 15);
         ImageIcon iconDio = new ImageIcon("src\\image\\diagnosis.png");
         Image image3 = iconDio.getImage();
         Image newImage3 = image3.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon3 = new ImageIcon(newImage3);
         diagnosis.setIcon(icon3);
         diagnosis.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JLabel diagnosisText = new JLabel("Viêm đường ruột");
+        diagnosisText = new JLabel("");
         diagnosisText.setFont(new Font("Roboto", Font.PLAIN, 15));
 
         diagnosisLine = new JPanel(new FlowLayout(FlowLayout.LEFT));
         diagnosisLine.setOpaque(false);
         diagnosisLine.add(diagnosis);
         diagnosisLine.add(diagnosisText);
-
         diagnosisBox.add(Box.createVerticalStrut(5));
         diagnosisBox.add(diagnosisLine);
 
@@ -118,10 +114,8 @@ public class MedicalResultPanel extends JPanel {
         ImageIcon originalIcon = new ImageIcon("src\\image\\dog1.jpg");
         Image scaledImage = originalIcon.getImage().getScaledInstance(250, 200, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(scaledImage);
-
         JLabel imageLabel = new JLabel(resizedIcon);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
         // === Advice box ===
         adviceBox = new RoundedPanel(20, Color.WHITE, new Color(13, 153, 255));
@@ -130,22 +124,22 @@ public class MedicalResultPanel extends JPanel {
         adviceBox.setBackground(Color.WHITE);
         adviceBox.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel adviceTitle = createBoldLabel("Tư vấn bác sĩ:", 15);
+        adviceTitle = createBoldLabel("Tư vấn bác sĩ:", 15);
         ImageIcon iconAdvise = new ImageIcon("src\\image\\advise.png");
         Image image4 = iconAdvise.getImage();
         Image newImage4 = image4.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon4 = new ImageIcon(newImage4);
         adviceTitle.setIcon(icon4);
 
-        JLabel adviceContent = new JLabel("<html><div style='width:250px;'>Nên uống nhiều nước, hạn chế chạy nhảy, ăn thực phẩm mềm</div></html>");
+        adviceContent = new JLabel("");
         adviceContent.setFont(new Font("Roboto", Font.PLAIN, 15));
-        JLabel followUpTitle = createBoldLabel("Gợi ý tái khám:", 15);
+        followUpTitle = createBoldLabel("Gợi ý tái khám:", 15);
         ImageIcon iconFollow = new ImageIcon("src\\image\\goiy.png");
         Image image5 = iconFollow.getImage();
         Image newImage5 = image5.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon5 = new ImageIcon(newImage5);
         followUpTitle.setIcon(icon5);
-        JLabel followUpDate = createPlainLabel("Ngày 23 tháng 6, 2025");
+        followUpDate = createPlainLabel("");
 
         adviceBox.add(adviceTitle);
         adviceBox.add(adviceContent);
@@ -179,13 +173,63 @@ public class MedicalResultPanel extends JPanel {
         return label;
     }
 
+    public void updateMedicalResult(List<DiagnosisResult> results, String mainSymptom, String otherSymptoms, String imagePath) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        dateLabel.setText("Ngày " + now.format(formatter));
 
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("Kết quả khám");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(400, 700);
-//        frame.setLocationRelativeTo(null);
-//        frame.setContentPane(new view.MedicalResultPanel());
-//        frame.setVisible(true);
-//    }
+        // Bao bọc detailPanel trong JScrollPane
+        detailPanel.removeAll();
+        JScrollPane scrollPane = new JScrollPane(detailPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setPreferredSize(new Dimension(300, 100)); // Kích thước cố định, có thể cuộn
+
+        String[] symptoms = (mainSymptom + ", " + otherSymptoms).split(",\\s*");
+        for (String symptom : symptoms) {
+            if (!symptom.trim().isEmpty()) {
+                detailPanel.add(createPlainLabel("+ " + symptom.trim()));
+                detailPanel.add(Box.createVerticalStrut(2));
+            }
+        }
+        detailPanel.revalidate();
+        detailPanel.repaint();
+
+        if (results != null && !results.isEmpty() && results.get(0).getDiseaseName() != null && !results.get(0).getDiseaseName().equals("Không xác định")) {
+            DiagnosisResult topResult = results.stream()
+                    .max((r1, r2) -> Double.compare(r1.getProbability(), r2.getProbability()))
+                    .orElse(null);
+            if (topResult != null) {
+                diagnosisText.setText(topResult.getDiseaseName());
+                adviceContent.setText("<html><div style='width:250px;'>" + topResult.getStatusNote() + "</div></html>");
+                followUpDate.setText("Ngày " + now.plusDays(3).format(formatter));
+            }
+        } else {
+            diagnosisText.setText("Không xác định");
+            adviceContent.setText("<html><div style='width:250px;'>Lỗi kết nối với API AI. Vui lòng thử lại sau hoặc liên hệ bác sĩ.</div></html>");
+            followUpDate.setText("Không xác định");
+        }
+
+        if (imagePath != null && !imagePath.isEmpty()) {
+            ImageIcon originalIcon = new ImageIcon(imagePath);
+            Image scaledImage = originalIcon.getImage().getScaledInstance(250, 200, Image.SCALE_SMOOTH);
+            ImageIcon resizedIcon = new ImageIcon(scaledImage);
+            for (Component comp : contentPanel.getComponents()) {
+                if (comp instanceof JLabel && ((JLabel) comp).getIcon() != null) {
+                    ((JLabel) comp).setIcon(resizedIcon);
+                    break;
+                }
+            }
+        }
+
+        // Thêm scrollPane vào diagnosisBox thay vì detailPanel trực tiếp
+        diagnosisBox.remove(detailPanel);
+        diagnosisBox.add(scrollPane);
+        revalidate();
+        repaint();
+    }
+    private void _extracted() {
+        detailPanel.add(Box.createVerticalStrut(2));
+    }
+
 }

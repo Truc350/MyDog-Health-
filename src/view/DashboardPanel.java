@@ -18,6 +18,7 @@ public class DashboardPanel extends JPanel {
     private BottomMenuPanel bottomMenuPanel;
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private AIAnalysisResultsPanel analysisResultsPanel;
 
     public DashboardPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
@@ -201,13 +202,15 @@ public class DashboardPanel extends JPanel {
         CardLayout cardLayout = new CardLayout();
         JPanel mainPanel = new JPanel(cardLayout);
 
+//        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(ca)
         DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
         DashboardPanel dashboardPanel = new DashboardPanel(cardLayout, mainPanel);
-        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
-        CheckSymptomsPanel checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel, dogInforPanel);
-        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
-        CareGuidePanel careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
         MedicalResultPanel medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
+
+        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
+        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel, medicalResultPanel);
+        CheckSymptomsPanel checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel, dogInforPanel);
+        CareGuidePanel careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
         ChatboxPanel chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
         CallDoctorPanel callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
         SettingPanel settingPanel = new SettingPanel(cardLayout, mainPanel);

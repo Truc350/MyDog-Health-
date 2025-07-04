@@ -1,11 +1,14 @@
 package view;
 
+import dao.DiagnosisDAO;
 import model.CareAdvice;
+import model.DiagnosisResult;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 public class AIAnalysisResultsPanel extends JPanel {
     JButton backButton;
@@ -240,6 +243,26 @@ public class AIAnalysisResultsPanel extends JPanel {
 
     public void setAnalysisResult(String resultText) {
         infoLabel.setText("<html><body style='width: 300px;'>" + resultText.replace("\n", "<br>") + "</body></html>");
+    }
+
+
+    public void showAnalysisResults(List<DiagnosisResult> results) {
+        resultPanel.removeAll();
+
+        DiagnosisDAO dao = new DiagnosisDAO();
+        for (DiagnosisResult r : results) {
+            JLabel left = new JLabel(r.getDiseaseName());
+            JLabel right = new JLabel(String.format("%.0f%%", r.getProbability()), SwingConstants.RIGHT);
+            left.setFont(new Font("Roboto", Font.BOLD, 16));
+            right.setFont(new Font("Roboto", Font.BOLD, 16));
+            resultPanel.add(left);
+            resultPanel.add(right);
+
+            dao.saveDiagnosis(r); // Lưu vào database
+        }
+
+        resultPanel.revalidate();
+        resultPanel.repaint();
     }
 
 
