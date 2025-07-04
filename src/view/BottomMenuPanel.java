@@ -22,9 +22,9 @@ public class BottomMenuPanel extends JPanel {
 
         addButton("dashboard", "src/image/home.png");
         addButton("addPet", "src/image/plus.png");
+        addButton("notification", "src/image/notification.png");
         addButton("doctorSelection", "src/image/phone-call.png");
-        addButton("userPanel", "src/image/user.png");
-        addButton("settings", "src/image/setting.png");
+        addButton("setting", "src/image/setting.png");
     }
 
     private void addButton(String cardName, String iconPath) {
