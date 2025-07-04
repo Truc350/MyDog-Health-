@@ -1,5 +1,6 @@
 package view;
 
+import model.DiagnosisResult;
 import model.OpenAIService;
 import model.Symptom;
 
@@ -12,17 +13,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class DogInforPanel extends JPanel {
     private JLabel lblMainSymptomContent, lblLocationContent, lblTimeContent, lblOtherSymptomsContent, imageLabel;
     private JButton btnEditInfo, btnAnalyzeAI, btnCallVet;
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private MedicalResultPanel medicalResultPanel;
 
 
-    public DogInforPanel(CardLayout cardLayout, JPanel mainPanel) {
+    public DogInforPanel(CardLayout cardLayout, JPanel mainPanel, MedicalResultPanel medicalResultPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
+        this.medicalResultPanel = medicalResultPanel;
 
         setLayout(new BorderLayout());
         setBackground(new Color(200, 220, 245));
@@ -213,43 +217,26 @@ public class DogInforPanel extends JPanel {
         btnAnalyzeAI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "aiAnalysisResults");
-//                String mainSymptom = lblMainSymptomContent.getText();
-//                String location = lblLocationContent.getText();
-//                String time = lblTimeContent.getText();
-//                String otherSymptoms = lblOtherSymptomsContent.getText();
-//
-//                String prompt = String.format(
-//                        "Chó có triệu chứng chính là '%s' ở vị trí '%s', xuất hiện %s. Các triệu chứng khác gồm: %s. "
-//                                + "Hãy chẩn đoán bệnh và đưa ra hướng điều trị phù hợp.",
-//                        mainSymptom, location, time, otherSymptoms
-//                );
-//
-//                // Gọi AI trong thread riêng
-//                new Thread(() -> {
-//                    OpenAIService ai = new OpenAIService();
-//                    try {
-//                        String result = ai.ask(prompt);
-//
-//                        // Gọi lại UI ở EDT
-//                        SwingUtilities.invokeLater(() -> {
-//                            Component comp = findComponentByName("aiAnalysisResults");
-//                            if (comp instanceof AIAnalysisResultsPanel aiPanel) {
-//                                aiPanel.setAnalysisResult(result);
-//                                cardLayout.show(mainPanel, "aiAnalysisResults");
-//                            }
-//                        });
-//                    } catch (IOException ex) {
-//                        ex.printStackTrace();
-//                        SwingUtilities.invokeLater(() ->
-//                                JOptionPane.showMessageDialog(DogInforPanel.this,
-//                                        "Không thể kết nối tới AI. Hãy kiểm tra Ollama server.",
-//                                        "Lỗi AI", JOptionPane.ERROR_MESSAGE)
-//                        );
-//                    }
-//                }).start();
+                String mainSymptom = lblMainSymptomContent.getText();
+                String otherSymptoms = lblOtherSymptomsContent.getText();
+                String imagePath = ((ImageIcon) imageLabel.getIcon()).getImage().toString(); // Lấy đường dẫn ảnh
+
+                String prompt = String.format(
+                        "Chó có triệu chứng chính là '%s', xuất hiện %s. Các triệu chứng khác gồm: %s. "
+                                + "Hãy chẩn đoán bệnh và đưa ra hướng điều trị phù hợp.",
+                        mainSymptom, lblTimeContent.getText(), otherSymptoms
+                );
+
+                new Thread(() -> {
+                    List<DiagnosisResult> results = model.AIDiagnosisEngine.analyzeSymptoms("pet123", prompt);
+                    SwingUtilities.invokeLater(() -> {
+                        medicalResultPanel.updateMedicalResult(results, mainSymptom, otherSymptoms, imagePath);
+                        cardLayout.show(mainPanel, "medicalResult");
+                    });
+                }).start();
             }
         });
+
 
 
 
@@ -312,16 +299,11 @@ public class DogInforPanel extends JPanel {
         button.setBorderRadius(10);
         return button;
     }
-
     public void updateDogInfo(Symptom symptom) {
-        lblMainSymptomContent.setText(symptom.getName());
-        lblLocationContent.setText(symptom.getLocation());
-
-        // Format thời gian từ Date -> String
-        lblTimeContent.setText(symptom.getDateNoticed());
-
-        lblOtherSymptomsContent.setText(symptom.getDescription());
-
+        lblMainSymptomContent.setText(symptom.getName()); // Ví dụ: "Tiêu chảy"
+        lblLocationContent.setText(symptom.getLocation()); // Ví dụ: "Miệng"
+        lblTimeContent.setText(symptom.getDateNoticed()); // Ví dụ: "2 ngày trước"
+        lblOtherSymptomsContent.setText(symptom.getDescription()); // Ví dụ: "Sốt, Hô hấp, Nôn mửa, Kén ăn"
         setDogImage(symptom.getImagePath());
     }
 
