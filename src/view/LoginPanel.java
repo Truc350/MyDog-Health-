@@ -18,10 +18,12 @@ public class LoginPanel extends JPanel {
     private JButton btnLogin;
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private DashboardPanel dashboardPanel;
 
-    public LoginPanel(CardLayout cardLayout, JPanel mainPanel) {
+    public LoginPanel(CardLayout cardLayout, JPanel mainPanel,DashboardPanel dashboardPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
+        this.dashboardPanel = dashboardPanel;
 
         setLayout(null);
         setBackground(Color.WHITE);
@@ -161,8 +163,12 @@ public class LoginPanel extends JPanel {
         if (user != null) {
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công!\nXin chào, " + user.getName());
             AppSession.currentUser = user;
+            dashboardPanel.updateUserInfo(); // 👈 cập nhật tên người dùng
             cardLayout.show(mainPanel, "dashboard");
-        } else {
+
+
+        }
+        else {
             JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
