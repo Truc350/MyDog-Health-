@@ -24,8 +24,8 @@ public class LoginPanel extends JPanel {
     public LoginPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
-        this.addPetPanel = new AddPetPanel(cardLayout, mainPanel);
-        mainPanel.add(addPetPanel, "dashboard");
+//        this.addPetPanel = new AddPetPanel(cardLayout, mainPanel);
+//        mainPanel.add(addPetPanel, "dashboard");
         setLayout(null);
         setBackground(Color.WHITE);
 
@@ -172,6 +172,10 @@ public class LoginPanel extends JPanel {
        if (user != null) {
            JOptionPane.showMessageDialog(this, "Đăng nhập thành công! \nXin chào, "+user.getName());
            AppSession.currentUser = user;
+
+           this.addPetPanel = new AddPetPanel(cardLayout, mainPanel);
+           mainPanel.add(addPetPanel, "dashboard");
+
            petController = new PetController(addPetPanel);
            petController.reloadPetList();
 

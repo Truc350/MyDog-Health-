@@ -238,6 +238,13 @@ public class DashboardPanel extends JPanel {
         cardLayout.show(mainPanel, "dashboard");
         frame.setVisible(true);
         frame.setResizable(false);
+
+        // ✅ set màu nút sau khi frame đã hiển thị
+        SwingUtilities.invokeLater(() -> {
+            BottomMenuPanel bottomMenuPanel = new BottomMenuPanel();
+        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+            bottomMenuPanel.setDefaultSelected("dashboard");
+        });
     }
 
 }

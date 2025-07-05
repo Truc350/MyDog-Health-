@@ -24,6 +24,7 @@ public class MainScreen extends JFrame {
     private PetController petController;
     private AIAnalysisResultsPanel analysisResultsPanel;
     private NotificationPanel notificationPanel;
+    private BottomMenuPanel bottomMenuPanel;
 
     public MainScreen() throws HeadlessException {
         setTitle("MyDog Health+");
@@ -59,6 +60,9 @@ public class MainScreen extends JFrame {
         checkSymptomsPanel.setDogInforPanel(dogInforPanel);
         petController = new PetController(addPetPanel);
         notificationPanel = new NotificationPanel(cardLayout, mainPanel);
+        bottomMenuPanel = new BottomMenuPanel();
+//        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+//        bottomMenuPanel.setDefaultSelected("dashboard");
 
         mainPanel.add(notificationPanel, "notification");
         mainPanel.add(callDoctorPanel, "callDoctor");
@@ -69,16 +73,23 @@ public class MainScreen extends JFrame {
         mainPanel.add(dogInforPanel, "dogInfor");
         mainPanel.add(checkSymptomsPanel, "checkSymptoms");
         mainPanel.add(doctorSelectionPanel, "doctorSelection");
-//        mainPanel.add(addPetPanel, "addPet");
+        mainPanel.add(addPetPanel, "addPet");
         mainPanel.add(dashboardPanel, "dashboard");
         mainPanel.add(loginPanel, "login");
         mainPanel.add(registerPanel, "register");
         mainPanel.add(changePasswordPanel, "changePassword");
         mainPanel.add(settingPanel, "setting");
+        mainPanel.add(bottomMenuPanel, "bottomMenu");
         add(mainPanel);
         cardLayout.show(mainPanel, "login");
 
         this.setVisible(true);
+
+        // ✅ set màu nút sau khi frame đã hiển thị
+        SwingUtilities.invokeLater(() -> {
+            bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
+            bottomMenuPanel.setDefaultSelected("dashboard");
+        });
 
     }
 }

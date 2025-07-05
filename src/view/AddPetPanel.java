@@ -82,7 +82,7 @@ public class AddPetPanel extends JPanel {
         panel.add(imgLabel);
 
         JLabel nameLabel = new JLabel(name);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        nameLabel.setFont(new Font("Roboto", Font.BOLD, 13));
         nameLabel.setBounds(70, 25, 100, 20);
         panel.add(nameLabel);
 
@@ -124,14 +124,14 @@ public class AddPetPanel extends JPanel {
         rdoFemale = new JRadioButton("Cái");
         rdoMale.setOpaque(false);
         rdoFemale.setOpaque(false);
-        rdoMale.setFont(new Font("Arial", Font.BOLD, 13));
-        rdoFemale.setFont(new Font("Arial", Font.BOLD, 13));
+        rdoMale.setFont(new Font("Roboto", Font.BOLD, 13));
+        rdoFemale.setFont(new Font("Roboto", Font.BOLD, 13));
         genderGroup = new ButtonGroup();
         genderGroup.add(rdoMale);
         genderGroup.add(rdoFemale);
 
         btnUploadAvatar = new JButton(new ImageIcon("src/image/uploadImg.png"));
-        btnUploadAvatar.setFont(new Font("Arial", Font.BOLD, 12));
+        btnUploadAvatar.setFont(new Font("Roboto", Font.BOLD, 12));
         btnUploadAvatar.setForeground(Color.BLACK);
         btnUploadAvatar.setBackground(Color.WHITE);
         btnUploadAvatar.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
@@ -140,13 +140,13 @@ public class AddPetPanel extends JPanel {
 
 
         btnAdd = new JButton("Thêm");
-        btnAdd.setFont(new Font("Arial", Font.BOLD, 14));
+        btnAdd.setFont(new Font("Roboto", Font.BOLD, 14));
         btnAdd.setForeground(Color.WHITE);
         btnAdd.setBackground(new Color(90, 150, 255));
         btnAdd.setBorder(new RoundedBorder(12));
         btnAdd.setFocusPainted(false);
         btnUpdate = new JButton("Cập nhật");
-        btnUpdate.setFont(new Font("Arial", Font.BOLD, 14));
+        btnUpdate.setFont(new Font("Roboto", Font.BOLD, 14));
         btnUpdate.setForeground(Color.WHITE);
         btnUpdate.setBackground(new Color(90, 150, 255));
         btnUpdate.setBorder(new RoundedBorder(12));
@@ -214,7 +214,7 @@ public class AddPetPanel extends JPanel {
         add(btnBack);
 
         JLabel lblTitle = new JLabel("Thêm thú cưng");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTitle.setFont(new Font("Roboto", Font.BOLD, 18));
         lblTitle.setBounds(20, 50, 300, 30);
         add(lblTitle);
 
@@ -242,7 +242,7 @@ public class AddPetPanel extends JPanel {
         add(txtMedicalHistory);
 
         JLabel lblList = new JLabel("Danh sách thú cưng đã có");
-        lblList.setFont(new Font("Arial", Font.BOLD, 15));
+        lblList.setFont(new Font("Roboto", Font.BOLD, 15));
         lblList.setBounds(20, 315, 300, 25);
         add(lblList);
 
@@ -287,7 +287,7 @@ public class AddPetPanel extends JPanel {
         panel.add(imgLabel);
 
         JLabel nameLabel = new JLabel(name);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 13));
+        nameLabel.setFont(new Font("Roboto", Font.BOLD, 13));
         nameLabel.setBounds(70, 25, 100, 20);
         panel.add(nameLabel);
 
@@ -338,7 +338,7 @@ public class AddPetPanel extends JPanel {
 
     private JTextField createRoundedTextField(String placeholder) {
         JTextField field = new JTextField(placeholder);
-        field.setFont(new Font("Arial", Font.PLAIN, 13));
+        field.setFont(new Font("Roboto", Font.PLAIN, 13));
         field.setForeground(Color.GRAY);
         field.setBorder(new CompoundBorder(
                 new LineBorder(new Color(130, 170, 255), 1, true),
@@ -373,7 +373,7 @@ public class AddPetPanel extends JPanel {
     }
 
     private void styleSmallButton(JButton btn) {
-        btn.setFont(new Font("Arial", Font.BOLD, 12));
+        btn.setFont(new Font("Roboto", Font.BOLD, 12));
         btn.setBackground(new Color(90, 150, 255));
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
