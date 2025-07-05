@@ -13,7 +13,8 @@ public class BottomMenuPanel extends JPanel {
     private JPanel mainPanel;
 
     private Map<String, JButton> buttonMap = new HashMap<>();
-    private JButton selectedButton = null;
+    //    private JButton selectedButton = null;\
+    private String currentCard = null;
 
     public BottomMenuPanel() {
         setLayout(new GridLayout(1, 5, 10, 0));
@@ -54,21 +55,58 @@ public class BottomMenuPanel extends JPanel {
         SwingUtilities.invokeLater(() -> handleNavigation("dashboard"));  // Chọn mặc định
     }
 
-    private void handleNavigation(String cardName) {
-        // Đổi màu nút
-        JButton newSelected = buttonMap.get(cardName);
-        if (newSelected == null) return;
+//    public void handleNavigation(String cardName) {
+//        // Đổi màu nút
+//        JButton newSelected = buttonMap.get(cardName);
+//        if (newSelected == null) return;
+//
+//
+//        if (newSelected == selectedButton) return;
+//
+//        if (selectedButton != null) {
+//            selectedButton.setBackground(defaultColor);
+//        }
+//
+//        newSelected.setBackground(selectedColor);
+//        selectedButton = newSelected;
+//
+//        // Chuyển card
+//        if (cardLayout != null && mainPanel != null) {
+//            cardLayout.show(mainPanel, cardName);
+//        }
+//    }
+//
+//    /**
+//     * ✅ Gọi hàm này để đặt màu mặc định cho "dashboard" khi khởi chạy
+//     **/
+//    public void setDefaultSelected(String cardName) {
+//        JButton defaultButton = buttonMap.get(cardName);
+//        if (defaultButton != null) {
+//            defaultButton.setBackground(selectedColor);
+//            selectedButton = defaultButton;
+//        }
+//    }
 
-        if (selectedButton != null) {
-            selectedButton.setBackground(defaultColor);
+    public void handleNavigation(String cardName) {
+        if (cardName.equals(currentCard)) return; // đã chọn rồi thì thôi
+
+        // Reset tất cả về default
+        for (JButton btn : buttonMap.values()) {
+            btn.setBackground(defaultColor);
         }
 
-        newSelected.setBackground(selectedColor);
-        selectedButton = newSelected;
+        JButton newSelected = buttonMap.get(cardName);
+        if (newSelected != null) {
+            newSelected.setBackground(selectedColor);
+            currentCard = cardName;
+        }
 
-        // Chuyển card
         if (cardLayout != null && mainPanel != null) {
             cardLayout.show(mainPanel, cardName);
         }
+    }
+
+    public void setDefaultSelected(String cardName) {
+        handleNavigation(cardName); // dùng lại luôn, cho tiện
     }
 }
