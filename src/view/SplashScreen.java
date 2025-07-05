@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 
 public class SplashScreen extends JFrame {
     public SplashScreen() throws HeadlessException {
-        setTitle("MyDog Health+");
+        setTitle("MyDogHealth+");
         setSize(400, 700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

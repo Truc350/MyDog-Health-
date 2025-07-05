@@ -42,9 +42,10 @@ public class MainScreen extends JFrame {
 
         // Khởi tạo các panel
         dashboardPanel = new DashboardPanel(cardLayout, mainPanel); // phải khởi trước để truyền vào LoginPanel
-        loginPanel = new LoginPanel(cardLayout, mainPanel);
+        loginPanel = new LoginPanel(cardLayout, mainPanel, dashboardPanel);
         registerPanel = new RegisterPanel(cardLayout, mainPanel);
-        addPetPanel = new AddPetPanel(cardLayout, mainPanel);
+         addPetPanel = new AddPetPanel(cardLayout, mainPanel, dashboardPanel);
+
         aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
         careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
         medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
@@ -62,7 +63,7 @@ public class MainScreen extends JFrame {
         checkSymptomsPanel.setDogInforPanel(dogInforPanel);
 
         // Controller
-        petController = new PetController(addPetPanel);
+        petController = new PetController(addPetPanel,dashboardPanel, addPetPanel);
 
         // Thêm tất cả các panel vào mainPanel
         mainPanel.add(loginPanel, "login");

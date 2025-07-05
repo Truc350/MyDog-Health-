@@ -11,145 +11,142 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class PetController {
     private AddPetPanel view;
+    private DashboardPanel dashboardPanel; // ✅ Thêm thuộc tính
     private PetDAO petDAO;
+    private AddPetPanel addPetPanel;
 
-    public PetController(AddPetPanel view) {
+
+    public PetController(AddPetPanel view, DashboardPanel dashboardPanel, AddPetPanel addPetPanel) {
         this.view = view;
+        this.dashboardPanel = dashboardPanel; // ✅ Gán vào
         this.petDAO = new PetDAO();
+        this.addPetPanel = addPetPanel;
+
         init();
     }
 
     private void init() {
         view.getBtnAdd().addActionListener(e -> addPet());
-        view.setDeleteListener(petName -> deletePet(petName));
-        view.setEditListener(petName -> editPet(petName));
+        view.setDeleteListener(this::deletePet);
+        view.setEditListener(this::editPet);
         view.getBtnUpdate().addActionListener(e -> updatePet());
-
     }
 
-
-//    private void editPet(String petName) {
-//        Pet pet = petDAO.findPetByNameAndUserId(petName, AppSession.currentUser.getUserId());
-//        if (pet != null) {
-//            ImageIcon icon = (pet.getAvatar() != null) ?
-//                    new ImageIcon(new ImageIcon(pet.getAvatar()).getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH)) :
-//                    new ImageIcon("src/image/default_pet.png");
-//
-//            view.loadPetToEdit(pet, icon);
-//        }
-//    }
-    private void editPet(String petName) {
-        Pet pet = petDAO.findPetByNameAndUserId(petName, AppSession.currentUser.getUserId());
+    private void editPet(String name) {
+        Pet pet = petDAO.findPetByNameAndUserId(name, AppSession.currentUser.getUserId());
         if (pet != null) {
-            view.loadPetToEdit(pet);
+            ImageIcon avatarIcon = null;
+            if (pet.getAvatar() != null) {
+                avatarIcon = new ImageIcon(pet.getAvatar());
+            }
+            addPetPanel.loadPetToEdit(pet, avatarIcon);
+        } else {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy thú cưng!");
         }
     }
-
-
 
     private void updatePet() {
         try {
             Pet pet = new Pet(
-                    view.getNamePet(),
-                    view.getBreed(),
-                    view.getAge(),
-                    view.getWeight(),
-                    view.getGender(),
-                    view.getMedicalHistory()
+                    addPetPanel.getNamePet(),
+                    addPetPanel.getBreed(),
+                    addPetPanel.getAge(),
+                    addPetPanel.getWeight(),
+                    addPetPanel.getGender(),
+                    addPetPanel.getMedicalHistory()
             );
             pet.setUserId(AppSession.currentUser.getUserId());
-            pet.setPetId(view.getEditingPetId()); // Lấy id đang sửa
+            pet.setPetId(addPetPanel.getEditingPetId());
 
-            File avatarFile = view.getAvatarFile();
+            File avatarFile = addPetPanel.getAvatarFile();
             if (avatarFile != null) {
-                pet.setAvatar(readFileToBytes(avatarFile));
+                byte[] avatarBytes = Files.readAllBytes(avatarFile.toPath());
+                pet.setAvatar(avatarBytes);
             } else {
-                // ❗Lấy lại avatar cũ từ DB nếu người dùng không chọn avatar mới
-                Pet old = petDAO.findPetByNameAndUserId(pet.getName(), AppSession.currentUser.getUserId());
-                if (old != null) {
-                    pet.setAvatar(old.getAvatar());
+                // nếu không chọn ảnh mới thì giữ ảnh cũ
+                Pet oldPet = petDAO.findPetByNameAndUserId(pet.getName(), pet.getUserId());
+                if (oldPet != null) {
+                    pet.setAvatar(oldPet.getAvatar());
                 }
             }
 
             boolean success = petDAO.updatePet(pet);
             if (success) {
-                view.clear();
-                JOptionPane.showMessageDialog(null, "Cập nhật thú cưng thành công!");
+                JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
+                addPetPanel.clear();
+                addPetPanel.loadPetListFromDatabase();
             } else {
-                JOptionPane.showMessageDialog(null, "Không thể cập nhật thú cưng!");
+                JOptionPane.showMessageDialog(null, "Cập nhật thất bại!");
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật thú cưng: " + ex.getMessage());
         }
     }
-
-
-
 
     private void addPet() {
         try {
             Pet pet = new Pet(
-                    view.getNamePet(),
-                    view.getBreed(),
-                    view.getAge(),
-                    view.getWeight(),
-                    view.getGender(),
-                    view.getMedicalHistory()
+                    addPetPanel.getNamePet(),
+                    addPetPanel.getBreed(),
+                    addPetPanel.getAge(),
+                    addPetPanel.getWeight(),
+                    addPetPanel.getGender(),
+                    addPetPanel.getMedicalHistory()
             );
-
             pet.setUserId(AppSession.currentUser.getUserId());
 
-            // Avatar nếu có
-            File avatarFile = view.getAvatarFile();
+            File avatarFile = addPetPanel.getAvatarFile();
             if (avatarFile != null) {
-                byte[] avatarBytes = readFileToBytes(avatarFile);
+                byte[] avatarBytes = Files.readAllBytes(avatarFile.toPath());
                 pet.setAvatar(avatarBytes);
             }
 
             boolean success = petDAO.addPet(pet);
             if (success) {
-                view.clear();
-                view.addPetToListPanel( // ✅ Thêm mới vào danh sách
-                        avatarFile != null ? avatarFile.getAbsolutePath() : "src/image/default_pet.png",
-                        pet.getName()
-                );
-                JOptionPane.showMessageDialog(null, "Đã thêm thú cưng thành công!");
+                JOptionPane.showMessageDialog(null, "Thêm thú cưng thành công!");
+                addPetPanel.clear();
+                addPetPanel.loadPetListFromDatabase();
+            } else {
+                JOptionPane.showMessageDialog(null, "Thêm thú cưng thất bại!");
             }
-
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Lỗi khi thêm thú cưng: " + ex.getMessage());
         }
     }
 
-    private void deletePet(String petName) {
-        try {
-            String userId = AppSession.currentUser.getUserId();
-            boolean success = petDAO.deletePetByNameAndUserId(petName, userId);
+    private void deletePet(String name) {
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Bạn có chắc chắn muốn xóa thú cưng này?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = petDAO.deletePet(AppSession.currentUser.getUserId(), name);
             if (success) {
-                view.removePetFromListPanel(petName);
-                JOptionPane.showMessageDialog(null, "Đã xóa thú cưng: " + petName);
+                addPetPanel.removePetFromListPanel(name);
+                addPetPanel.syncDashboard();
+                JOptionPane.showMessageDialog(null, "Xóa thành công!");
             } else {
-                JOptionPane.showMessageDialog(null, "Không thể xóa thú cưng: " + petName);
+                JOptionPane.showMessageDialog(null, "Xóa thất bại!");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi xóa thú cưng: " + e.getMessage());
         }
     }
+
 
     private byte[] readFileToBytes(File file) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
             return fis.readAllBytes();
         }
     }
+
     public void reloadPetList() {
         view.loadPetListFromDatabase();
+        dashboardPanel.loadPetsFromDatabase(); // ✅ Đồng bộ dashboard
     }
-
 }

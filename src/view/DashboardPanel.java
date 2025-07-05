@@ -1,41 +1,44 @@
 package view;
 
+import dao.PetDAO;
 import model.AppSession;
+import model.Pet;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.imageio.ImageIO;
+import java.sql.SQLException;
+import java.util.List;
 
 public class DashboardPanel extends JPanel {
-
-    // ==== Khai báo các biến thành viên ====
     private JLabel avatarLabel, nameLabel, petTitle;
-    private JPanel topPanel, centerWrapper, cardPanel, pet1, pet2;
+    private JPanel topPanel, centerWrapper, cardPanel;
     private JButton btnCheckSymptoms, btnCallDoctor, btnAddPet;
     private BottomMenuPanel bottomMenuPanel;
     private CardLayout cardLayout;
     private JPanel mainPanel;
-    private AIAnalysisResultsPanel analysisResultsPanel;
+    private JPanel petListPanel;
+    private JScrollPane petScrollPane;
 
     public DashboardPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
-        setBackground(new Color(200, 220, 245)); // Light blue
+        setBackground(new Color(200, 220, 245));
 
-        // ===== TOP - Avatar + Name =====
-        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // ==== TOP - Avatar + Name ====
+        topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         topPanel.setOpaque(false);
         topPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 0, 20));
-        avatarLabel = new JLabel(getRoundedAvatar("src/image/avatarDefault.png", 60));
-        avatarLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        avatarLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // đổi con trỏ chuột
 
+        avatarLabel = new JLabel(getRoundedAvatar("src/image/avatarDefault.png", 60));
+        avatarLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        avatarLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
         avatarLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -43,7 +46,8 @@ public class DashboardPanel extends JPanel {
             }
         });
 
-        nameLabel = new JLabel("Nguyễn Anh Tú");
+        nameLabel = new JLabel(AppSession.currentUser.getName());
+
         nameLabel.setFont(new Font("Roboto", Font.BOLD, 18));
         nameLabel.setForeground(Color.BLACK);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -53,7 +57,7 @@ public class DashboardPanel extends JPanel {
         topPanel.add(nameLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // ===== CENTER - Card Panel =====
+        // ==== CENTER ====
         centerWrapper = new JPanel();
         centerWrapper.setOpaque(false);
         centerWrapper.setLayout(new BoxLayout(centerWrapper, BoxLayout.Y_AXIS));
@@ -65,49 +69,21 @@ public class DashboardPanel extends JPanel {
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY, 0, true),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
-        cardPanel.setMaximumSize(new Dimension(300, 400));
+        cardPanel.setMaximumSize(new Dimension(300, 500));
         cardPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cardPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
         petTitle = new JLabel("Thú cưng đã thêm");
         petTitle.setFont(new Font("Roboto", Font.BOLD, 18));
         petTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        pet1 = createPetItem("src/image/dog1.jpg", "Miu");
-        pet2 = createPetItem("src/image/dog2.jpg", "Đốm");
-
         btnCheckSymptoms = createButton("⚕", "Kiểm tra triệu chứng");
-        btnCheckSymptoms.addMouseListener(new MouseAdapter() {
+        btnCheckSymptoms.addActionListener(e -> cardLayout.show(mainPanel, "checkSymptoms"));
 
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                cardLayout.show(mainPanel, "checkSymptoms");
-            }
-        });
         btnCallDoctor = createButton("📞", "Gọi bác sĩ");
-        btnCallDoctor.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                cardLayout.show(mainPanel, "doctorSelection");
-            }
-        });
-        btnAddPet = createButton("➕", "Thêm thú cưng");
-        btnAddPet.addActionListener(e -> {
-            cardLayout.show(mainPanel, "addPet");
-        });
+        btnCallDoctor.addActionListener(e -> cardLayout.show(mainPanel, "doctorSelection"));
 
-        cardPanel.add(petTitle);
-        cardPanel.add(Box.createVerticalStrut(10));
-        cardPanel.add(pet1);
-        cardPanel.add(Box.createVerticalStrut(10));
-        cardPanel.add(pet2);
-        cardPanel.add(Box.createVerticalStrut(15));
-        cardPanel.add(btnCheckSymptoms);
-        cardPanel.add(Box.createVerticalStrut(10));
-        cardPanel.add(btnCallDoctor);
-        cardPanel.add(Box.createVerticalStrut(10));
-        cardPanel.add(btnAddPet);
+        btnAddPet = createButton("➕", "Thêm thú cưng");
+        btnAddPet.addActionListener(e -> cardLayout.show(mainPanel, "addPet"));
 
         centerWrapper.add(Box.createVerticalStrut(10));
         centerWrapper.add(cardPanel);
@@ -115,108 +91,121 @@ public class DashboardPanel extends JPanel {
 
         add(centerWrapper, BorderLayout.CENTER);
 
-        // ===== BOTTOM MENU PANEL =====
+        // ==== BOTTOM MENU ====
         bottomMenuPanel = new BottomMenuPanel();
         bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
         add(bottomMenuPanel, BorderLayout.SOUTH);
+
+        loadPetsFromDatabase(); // Load pet list khi khởi tạo
     }
 
-    private void chooseNewAvatar() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Chọn ảnh đại diện mới");
-        int result = fileChooser.showOpenDialog(this);
+    public void loadPetsFromDatabase() {
+        cardPanel.removeAll();
+        cardPanel.add(petTitle);
+        cardPanel.add(Box.createVerticalStrut(10));
 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            String extension = getFileExtension(selectedFile.getName());
-            if (!extension.matches("jpg|jpeg|png")) {
-                JOptionPane.showMessageDialog(this, "Chỉ chấp nhận ảnh JPG hoặc PNG!");
-                return;
+        petListPanel = new JPanel();
+        petListPanel.setLayout(new BoxLayout(petListPanel, BoxLayout.Y_AXIS));
+        petListPanel.setOpaque(false);
+
+        PetDAO petDAO = new PetDAO();
+        List<Pet> petList = petDAO.findPetsByUserId(AppSession.currentUser.getUserId());
+
+        for (Pet pet : petList) {
+            ImageIcon icon;
+            if (pet.getAvatar() != null) {
+                Image img = new ImageIcon(pet.getAvatar()).getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
+                BufferedImage rounded = makeRoundedImage(img, 45);
+                icon = new ImageIcon(rounded);
+            } else {
+                ImageIcon defaultIcon = new ImageIcon("src/image/default_pet.png");
+                Image img = defaultIcon.getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
+                BufferedImage rounded = makeRoundedImage(img, 45);
+                icon = new ImageIcon(rounded);
             }
 
-            try {
-                // Tạo thư mục lưu avatar nếu chưa có
-                File destDir = new File("user_data/avatar");
-                if (!destDir.exists()) destDir.mkdirs();
-
-                // Tạo file mới theo tên người dùng (hoặc ID)
-                String fileName = "avatar_" + AppSession.currentUser.getUserId() + "." + extension;
-                File destFile = new File(destDir, fileName);
-
-                // Copy file đã chọn vào thư mục của ứng dụng
-                java.nio.file.Files.copy(selectedFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-
-                // Lưu đường dẫn vào user
-                AppSession.currentUser.setAvatarPath(destFile.getAbsolutePath());
-
-                // Cập nhật lại icon avatar
-                ImageIcon newAvatar = getRoundedAvatar(destFile.getAbsolutePath(), 60);
-                avatarLabel.setIcon(newAvatar);
-
-                JOptionPane.showMessageDialog(this, "✅ Cập nhật ảnh đại diện thành công!");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "❌ Lỗi khi cập nhật ảnh đại diện.");
-            }
+            JPanel petPanel = createPetItem(icon, pet.getName());
+            petListPanel.add(petPanel);
+            petListPanel.add(Box.createVerticalStrut(10));
         }
+
+        petScrollPane = new JScrollPane(petListPanel);
+        petScrollPane.setPreferredSize(new Dimension(260, 130));
+        petScrollPane.setMaximumSize(new Dimension(260, 130));
+        petScrollPane.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        petScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        petScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        cardPanel.add(petScrollPane);
+        cardPanel.add(Box.createVerticalStrut(15));
+        cardPanel.add(btnCheckSymptoms);
+        cardPanel.add(Box.createVerticalStrut(10));
+        cardPanel.add(btnCallDoctor);
+        cardPanel.add(Box.createVerticalStrut(10));
+        cardPanel.add(btnAddPet);
+
+        cardPanel.revalidate();
+        cardPanel.repaint();
     }
 
-    private String getFileExtension(String name) {
-        int lastDot = name.lastIndexOf(".");
-        return (lastDot >= 0) ? name.substring(lastDot + 1).toLowerCase() : "";
+    private BufferedImage makeRoundedImage(Image scaledImage, int size) {
+        BufferedImage rounded = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = rounded.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setClip(new Ellipse2D.Float(0, 0, size, size));
+        g2.drawImage(scaledImage, 0, 0, size, size, null);
+        g2.dispose();
+        return rounded;
     }
 
-
-
-    private JPanel createPetItem(String imagePath, String name) {
-        JPanel panel = new JPanel(new GridLayout(1, 3, 10, 0));
+    private JPanel createPetItem(ImageIcon avatarIcon, String name) {
+        JPanel panel = new JPanel(new BorderLayout(10, 0));
         panel.setOpaque(false);
         panel.setMaximumSize(new Dimension(260, 60));
 
-        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        infoPanel.setOpaque(false);
-
-        ImageIcon icon = new ImageIcon(imagePath);
-        Image img = icon.getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
-        JLabel imgLabel = new JLabel(new ImageIcon(img));
-
+        JLabel imgLabel = new JLabel(avatarIcon);
         JLabel nameLabel = new JLabel("<html><i>" + name + "</i></html>");
         nameLabel.setFont(new Font("Roboto", Font.ITALIC, 15));
 
+        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        infoPanel.setOpaque(false);
         infoPanel.add(imgLabel);
         infoPanel.add(Box.createHorizontalStrut(10));
         infoPanel.add(nameLabel);
 
         JButton deleteButton = new JButton("x");
-        deleteButton.setFont(new Font("Roboto", Font.BOLD, 15));
         deleteButton.setPreferredSize(new Dimension(30, 30));
         deleteButton.setFocusPainted(false);
         deleteButton.setContentAreaFilled(false);
         deleteButton.setBorderPainted(false);
         deleteButton.setForeground(Color.RED);
-        deleteButton.setFont(new Font("Roboto", Font.BOLD, 14));
         deleteButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(
-                    panel,
-                    "Bạn có chắc chắn muốn xóa thú cưng này?",
+            int confirm = JOptionPane.showConfirmDialog(panel,
+                    "Bạn có chắc chắn muốn xóa thú cưng \"" + name + "\"?",
                     "Xác nhận xóa",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
-            );
+                    JOptionPane.YES_NO_OPTION);
 
             if (confirm == JOptionPane.YES_OPTION) {
-                Container parent = panel.getParent();
-                parent.remove(panel);
-                parent.revalidate();
-                parent.repaint();
+                PetDAO petDAO = new PetDAO();
+                boolean success = false;
+                try {
+                    success = petDAO.deletePetByNameAndUserId(name, AppSession.currentUser.getUserId());
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                if (success) {
+                    JOptionPane.showMessageDialog(panel, "Đã xóa thú cưng: " + name);
+                    loadPetsFromDatabase();
+                } else {
+                    JOptionPane.showMessageDialog(panel, "Không thể xóa thú cưng: " + name);
+                }
             }
         });
 
-        panel.add(infoPanel);
-        panel.add(deleteButton);
-
+        panel.add(infoPanel, BorderLayout.CENTER);
+        panel.add(deleteButton, BorderLayout.EAST);
         return panel;
     }
 
@@ -233,6 +222,40 @@ public class DashboardPanel extends JPanel {
         return button;
     }
 
+    private void chooseNewAvatar() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn ảnh đại diện mới");
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String extension = getFileExtension(selectedFile.getName());
+            if (!extension.matches("jpg|jpeg|png")) {
+                JOptionPane.showMessageDialog(this, "Chỉ chấp nhận ảnh JPG hoặc PNG!");
+                return;
+            }
+
+            try {
+                File destDir = new File("user_data/avatar");
+                if (!destDir.exists()) destDir.mkdirs();
+                String fileName = "avatar_" + AppSession.currentUser.getUserId() + "." + extension;
+                File destFile = new File(destDir, fileName);
+
+                java.nio.file.Files.copy(selectedFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                AppSession.currentUser.setAvatarPath(destFile.getAbsolutePath());
+                avatarLabel.setIcon(getRoundedAvatar(destFile.getAbsolutePath(), 60));
+                JOptionPane.showMessageDialog(this, "✅ Cập nhật ảnh đại diện thành công!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "❌ Lỗi khi cập nhật ảnh đại diện.");
+            }
+        }
+    }
+
+    private String getFileExtension(String name) {
+        int lastDot = name.lastIndexOf(".");
+        return (lastDot >= 0) ? name.substring(lastDot + 1).toLowerCase() : "";
+    }
+
     private ImageIcon getRoundedAvatar(String path, int size) {
         try {
             BufferedImage master = ImageIO.read(new File(path));
@@ -244,58 +267,13 @@ public class DashboardPanel extends JPanel {
             g2.dispose();
             return new ImageIcon(scaled);
         } catch (Exception e) {
-            return new ImageIcon(); // fallback nếu lỗi
+            return new ImageIcon();
         }
     }
-
-
-//    public static void main(String[] args) {
-//        CardLayout cardLayout = new CardLayout();
-//        JPanel mainPanel = new JPanel(cardLayout);
-//
-////        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(ca)
-//        DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
-//        DashboardPanel dashboardPanel = new DashboardPanel(cardLayout, mainPanel);
-//        MedicalResultPanel medicalResultPanel = new MedicalResultPanel(cardLayout, mainPanel);
-//
-//        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
-//        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel, medicalResultPanel);
-//        CheckSymptomsPanel checkSymptomsPanel = new CheckSymptomsPanel(cardLayout, mainPanel, dogInforPanel);
-//        CareGuidePanel careGuidePanel = new CareGuidePanel(cardLayout, mainPanel);
-//        ChatboxPanel chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
-//        CallDoctorPanel callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
-//        SettingPanel settingPanel = new SettingPanel(cardLayout, mainPanel);
-//        NotificationPanel notificationPanel = new NotificationPanel(cardLayout, mainPanel);
-////        AddPetPanel addPetPanel = new AddPetPanel(cardLayout, mainPanel);
-//
-////        mainPanel.add(addPetPanel, "addPet");
-//        mainPanel.add(notificationPanel, "notification");
-//        mainPanel.add(settingPanel, "setting");
-//        mainPanel.add(callDoctorPanel, "callDoctor");
-//        mainPanel.add(chatboxPanel, "chatBoxAI");
-//        mainPanel.add(medicalResultPanel, "medicalResult");
-//        mainPanel.add(careGuidePanel, "careGuide");
-//        mainPanel.add(dogInforPanel, "dogInfor");
-//        mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
-//        mainPanel.add(dashboardPanel, "dashboard");
-//        mainPanel.add(checkSymptomsPanel, "checkSymptoms");
-//        mainPanel.add(doctorSelectionPanel, "doctorSelection");
-//
-//        JFrame frame = new JFrame("Dashboard Test");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(400, 700);
-//        frame.setLocationRelativeTo(null);
-//        frame.setContentPane(mainPanel);
-//        cardLayout.show(mainPanel, "login");
-//        frame.setVisible(true);
-//        frame.setResizable(false);
-//
-//        // ✅ set màu nút sau khi frame đã hiển thị
-//        SwingUtilities.invokeLater(() -> {
-//            BottomMenuPanel bottomMenuPanel = new BottomMenuPanel();
-//        bottomMenuPanel.setNavigationHandler(cardLayout, mainPanel);
-//            bottomMenuPanel.setDefaultSelected("login");
-//        });
-//    }
+    public void updateUserInfo() {
+        if (AppSession.currentUser != null) {
+            nameLabel.setText(AppSession.currentUser.getName());
+        }
+    }
 
 }

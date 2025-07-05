@@ -36,6 +36,7 @@ public class PetDAO {
         }
         return false;
     }
+
     public boolean deletePet(String userId, String petName) {
         String sql = "DELETE FROM Pets WHERE userId = ? AND name = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -108,7 +109,6 @@ public class PetDAO {
     }
 
 
-
     public List<Pet> getPetsByUserId(String userId) {
         List<Pet> petList = new ArrayList<>();
         String sql = "SELECT * FROM Pets WHERE userId = ?";
@@ -139,6 +139,47 @@ public class PetDAO {
             e.printStackTrace();
         }
 
+        return petList;
+    }
+
+    public boolean deletePetByName(String userId, String name) {
+        String sql = "DELETE FROM Pets WHERE name = ? AND user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+            stmt.setString(2, userId);
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Pet> findPetsByUserId(String userId) {
+        List<Pet> petList = new ArrayList<>();
+        String sql = "SELECT * FROM Pets WHERE userId = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Pet pet = new Pet(
+                        rs.getString("name"),
+                        rs.getString("breed"),
+                        rs.getInt("age"),
+                        rs.getFloat("weight"),
+                        rs.getString("gender"),
+                        rs.getString("medicalHistory")
+                );
+                pet.setPetId(rs.getString("petId"));
+                pet.setUserId(rs.getString("userId"));
+                pet.setAvatar(rs.getBytes("avatar"));
+                petList.add(pet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return petList;
     }
 
