@@ -214,10 +214,12 @@ public class DashboardPanel extends JPanel {
         ChatboxPanel chatboxPanel = new ChatboxPanel(cardLayout, mainPanel);
         CallDoctorPanel callDoctorPanel = new CallDoctorPanel(cardLayout, mainPanel);
         SettingPanel settingPanel = new SettingPanel(cardLayout, mainPanel);
-        AddPetPanel addPetPanel = new AddPetPanel(cardLayout, mainPanel);
+        NotificationPanel notificationPanel = new NotificationPanel(cardLayout, mainPanel);
+//        AddPetPanel addPetPanel = new AddPetPanel(cardLayout, mainPanel);
 
-        mainPanel.add(addPetPanel, "addPet");
-        mainPanel.add(settingPanel, "settings");
+//        mainPanel.add(addPetPanel, "addPet");
+        mainPanel.add(notificationPanel, "notification");
+        mainPanel.add(settingPanel, "setting");
         mainPanel.add(callDoctorPanel, "callDoctor");
         mainPanel.add(chatboxPanel, "chatBoxAI");
         mainPanel.add(medicalResultPanel, "medicalResult");

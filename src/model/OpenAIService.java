@@ -5,13 +5,19 @@ import com.google.gson.JsonParser;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.time.Duration;
 
 public class OpenAIService {
     private static final String OLLAMA_URL = "http://localhost:11434/api/generate"; // cổng mặc định
     private final OkHttpClient client;
 
     public OpenAIService() {
-        client = new OkHttpClient();
+//        client = new OkHttpClient();
+        client = new OkHttpClient.Builder()
+                .callTimeout(Duration.ofSeconds(20))
+                .connectTimeout(Duration.ofSeconds(10))
+                .readTimeout(Duration.ofSeconds(15))
+                .build();
     }
 
     public String ask(String prompt) throws IOException {
@@ -32,8 +38,16 @@ public class OpenAIService {
                 return "⚠️ Lỗi từ Ollama: " + response.code();
             }
 
-            String json = response.body().string();
+            ResponseBody body = response.body();
+            if (body == null) {
+                return "❌ Phản hồi từ AI bị rỗng (null).";
+            }
+
+            String json = body.string();
             JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+            if (!obj.has("response")) {
+                return "❌ Phản hồi từ AI không hợp lệ.";
+            }
             return obj.get("response").getAsString().trim();
         }
     }
