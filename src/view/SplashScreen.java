@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class SplashScreen extends JFrame {
-    JPanel panelSplash , circlePanel;
     public SplashScreen() throws HeadlessException {
         setTitle("MyDog Health+");
         setSize(400, 700);
@@ -50,17 +49,23 @@ public class SplashScreen extends JFrame {
 
         setContentPane(layeredPane);
 
-        // Timer chuyển sang MainScreen
+
+        // Timer chuyển sang MainScreen -> login
         Timer timer = new Timer(3000, (ActionEvent e) -> {
-            new MainScreen().setVisible(true);
-            dispose();
+            System.out.println("⏳ Splash done. Opening Login...");
+            MainScreen mainScreen = new MainScreen();
+            mainScreen.setVisible(true);
+
+            // Ép chuyển sang login khi mở (nếu panel mặc định bị sai)
+            mainScreen.showLoginPanel(); // thêm hàm này vào MainScreen
+            this.dispose(); // tắt Splash
         });
+
         timer.setRepeats(false);
         timer.start();
-
     }
 
     public static void main(String[] args) {
-        new SplashScreen().setVisible(true);
+        SwingUtilities.invokeLater(() -> new SplashScreen().setVisible(true));
     }
 }

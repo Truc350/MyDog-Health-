@@ -14,6 +14,7 @@ public class User {
     private List<Pet> pets = new ArrayList<Pet>();
     private List<HistoryRecord> historyRecords = new ArrayList<>();
     private Setting setting = new Setting();
+    private String avatarPath;
 
 
     public User(String userId) {
@@ -169,6 +170,21 @@ public class User {
             return new UserDAO().updatePassword(userId, newPass);
         }
         return false;
+    }
+
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
+        // nếu muốn đồng bộ với avatar (Image), bạn có thể load luôn tại đây:
+        try {
+            this.avatar = Toolkit.getDefaultToolkit().getImage(avatarPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
     }
 
 
