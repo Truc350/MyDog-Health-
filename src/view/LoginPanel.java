@@ -12,20 +12,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class LoginPanel extends JPanel {
-    public JLabel lblTitle, lblEmail, lblPassword, lblForgot, lblNoAccount, lblRegister;
-    public JTextField txtEmail;
-    public JPasswordField txtPassword;
-    public JButton btnLogin;
-    public JPanel panelBottom;
-    private  CardLayout cardLayout;
-    private  JPanel mainPanel;
-    private PetController petController;
-    private AddPetPanel addPetPanel;
+    private JLabel lblTitle, lblEmail, lblPassword, lblForgot, lblRegister;
+    private JTextField txtEmail;
+    private JPasswordField txtPassword;
+    private JButton btnLogin;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+
     public LoginPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
-//        this.addPetPanel = new AddPetPanel(cardLayout, mainPanel);
-//        mainPanel.add(addPetPanel, "dashboard");
+
         setLayout(null);
         setBackground(Color.WHITE);
 
@@ -40,9 +37,9 @@ public class LoginPanel extends JPanel {
         lblTitle.setBounds(100, 80, 200, 40);
 
         // Email
-        lblEmail = new JLabel("Email:");
-        lblEmail.setFont(fontLabel);
-        lblEmail.setBounds(60, 150, 100, 30);
+        JLabel lblEmailLabel = new JLabel("Email:");
+        lblEmailLabel.setFont(fontLabel);
+        lblEmailLabel.setBounds(60, 150, 100, 30);
 
         txtEmail = new JTextField();
         txtEmail.setFont(fontLabel);
@@ -53,9 +50,9 @@ public class LoginPanel extends JPanel {
         ));
 
         // Password
-        lblPassword = new JLabel("Mật khẩu:");
-        lblPassword.setFont(fontLabel);
-        lblPassword.setBounds(60, 230, 100, 30);
+        JLabel lblPasswordLabel = new JLabel("Mật khẩu:");
+        lblPasswordLabel.setFont(fontLabel);
+        lblPasswordLabel.setBounds(60, 230, 100, 30);
 
         txtPassword = new JPasswordField();
         txtPassword.setFont(fontLabel);
@@ -85,18 +82,17 @@ public class LoginPanel extends JPanel {
         btnLogin.setForeground(Color.WHITE);
         btnLogin.setFocusPainted(false);
         btnLogin.setBounds(120, 360, 160, 45);
-        btnLogin.setBorder((Border) new RoundBorder(20)); // custom border
+        btnLogin.setBorder(new RoundBorder(20));
         btnLogin.addActionListener(e -> handleLogin());
 
-        // Bottom panel for register text
-        panelBottom = new JPanel();
+        // Register link
+        JPanel panelBottom = new JPanel();
         panelBottom.setBounds(60, 430, 280, 30);
         panelBottom.setBackground(Color.WHITE);
         panelBottom.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
 
-        JLabel lblNoAccount = new JLabel("Nếu bạn chưa có tài khoản ?");
-        lblNoAccount.setFont(new Font("Roboto" +
-                "", Font.ITALIC, 16));
+        JLabel lblNoAccount = new JLabel("Nếu bạn chưa có tài khoản?");
+        lblNoAccount.setFont(new Font("Roboto", Font.ITALIC, 16));
         lblNoAccount.setForeground(new Color(80, 80, 80));
 
         lblRegister = new JLabel("<html><u>Đăng ký</u></html>");
@@ -104,43 +100,35 @@ public class LoginPanel extends JPanel {
         lblRegister.setForeground(primaryColor);
         lblRegister.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lblRegister.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseClicked(MouseEvent e) {
-                cardLayout.show(mainPanel, "register");// Chuyển sang RegisterPanel
+                cardLayout.show(mainPanel, "register");
             }
         });
-
-
-
 
         panelBottom.add(lblNoAccount);
         panelBottom.add(lblRegister);
 
-
-
-
-
         // Add components
         add(lblTitle);
-        add(lblEmail);
+        add(lblEmailLabel);
         add(txtEmail);
-        add(lblPassword);
+        add(lblPasswordLabel);
         add(txtPassword);
         add(lblForgot);
         add(btnLogin);
         add(panelBottom);
     }
+
     private void handleForgotPassword() {
         String email = JOptionPane.showInputDialog(this, "Nhập email đã đăng ký:", "Quên mật khẩu", JOptionPane.QUESTION_MESSAGE);
-
         if (email == null || email.trim().isEmpty()) return;
 
         UserDAO dao = new UserDAO();
         User user = dao.findByEmail(email.trim());
 
         if (user != null) {
-            String subject = "Khôi phục mật khẩu - PetCare";
+            String subject = "Khôi phục mật khẩu - MyDog Health+";
             String body = "Xin chào " + user.getName() + ",\n\n"
                     + "Bạn đã yêu cầu khôi phục mật khẩu.\n"
                     + "Mật khẩu hiện tại của bạn là: " + user.getPassword() + "\n\n"
@@ -158,35 +146,28 @@ public class LoginPanel extends JPanel {
         }
     }
 
+    private void handleLogin() {
+        String email = txtEmail.getText().trim();
+        String password = new String(txtPassword.getPassword()).trim();
 
-    public void handleLogin() {
-       String email = txtEmail.getText().trim();
-       String password =  new String(txtPassword.getPassword()).trim();
+        if (email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
 
-       if (email.isEmpty() || password.isEmpty()) {
-           JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!!!");
-           return;
-       }
-       UserDAO dao = new UserDAO();
-       User user = dao.login(email, password);
-       if (user != null) {
-           JOptionPane.showMessageDialog(this, "Đăng nhập thành công! \nXin chào, "+user.getName());
-           AppSession.currentUser = user;
+        UserDAO dao = new UserDAO();
+        User user = dao.login(email, password);
 
-           this.addPetPanel = new AddPetPanel(cardLayout, mainPanel);
-           mainPanel.add(addPetPanel, "dashboard");
-
-           petController = new PetController(addPetPanel);
-           petController.reloadPetList();
-
-           cardLayout.show(mainPanel, "dashboard");
-       }else {
-           JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-       }
-
+        if (user != null) {
+            JOptionPane.showMessageDialog(this, "Đăng nhập thành công!\nXin chào, " + user.getName());
+            AppSession.currentUser = user;
+            cardLayout.show(mainPanel, "dashboard");
+        } else {
+            JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    // Custom bo tròn border cho nút
+    // Border bo góc
     class RoundBorder extends AbstractBorder {
         private int radius;
 
@@ -213,5 +194,4 @@ public class LoginPanel extends JPanel {
             return insets;
         }
     }
-
 }

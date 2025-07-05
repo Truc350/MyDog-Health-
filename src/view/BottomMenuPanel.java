@@ -52,7 +52,7 @@ public class BottomMenuPanel extends JPanel {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
 
-        SwingUtilities.invokeLater(() -> handleNavigation("dashboard"));  // Chọn mặc định
+//        SwingUtilities.invokeLater(() -> handleNavigation("dashboard"));  // Chọn mặc định
     }
 
 //    public void handleNavigation(String cardName) {

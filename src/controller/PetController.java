@@ -4,6 +4,7 @@ import dao.PetDAO;
 import model.AppSession;
 import model.Pet;
 import view.AddPetPanel;
+import view.DashboardPanel;
 
 import javax.swing.*;
 import java.awt.*;
