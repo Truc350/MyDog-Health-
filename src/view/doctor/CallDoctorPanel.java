@@ -1,8 +1,9 @@
-package view;
+package view.doctor;
 
 import controller.DoctorContext;
 import model.CallService;
 import model.Doctor;
+import view.*;
 
 import javax.swing.*;
 import java.awt.*;

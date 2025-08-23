@@ -3,7 +3,7 @@ package view;
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 
-class RoundedBorder extends AbstractBorder {
+public class RoundedBorder extends AbstractBorder {
     private final int radius;
 
     public RoundedBorder(int radius) {
