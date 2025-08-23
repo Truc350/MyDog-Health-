@@ -1,4 +1,4 @@
-package view;
+package view.doctor;
 
 import model.CallService;
 
