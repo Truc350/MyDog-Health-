@@ -188,4 +188,7 @@ public class User {
     }
 
 
+    public void setPets(List<Pet> pets) {
+        this.pets = pets != null ? new ArrayList<>(pets) : new ArrayList<>();
+    }
 }

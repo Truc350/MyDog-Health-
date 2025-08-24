@@ -1,12 +1,14 @@
 package dao;
 
 import config.DBConnection;
+import model.Pet;
 import model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 public class UserDAO {
@@ -133,5 +135,36 @@ public class UserDAO {
             System.err.println("❌ Lỗi khi cập nhật email: " + e.getMessage());
             return false;
         }
+
     }
+    public User loadFullUser(String userId) {
+        User user = null;
+        try (Connection conn = DBConnection.getConnection()) {
+            // Lấy thông tin cơ bản và avatarPath
+            String sql = "SELECT id, name, email, password, avatar_path FROM users WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                user = new User();
+                user.setUserId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setAvatarPath(rs.getString("avatar_path"));  // Tải avatarPath từ DB
+            }
+
+            // Tải danh sách pets từ PetDAO
+            if (user != null) {
+                PetDAO petDAO = new PetDAO();
+                List<Pet> pets = petDAO.findPetsByUserId(userId);
+                user.setPets(pets);  // Gán pets vào user
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Xử lý lỗi: Có thể throw DAOException hoặc log
+        }
+        return user;
+    }
+
 }
