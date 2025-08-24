@@ -270,9 +270,20 @@ public class DashboardPanel extends JPanel {
             return new ImageIcon();
         }
     }
+    // Trong DashboardPanel.java
+
     public void updateUserInfo() {
         if (AppSession.currentUser != null) {
             nameLabel.setText(AppSession.currentUser.getName());
+
+            // Tải lại avatar từ avatarPath
+            String avatarPath = AppSession.currentUser.getAvatarPath();
+            if (avatarPath != null && !avatarPath.isEmpty()) {
+                avatarLabel.setIcon(getRoundedAvatar(avatarPath, 60));
+            } else {
+                // Default avatar nếu không có
+                avatarLabel.setIcon(getRoundedAvatar("src/image/avatarDefault.png", 60));
+            }
         }
     }
 

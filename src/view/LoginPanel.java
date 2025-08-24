@@ -148,6 +148,8 @@ public class LoginPanel extends JPanel {
         }
     }
 
+    // Trong LoginPanel.java, chỉnh sửa handleLogin()
+
     private void handleLogin() {
         String email = txtEmail.getText().trim();
         String password = new String(txtPassword.getPassword()).trim();
@@ -158,25 +160,32 @@ public class LoginPanel extends JPanel {
         }
 
         UserDAO dao = new UserDAO();
-        User user = dao.login(email, password);
+        User userFromDB = dao.login(email, password);  // Login cơ bản
 
-        if (user != null) {
-            JOptionPane.showMessageDialog(this, "Đăng nhập thành công!\nXin chào, " + user.getName());
-            AppSession.currentUser = user;
-            dashboardPanel.updateUserInfo(); // cập nhật tên người dùng
+        if (userFromDB != null) {
+            // Tải đầy đủ dữ liệu user (bao gồm avatarPath và pets)
+            User fullUser = dao.loadFullUser(userFromDB.getUserId());
+            if (fullUser != null) {
+                AppSession.currentUser = fullUser;
+                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!\nXin chào, " + fullUser.getName());
 
-            // XÓA DỮ LIỆU ĐẦU VÀO SAU KHI ĐĂNG NHẬP
-            txtEmail.setText("");
-            txtPassword.setText("");
+                // Cập nhật dashboard
+                dashboardPanel.updateUserInfo();  // Cập nhật tên và avatar
+                dashboardPanel.loadPetsFromDatabase();  // Tải và hiển thị danh sách pets
 
-            // Chuyển trang
-            cardLayout.show(mainPanel, "dashboard");
-        }
-        else {
+                // Xóa dữ liệu đầu vào
+                txtEmail.setText("");
+                txtPassword.setText("");
+
+                // Chuyển trang
+                cardLayout.show(mainPanel, "dashboard");
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi tải dữ liệu user!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
             JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 
     // Border bo góc
     class RoundBorder extends AbstractBorder {
