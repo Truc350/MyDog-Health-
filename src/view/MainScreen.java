@@ -76,6 +76,7 @@ public class MainScreen extends JFrame {
         mainPanel.add(doctorSelectionPanel, "doctorSelection");
         mainPanel.add(dogInforPanel, "dogInfor");
         mainPanel.add(medicalResultPanel, "medicalResult");
+        aiAnalysisResultsPanel.setName("aiAnalysisResults");
         mainPanel.add(aiAnalysisResultsPanel, "aiAnalysisResults");
         mainPanel.add(careGuidePanel, "careGuide");
         mainPanel.add(chatboxPanel, "chatBoxAI");

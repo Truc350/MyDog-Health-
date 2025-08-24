@@ -1,76 +1,99 @@
 package model;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * class Công cụ chẩn đoán AI
+ * Lưu trữ toàn bộ kết quả chẩn đoán:
+ * - Triệu chứng mà người dùng nhập
+ * - Kết quả phân tích từ AI
+ * - Danh sách gợi ý chăm sóc
  */
-
 public class DiagnosisResult {
-    private String id;
-    private String petId;
-    private String diseaseName;
-    private double probability;
-    private String statusNote;
-    private LocalDateTime analysisTime;
+    private int id;
+    private List<Symptom> symptoms;       // Danh sách triệu chứng
+    private String aiAnalysis;            // Phân tích từ AI (chẩn đoán sơ bộ)
+    private List<CareAdvice> careAdvices; // Danh sách gợi ý chăm sóc
 
-    public DiagnosisResult(String id, String prtId, String diseaseName, double probability, String statusNote, LocalDateTime analysisTime) {
-        this.id = UUID.randomUUID().toString();
-        this.petId = prtId;
-        this.diseaseName = diseaseName;
-        this.probability = probability;
-        this.statusNote = statusNote;
-        this.analysisTime = LocalDateTime.now();
+    public DiagnosisResult() {
+        this.symptoms = new ArrayList<>();
+        this.careAdvices = new ArrayList<>();
     }
 
-    public String getId() {
+    public DiagnosisResult(int id, List<Symptom> symptoms, String aiAnalysis, List<CareAdvice> careAdvices) {
+        this.id = id;
+        this.symptoms = symptoms != null ? symptoms : new ArrayList<>();
+        this.aiAnalysis = aiAnalysis;
+        this.careAdvices = careAdvices != null ? careAdvices : new ArrayList<>();
+    }
+
+    // Getter & Setter
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getPetId() {
-        return petId;
+    public List<Symptom> getSymptoms() {
+        return symptoms;
     }
 
-    public void setPetId(String prtId) {
-        this.petId = prtId;
+    public void setSymptoms(List<Symptom> symptoms) {
+        this.symptoms = symptoms;
     }
 
-    public String getDiseaseName() {
-        return diseaseName;
+    public String getAiAnalysis() {
+        return aiAnalysis;
     }
 
-    public void setDiseaseName(String diseaseName) {
-        this.diseaseName = diseaseName;
+    public void setAiAnalysis(String aiAnalysis) {
+        this.aiAnalysis = aiAnalysis;
     }
 
-    public double getProbability() {
-        return probability;
+    public List<CareAdvice> getCareAdvices() {
+        return careAdvices;
     }
 
-    public void setProbability(double probability) {
-        this.probability = probability;
+    public void setCareAdvices(List<CareAdvice> careAdvices) {
+        this.careAdvices = careAdvices;
     }
 
-    public String getStatusNote() {
-        return statusNote;
+    // ================== Các hàm tiện ích ==================
+
+    /** Thêm triệu chứng mới */
+    public void addSymptom(Symptom symptom) {
+        if (symptom != null) {
+            this.symptoms.add(symptom);
+        }
     }
 
-    public void setStatusNote(String statusNote) {
-        this.statusNote = statusNote;
+    /** Thêm gợi ý chăm sóc mới */
+    public void addCareAdvice(CareAdvice advice) {
+        if (advice != null) {
+            this.careAdvices.add(advice);
+        }
     }
 
-    public LocalDateTime getAnalysisTime() {
-        return analysisTime;
+    /** Xem kết quả chẩn đoán theo định dạng đẹp */
+    public String formatForDisplay() {
+        StringBuilder sb = new StringBuilder("📋 KẾT QUẢ CHẨN ĐOÁN\n");
+
+        sb.append("\n🔎 Triệu chứng:\n");
+        for (Symptom s : symptoms) {
+            sb.append(" - ").append(s.getName())
+                    .append(" (").append(s.getSeverity()).append(")\n");
+        }
+
+        sb.append("\n🤖 Phân tích từ AI:\n").append(aiAnalysis).append("\n");
+
+        sb.append("\n💡 Gợi ý chăm sóc:\n");
+        for (CareAdvice advice : careAdvices) {
+            sb.append(" - ").append(advice.getDiseaseName())
+                    .append(": ").append(advice.getAdvice()).append("\n");
+        }
+
+        return sb.toString();
     }
-
-    public void setAnalysisTime(LocalDateTime analysisTime) {
-        this.analysisTime = analysisTime;
-    }
-
-
 }

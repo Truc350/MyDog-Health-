@@ -9,6 +9,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 
 public class CheckSymptomsPanel extends JPanel {
 
@@ -144,7 +145,7 @@ public class CheckSymptomsPanel extends JPanel {
         continueButton.addActionListener(e -> {
             String name = getSelectedSymptom(); // tên triệu chứng chính
             String location = locationField.getText();
-            String dateNoticed = dateField.getText() + " ngày";
+            String dateNoticed = dateField.getText();
             String description = symptomArea.getText();
             String image = selectedImagePath != null ? selectedImagePath : "";
 

@@ -3,12 +3,14 @@ package view;
 import dao.DiagnosisDAO;
 import model.CareAdvice;
 import model.DiagnosisResult;
+import model.Symptom;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AIAnalysisResultsPanel extends JPanel {
     JButton backButton;
@@ -19,6 +21,7 @@ public class AIAnalysisResultsPanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private CareGuidePanel careGuidePanel;
+    private List<DiagnosisResult> lastResults;
 
 
     public AIAnalysisResultsPanel(CardLayout cardLayout, JPanel mainPanel) {
@@ -103,21 +106,6 @@ public class AIAnalysisResultsPanel extends JPanel {
         resultPanel.setMaximumSize(new Dimension(320, 150));
         resultPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        String[][] results = {
-                {"Viêm da dị ứng", "60%"},
-                {"Nhiễm giun", "30%"},
-                {"Rối loạn tiêu hóa", "60%"}
-        };
-
-        for (String[] row : results) {
-            JLabel left = new JLabel(row[0]);
-            JLabel right = new JLabel(row[1], SwingConstants.RIGHT);
-            left.setFont(new Font("Roboto", Font.BOLD, 16));
-            right.setFont(new Font("Roboto", Font.BOLD, 16));
-            resultPanel.add(left);
-            resultPanel.add(right);
-        }
-
         contentPanel.add(Box.createVerticalStrut(10));
         contentPanel.add(resultPanel);
         contentPanel.add(Box.createVerticalStrut(15));
@@ -168,6 +156,28 @@ public class AIAnalysisResultsPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+
+                // 🔹 Lấy instance MedicalResultPanel từ mainPanel
+                for (Component comp : mainPanel.getComponents()) {
+                    if (comp instanceof MedicalResultPanel) {
+                        MedicalResultPanel medicalPanel = (MedicalResultPanel) comp;
+
+                        String mainSymptom = "";
+                        if (!lastResults.isEmpty() && !lastResults.get(0).getSymptoms().isEmpty()) {
+                            // ✅ Ghép tất cả triệu chứng chính thành 1 chuỗi (VD: "Nôn, Tiêu chảy")
+                            mainSymptom = lastResults.get(0).getSymptoms()
+                                    .stream()
+                                    .map(Symptom::getName)
+                                    .collect(Collectors.joining(", "));
+                        }
+                        // (bạn có thể set lastResults trong updateResults())
+                        medicalPanel.updateMedicalResult(
+                                lastResults, // List<DiagnosisResult>
+                                mainSymptom
+                        );
+                    }
+                }
+
                 cardLayout.show(mainPanel, "medicalResult");
             }
         });
@@ -187,26 +197,24 @@ public class AIAnalysisResultsPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (careGuidePanel != null) {
+                if (careGuidePanel != null && lastResults != null) {
                     java.util.List<CareAdvice> adviceList = new java.util.ArrayList<>();
-                    adviceList.add(new CareAdvice(
-                            "Viêm da dị ứng",
-                            "Vệ sinh vùng da bằng nước muối sinh lý 2 lần/ngày.;Không để thú cưng liếm hoặc cào vào vùng bị ngứa.;Có thể dùng thuốc bôi dị ứng do bác sĩ kê đơn trước đó.",
-                            "Vùng da đỏ, rỉ dịch, vật cào gãi nhiều",
-                            "Theo dõi tiến triển trong 2-3 ngày, nếu không cải thiện nên đưa đến bác sĩ."
-                    ));
-                    adviceList.add(new CareAdvice(
-                            "Nhiễm giun",
-                            "Kiểm tra lại sổ tiêm/ngừa giun gần nhất.;Cho uống thuốc tẩy giun đúng liều (có thể tham khảo bác sĩ thú y).;Vệ sinh chỗ nằm, thức ăn, nước uống thường xuyên.",
-                            "Bụng to bất thường, nôn, tiêu chảy",
-                            "Lưu ý không dùng thuốc tẩy giun quá liều."
-                    ));
+
+                    // Lấy tất cả CareAdvice từ kết quả AI
+                    for (DiagnosisResult result : lastResults) {
+                        if (result.getCareAdvices() != null) {
+                            adviceList.addAll(result.getCareAdvices());
+                        }
+                    }
+
+                    // Gửi sang CareGuidePanel
                     careGuidePanel.showCareAdviceList(adviceList);
                 }
 
                 cardLayout.show(mainPanel, "careGuide");
             }
         });
+
         ImageIcon iconHuongDan = new ImageIcon("src\\image\\instruct.png");
         Image image7 = iconHuongDan.getImage();
         Image newImage7 = image7.getScaledInstance(18, 18, Image.SCALE_SMOOTH);
@@ -242,42 +250,108 @@ public class AIAnalysisResultsPanel extends JPanel {
     }
 
     public void setAnalysisResult(String resultText) {
-        infoLabel.setText("<html><body style='width: 300px;'>" + resultText.replace("\n", "<br>") + "</body></html>");
+        infoLabel.setText(resultText);
     }
 
 
-    public void showAnalysisResults(List<DiagnosisResult> results) {
+    private void showAnalysisResults(List<DiagnosisResult> results) {
         resultPanel.removeAll();
+        resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
 
-        DiagnosisDAO dao = new DiagnosisDAO();
         for (DiagnosisResult r : results) {
-            JLabel left = new JLabel(r.getDiseaseName());
-            JLabel right = new JLabel(String.format("%.0f%%", r.getProbability()), SwingConstants.RIGHT);
-            left.setFont(new Font("Roboto", Font.BOLD, 16));
-            right.setFont(new Font("Roboto", Font.BOLD, 16));
-            resultPanel.add(left);
-            resultPanel.add(right);
+            JPanel itemPanel = new JPanel(new BorderLayout());
+            itemPanel.setBorder(BorderFactory.createTitledBorder("Kết quả:"));
 
-            dao.saveDiagnosis(r); // Lưu vào database
+            // Triệu chứng
+            String symptomText = r.getSymptoms().stream()
+                    .map(Symptom::getName)
+                    .distinct()
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("Không rõ triệu chứng");
+
+            // Lời khuyên (gộp theo bệnh, bỏ trùng)
+            String advicesText = r.getCareAdvices().stream()
+                    .map(c -> {
+                        // Nếu summary đã chứa tên bệnh → chỉ lấy summary
+                        if (c.getSummary() != null && c.getSummary().startsWith(c.getDiseaseName())) {
+                            return "- " + c.getSummary();
+                        } else {
+                            return "- " + c.getDiseaseName() + ": " + c.getSummary();
+                        }
+                    })
+                    .distinct()
+                    .reduce((a, b) -> a + "\n" + b)
+                    .orElse("Chưa có");
+
+            JTextArea txt = new JTextArea();
+            txt.setEditable(false);
+            txt.setLineWrap(true);
+            txt.setWrapStyleWord(true);
+            txt.setFont(new Font("Roboto", Font.PLAIN, 14));
+
+            txt.setText("Triệu chứng: " + symptomText + "\n\n"
+                    + "Phân tích AI: " + r.getAiAnalysis() + "\n\n"
+                    + "Lời khuyên:\n" + advicesText);
+
+            JScrollPane scroll = new JScrollPane(txt);
+            scroll.setPreferredSize(new Dimension(0, 200));
+            itemPanel.add(scroll, BorderLayout.CENTER);
+
+            resultPanel.add(itemPanel);
+        }
+        resultPanel.revalidate();
+        resultPanel.repaint();
+    }
+
+
+    /**
+     * Cập nhật kết quả phân tích AI lên giao diện.
+     * - Hiển thị danh sách bệnh & xác suất
+     * - Cập nhật label mô tả tình trạng
+     */
+    public void updateResults(List<DiagnosisResult> results) {
+        this.lastResults = results;
+        if (results == null || results.isEmpty()) {
+            setAnalysisResult("⚠️ Không có kết quả chẩn đoán từ AI.");
+            resultPanel.removeAll();
+            resultPanel.add(new JLabel("Không có dữ liệu"));
+            resultPanel.revalidate();
+            resultPanel.repaint();
+            return;
+        }
+
+        // 👉 Hiển thị danh sách kết quả chi tiết
+        showAnalysisResults(results);
+
+        // 👉 Mô tả tổng quát ở trên cùng
+//        setAnalysisResult("AI đã phân tích và phát hiện " + results.size() + " chẩn đoán sơ bộ.");
+        setAnalysisResult("AI đã đọc dữ liệu đầu vào và phân tích kết quả như sau:");
+
+        // 👉 Tạo tình trạng tổng quát dựa trên danh sách CareAdvice
+        DiagnosisResult first = results.get(0); // lấy kết quả đầu tiên làm tiêu biểu
+        if (first.getCareAdvices() != null && !first.getCareAdvices().isEmpty()) {
+            CareAdvice mainAdvice = first.getCareAdvices().get(0); // lấy lời khuyên chính
+            // status1 hiển thị tình trạng từ dangerSigns
+            if (mainAdvice.getDangerSigns() != null && !mainAdvice.getDangerSigns().isEmpty()) {
+                status1.setText("Tình trạng: " + mainAdvice.getDangerSigns());
+            } else {
+                status1.setText("⚠️ Chưa có đánh giá tình trạng.");
+            }
+
+            // status2 hiển thị lời khuyên từ advice
+            if (mainAdvice.getAdvice() != null && !mainAdvice.getAdvice().isEmpty()) {
+                status2.setText("Khuyến nghị: " + mainAdvice.getAdvice());
+            } else {
+                status2.setText("Vui lòng theo dõi thêm triệu chứng.");
+            }
+
+        } else {
+            status1.setText("⚠️ CChưa có đánh giá tình trạng.");
+            status2.setText("Vui lòng theo dõi thêm triệu chứng.");
         }
 
         resultPanel.revalidate();
         resultPanel.repaint();
     }
 
-
-
-    // For testing UI
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("Test");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setLayout(new BorderLayout());
-//
-//        AIAnalysisResultsPanel panel = new AIAnalysisResultsPanel();
-//        frame.add(panel, BorderLayout.CENTER);
-//
-//        frame.setSize(400, 700); // phù hợp kích thước mobile
-//        frame.setLocationRelativeTo(null); // căn giữa màn hình
-//        frame.setVisible(true);
-//    }
 }
