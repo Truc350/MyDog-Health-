@@ -1,5 +1,6 @@
 package view;
 
+import model.AIDiagnosisEngine;
 import model.DiagnosisResult;
 import model.OpenAIService;
 import model.Symptom;
@@ -219,19 +220,29 @@ public class DogInforPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String mainSymptom = lblMainSymptomContent.getText();
                 String otherSymptoms = lblOtherSymptomsContent.getText();
+                String time = lblTimeContent.getText();
+                String location = lblLocationContent.getText();
                 String imagePath = ((ImageIcon) imageLabel.getIcon()).getImage().toString(); // Lấy đường dẫn ảnh
 
                 String prompt = String.format(
-                        "Chó có triệu chứng chính là '%s', xuất hiện %s. Các triệu chứng khác gồm: %s. "
+                        "%s, tại vị trí %s, xuất hiện %s. "
+                                + "Các triệu chứng khác: %s. "
                                 + "Hãy chẩn đoán bệnh và đưa ra hướng điều trị phù hợp.",
-                        mainSymptom, lblTimeContent.getText(), otherSymptoms
+                        mainSymptom, location, time, otherSymptoms
                 );
 
                 new Thread(() -> {
                     List<DiagnosisResult> results = model.AIDiagnosisEngine.analyzeSymptoms("pet123", prompt);
+//                    // ✅ Gọi Gemini AI Service
                     SwingUtilities.invokeLater(() -> {
-                        medicalResultPanel.updateMedicalResult(results, mainSymptom, otherSymptoms, imagePath);
-                        cardLayout.show(mainPanel, "medicalResult");
+//                        medicalResultPanel.updateMedicalResult(results, mainSymptom, otherSymptoms, imagePath);
+//                        cardLayout.show(mainPanel, "medicalResult");
+                        // ✅ Gửi kết quả sang AIAnalysisResultsPanel
+                        Component comp = getPanelByName("aiAnalysisResults");
+                        if (comp instanceof AIAnalysisResultsPanel aiPanel) {
+                            aiPanel.updateResults(results);
+                        }
+                        cardLayout.show(mainPanel, "aiAnalysisResults");
                     });
                 }).start();
             }
@@ -275,6 +286,15 @@ public class DogInforPanel extends JPanel {
         add(new BottomMenuPanel(), BorderLayout.SOUTH);
     }
 
+    private Component getPanelByName(String name) {
+        for (Component comp : mainPanel.getComponents()) {
+            if (name.equals(comp.getName())) {
+                return comp;
+            }
+        }
+        return null;
+    }
+
     public void setDogImage(String path) {
         ImageIcon icon = new ImageIcon(path);
         Image img = icon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
@@ -302,7 +322,7 @@ public class DogInforPanel extends JPanel {
     public void updateDogInfo(Symptom symptom) {
         lblMainSymptomContent.setText(symptom.getName()); // Ví dụ: "Tiêu chảy"
         lblLocationContent.setText(symptom.getLocation()); // Ví dụ: "Miệng"
-        lblTimeContent.setText(symptom.getDateNoticed()); // Ví dụ: "2 ngày trước"
+        lblTimeContent.setText(symptom.getDateNoticed() + " ngày"); // Ví dụ: "2 ngày trước"
         lblOtherSymptomsContent.setText(symptom.getDescription()); // Ví dụ: "Sốt, Hô hấp, Nôn mửa, Kén ăn"
         setDogImage(symptom.getImagePath());
     }
@@ -334,8 +354,9 @@ public class DogInforPanel extends JPanel {
 //    public static void main(String[] args) {
 //        CardLayout cardLayout = new CardLayout();
 //        JPanel mainPanel = new JPanel(cardLayout);
+//        MedicalResultPanel medicalResultPanel1 = new MedicalResultPanel(cardLayout, mainPanel);
 //
-//        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel);
+//        DogInforPanel dogInforPanel = new DogInforPanel(cardLayout, mainPanel, medicalResultPanel1);
 //        AIAnalysisResultsPanel aiAnalysisResultsPanel = new AIAnalysisResultsPanel(cardLayout, mainPanel);
 //        DoctorSelectionPanel doctorSelectionPanel = new DoctorSelectionPanel(cardLayout, mainPanel);
 //

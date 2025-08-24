@@ -1,6 +1,7 @@
 package view;
 
-import model.OpenAIService;
+import config.AppConfig;
+import service.GeminiAIService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ public class ChatboxPanel extends JPanel {
     private JPanel messagePanel;
     private JScrollPane scrollPane;
     private JButton backButton;
-    private OpenAIService openAIService = new OpenAIService();
+    private GeminiAIService geminiAIService ;
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
@@ -21,6 +22,7 @@ public class ChatboxPanel extends JPanel {
     public ChatboxPanel(CardLayout cardLayout, JPanel mainPanel) {
         this.cardLayout = cardLayout;
         this.mainPanel = mainPanel;
+        this.geminiAIService = GeminiAIService.getInstance(AppConfig.GEMINI_API_KEY);
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -86,28 +88,20 @@ public class ChatboxPanel extends JPanel {
         String userInput = inputField.getText().trim();
         if (userInput.isEmpty()) return;
 
-        addMessage("👤 Bạn: " + userInput, true);
+        appendMessage("👤 Bạn: " + userInput);
         inputField.setText("");
-        sendButton.setEnabled(false);
-        addMessage("💬 Đang suy nghĩ...", false);
 
         new Thread(() -> {
-            try {
-                String response = openAIService.ask(userInput);
-                SwingUtilities.invokeLater(() -> {
-                    removeLastMessage();
-                    addMessage("🤖 AI: " + response, false);
-                    sendButton.setEnabled(true);
-                });
-            } catch (IOException e) {
-                SwingUtilities.invokeLater(() -> {
-                    removeLastMessage();
-                    addMessage("❌ Lỗi: " + e.getMessage(), false);
-                    sendButton.setEnabled(true);
-                });
-            }
+            String aiReply = geminiAIService.generateText(userInput);
+            SwingUtilities.invokeLater(() -> appendMessage("🤖 AI: " + aiReply));
         }).start();
     }
+
+    private void appendMessage(String text) {
+        boolean isUser = text.startsWith("👤 Bạn:");
+        addMessage(text, isUser);
+    }
+
 
     private void addMessage(String text, boolean isUser) {
         JTextArea messageText = new JTextArea(text);
@@ -123,7 +117,7 @@ public class ChatboxPanel extends JPanel {
         wrapper.add(messageText);
 
         messagePanel.add(wrapper);
-        messagePanel.add(Box.createVerticalStrut(4));
+        messagePanel.add(Box.createVerticalStrut(2));
         messagePanel.revalidate();
         messagePanel.repaint();
 
@@ -141,20 +135,20 @@ public class ChatboxPanel extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Chatbox AI");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(420, 680);
-            frame.setLocationRelativeTo(null);
-
-            CardLayout layout = new CardLayout();
-            JPanel mainPanel = new JPanel(layout);
-            ChatboxPanel chatbox = new ChatboxPanel(layout, mainPanel);
-
-            mainPanel.add(chatbox, "chat");
-            frame.setContentPane(mainPanel);
-            frame.setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> {
+//            JFrame frame = new JFrame("Chatbox AI");
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            frame.setSize(420, 680);
+//            frame.setLocationRelativeTo(null);
+//
+//            CardLayout layout = new CardLayout();
+//            JPanel mainPanel = new JPanel(layout);
+//            ChatboxPanel chatbox = new ChatboxPanel(layout, mainPanel);
+//
+//            mainPanel.add(chatbox, "chat");
+//            frame.setContentPane(mainPanel);
+//            frame.setVisible(true);
+//        });
+//    }
 }

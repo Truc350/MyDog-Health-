@@ -1,6 +1,9 @@
 package view;
 
+import model.CareAdvice;
 import model.DiagnosisResult;
+import model.Symptom;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -10,7 +13,9 @@ import java.util.List;
 
 public class MedicalResultPanel extends JPanel {
     JPanel topPanel, contentPanel, diagnosisBox, diagnosisLine, adviceBox, datePanel, symptomPanel, detailPanel;
-    JLabel dateLabel, symptomTitle, diagnosis, diagnosisText, adviceTitle, adviceContent, followUpTitle, followUpDate;
+    JLabel dateLabel, symptomTitle, diagnosis, adviceTitle, followUpTitle, followUpDate;
+    JTextArea adviceContent, diagnosisText;
+    JScrollPane adviceScrollPane;
     JButton backButton;
     private CardLayout cardLayout;
     private JPanel mainPanel;
@@ -37,7 +42,7 @@ public class MedicalResultPanel extends JPanel {
         backButton.setText("");
         backButton.setIcon(new ImageIcon("src/image/back.png"));
         backButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "dogInfor"); // Quay lại DogInforPanel
+            cardLayout.show(mainPanel, "aiAnalysisResults"); // Quay lại DogInforPanel
         });
 
         backButton.setFocusPainted(false);
@@ -100,22 +105,23 @@ public class MedicalResultPanel extends JPanel {
         ImageIcon icon3 = new ImageIcon(newImage3);
         diagnosis.setIcon(icon3);
         diagnosis.setAlignmentX(Component.CENTER_ALIGNMENT);
-        diagnosisText = new JLabel("");
-        diagnosisText.setFont(new Font("Roboto", Font.PLAIN, 15));
 
-        diagnosisLine = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        diagnosisText = new JTextArea();
+        diagnosisText.setFont(new Font("Roboto", Font.PLAIN, 15));
+        diagnosisText.setLineWrap(true);
+        diagnosisText.setWrapStyleWord(true);
+        diagnosisText.setEditable(false);
+        diagnosisText.setOpaque(false);
+        diagnosisText.setBorder(null);
+        diagnosisText.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        diagnosisLine = new JPanel();
+        diagnosisLine.setLayout(new BoxLayout(diagnosisLine, BoxLayout.Y_AXIS));
         diagnosisLine.setOpaque(false);
         diagnosisLine.add(diagnosis);
         diagnosisLine.add(diagnosisText);
         diagnosisBox.add(Box.createVerticalStrut(5));
         diagnosisBox.add(diagnosisLine);
-
-        // === Dog image ===
-        ImageIcon originalIcon = new ImageIcon("src\\image\\dog1.jpg");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(250, 200, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(scaledImage);
-        JLabel imageLabel = new JLabel(resizedIcon);
-        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // === Advice box ===
         adviceBox = new RoundedPanel(20, Color.WHITE, new Color(13, 153, 255));
@@ -124,16 +130,34 @@ public class MedicalResultPanel extends JPanel {
         adviceBox.setBackground(Color.WHITE);
         adviceBox.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        adviceTitle = createBoldLabel("Tư vấn bác sĩ:", 15);
+        adviceTitle = createBoldLabel("Khuyến nghị:", 15);
+        adviceTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         ImageIcon iconAdvise = new ImageIcon("src\\image\\advise.png");
         Image image4 = iconAdvise.getImage();
         Image newImage4 = image4.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         ImageIcon icon4 = new ImageIcon(newImage4);
         adviceTitle.setIcon(icon4);
 
-        adviceContent = new JLabel("");
+        adviceContent = new JTextArea();
+        adviceContent.setLineWrap(true);
+        adviceContent.setWrapStyleWord(true);
+        adviceContent.setEditable(false);
+        adviceContent.setOpaque(false);
+        adviceContent.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         adviceContent.setFont(new Font("Roboto", Font.PLAIN, 15));
+
+        // Bọc trong JScrollPane
+        adviceScrollPane = new JScrollPane(adviceContent);
+        adviceScrollPane.setPreferredSize(new Dimension(500, 200));
+        adviceScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+// Thêm vào layout thay vì thêm trực tiếp adviceContent
+        detailPanel.add(adviceScrollPane);
+
+        JPanel followUpPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        followUpPanel.setOpaque(false);
         followUpTitle = createBoldLabel("Gợi ý tái khám:", 15);
+        followUpTitle.setLayout(new FlowLayout(FlowLayout.LEFT));
         ImageIcon iconFollow = new ImageIcon("src\\image\\goiy.png");
         Image image5 = iconFollow.getImage();
         Image newImage5 = image5.getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -141,16 +165,15 @@ public class MedicalResultPanel extends JPanel {
         followUpTitle.setIcon(icon5);
         followUpDate = createPlainLabel("");
 
+        followUpPanel.add(followUpTitle);
+        followUpPanel.add(followUpDate);
+
         adviceBox.add(adviceTitle);
-        adviceBox.add(adviceContent);
-        adviceBox.add(Box.createVerticalStrut(10));
-        adviceBox.add(followUpTitle);
-        adviceBox.add(followUpDate);
+        adviceBox.add(adviceScrollPane);
 
         // === Add to content panel ===
         contentPanel.add(diagnosisBox);
         contentPanel.add(Box.createVerticalStrut(10));
-        contentPanel.add(imageLabel);
         contentPanel.add(Box.createVerticalStrut(10));
         contentPanel.add(adviceBox);
 
@@ -173,61 +196,64 @@ public class MedicalResultPanel extends JPanel {
         return label;
     }
 
-    public void updateMedicalResult(List<DiagnosisResult> results, String mainSymptom, String otherSymptoms, String imagePath) {
+    public void updateMedicalResult(List<DiagnosisResult> results, String mainSymptom) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
         dateLabel.setText("Ngày " + now.format(formatter));
 
-        // Bao bọc detailPanel trong JScrollPane
+        // === Triệu chứng ===
         detailPanel.removeAll();
-        JScrollPane scrollPane = new JScrollPane(detailPanel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setPreferredSize(new Dimension(300, 100)); // Kích thước cố định, có thể cuộn
+        diagnosisText.setText("");
+        adviceContent.setText("");
 
-        String[] symptoms = (mainSymptom + ", " + otherSymptoms).split(",\\s*");
-        for (String symptom : symptoms) {
-            if (!symptom.trim().isEmpty()) {
-                detailPanel.add(createPlainLabel("+ " + symptom.trim()));
-                detailPanel.add(Box.createVerticalStrut(2));
-            }
+
+        if (results == null || results.isEmpty()) {
+            diagnosisText.setText("Không có dữ liệu chẩn đoán.");
+            detailPanel.revalidate();
+            detailPanel.repaint();
+            return;
         }
-        detailPanel.revalidate();
-        detailPanel.repaint();
 
-        if (results != null && !results.isEmpty() && results.get(0).getDiseaseName() != null && !results.get(0).getDiseaseName().equals("Không xác định")) {
-            DiagnosisResult topResult = results.stream()
-                    .max((r1, r2) -> Double.compare(r1.getProbability(), r2.getProbability()))
-                    .orElse(null);
-            if (topResult != null) {
-                diagnosisText.setText(topResult.getDiseaseName());
-                adviceContent.setText("<html><div style='width:250px;'>" + topResult.getStatusNote() + "</div></html>");
-                followUpDate.setText("Ngày " + now.plusDays(3).format(formatter));
-            }
+        // === Hiển thị triệu chứng chính ===
+        if (mainSymptom != null && !mainSymptom.isEmpty()) {
+            symptomTitle.setText("Triệu chứng: " + mainSymptom);
         } else {
-            diagnosisText.setText("Không xác định");
-            adviceContent.setText("<html><div style='width:250px;'>Lỗi kết nối với API AI. Vui lòng thử lại sau hoặc liên hệ bác sĩ.</div></html>");
-            followUpDate.setText("Không xác định");
+            symptomTitle.setText("Triệu chứng chính: Không xác định");
         }
 
-        if (imagePath != null && !imagePath.isEmpty()) {
-            ImageIcon originalIcon = new ImageIcon(imagePath);
-            Image scaledImage = originalIcon.getImage().getScaledInstance(250, 200, Image.SCALE_SMOOTH);
-            ImageIcon resizedIcon = new ImageIcon(scaledImage);
-            for (Component comp : contentPanel.getComponents()) {
-                if (comp instanceof JLabel && ((JLabel) comp).getIcon() != null) {
-                    ((JLabel) comp).setIcon(resizedIcon);
-                    break;
+        // Duyệt toàn bộ kết quả
+        for (DiagnosisResult result : results) {
+
+            // Chẩn đoán
+            if (result.getAiAnalysis() != null && !result.getAiAnalysis().isEmpty()) {
+//                diagnosisText.setText(result.getAiAnalysis());
+//            } else {
+//                diagnosisText.setText("Không xác định");
+                diagnosisText.append(result.getAiAnalysis());
+            }
+
+            //2. Gợi ý chăm sóc chi tiết
+            if (result.getCareAdvices() != null && !result.getCareAdvices().isEmpty()) {
+                for (CareAdvice advice : result.getCareAdvices()) {
+                    StringBuilder adviceBuilder = new StringBuilder();
+                    if (advice.getDangerSigns() != null && !advice.getDangerSigns().isEmpty()) {
+                        adviceBuilder.append("• ").append(advice.getDangerSigns()).append("\n");
+                    }
+//                    if (advice.getAdvice() != null && !advice.getAdvice().isEmpty()) {
+//                        adviceBuilder.append("• ").append(advice.getAdvice()).append("\n");
+//                    }
+                    if (advice.getExtraNotes() != null && !advice.getExtraNotes().isEmpty()) {
+                        adviceBuilder.append("Lưu ý thêm: ").append(advice.getExtraNotes()).append("\n");
+                    }
+                    adviceContent.append(adviceBuilder.toString() + "\n");
                 }
             }
         }
 
-        // Thêm scrollPane vào diagnosisBox thay vì detailPanel trực tiếp
-        diagnosisBox.remove(detailPanel);
-        diagnosisBox.add(scrollPane);
-        revalidate();
-        repaint();
+        detailPanel.revalidate();
+        detailPanel.repaint();
     }
+
     private void _extracted() {
         detailPanel.add(Box.createVerticalStrut(2));
     }
