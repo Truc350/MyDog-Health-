@@ -75,6 +75,7 @@
             <artifactId>javafx-swing</artifactId>
             <version>17.0.15</version>
         </dependency>
+
         <!-- Jackson (JSON <-> Object mapper) -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -99,6 +100,7 @@
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
+
 
     </dependencies>
 </project>

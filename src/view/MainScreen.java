@@ -1,6 +1,8 @@
 package view;
 
 import controller.PetController;
+import view.doctor.CallDoctorPanel;
+import view.doctor.OngoingCallPanel;
 
 import javax.swing.*;
 import java.awt.*;

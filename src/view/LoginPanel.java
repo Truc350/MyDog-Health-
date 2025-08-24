@@ -163,15 +163,20 @@ public class LoginPanel extends JPanel {
         if (user != null) {
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công!\nXin chào, " + user.getName());
             AppSession.currentUser = user;
-            dashboardPanel.updateUserInfo(); // 👈 cập nhật tên người dùng
+            dashboardPanel.updateUserInfo(); // cập nhật tên người dùng
+
+            // XÓA DỮ LIỆU ĐẦU VÀO SAU KHI ĐĂNG NHẬP
+            txtEmail.setText("");
+            txtPassword.setText("");
+
+            // Chuyển trang
             cardLayout.show(mainPanel, "dashboard");
-
-
         }
         else {
             JOptionPane.showMessageDialog(this, "Sai email hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     // Border bo góc
     class RoundBorder extends AbstractBorder {

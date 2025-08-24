@@ -1,11 +1,10 @@
-package view;
+package view.doctor;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.application.Application;
 
 import javax.swing.*;
 import java.awt.*;
